@@ -1,0 +1,240 @@
+// Prisma schema for Crackers Shop Invoice Billing POS
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id                   String            @id @default(uuid())
+  name                 String
+  tradeName            String?
+  gstin                String?
+  licenseNumber        String?
+  phone                String
+  email                String?
+  addressLine1         String
+  addressLine2         String?
+  city                 String            @default("Sivakasi")
+  state                String            @default("Tamil Nadu")
+  stateCode            String            @default("33")
+  pincode              String
+  bankName             String?
+  bankAccountNo        String?
+  bankIfsc             String?
+  bankBranch           String?
+  upiId                String?
+  invoicePrefix        String            @default("SMF/")
+  invoiceFooterNote    String?
+  isActive             Boolean           @default(true)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  settings             ShopSetting?
+  products             Product[]
+  categories           Category[]
+  customers            Customer[]
+  sales                Sale[]
+  suppliers            Supplier[]
+  purchases            Purchase[]
+  expenses             Expense[]
+  stockMovements       StockMovement[]
+}
+
+model ShopSetting {
+  id                         String   @id @default(uuid())
+  shopId                     String   @unique
+  shop                       Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  defaultBillingMode         String   @default("GST")
+  enableSeasonalDiscount     Boolean  @default(true)
+  seasonalDiscountPercentage Decimal  @default(70.00)
+  allowNegativeStock         Boolean  @default(false)
+  thermalPrinterPaperWidth   String   @default("80mm")
+  printDuplicateReceipt      Boolean  @default(false)
+  autoRoundoffToRupee        Boolean  @default(true)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  shopId      String
+  shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  name        String
+  tamilName   String?
+  description String?
+  products    Product[]
+  isActive    Boolean   @default(true)
+}
+
+model Product {
+  id               String          @id @default(uuid())
+  shopId           String
+  shop             Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  categoryId       String?
+  category         Category?       @relation(fields: [categoryId], references: [id])
+  sku              String
+  barcode          String?
+  name             String
+  tamilName        String?
+  brand            String          @default("Standard")
+  packSize         String          @default("1 Box")
+  uom              String          @default("BOX")
+  purchasePrice    Decimal         @default(0.00)
+  mrp              Decimal         @default(0.00)
+  sellingPrice     Decimal         @default(0.00)
+  currentStock     Int             @default(0)
+  minStockAlert    Int             @default(10)
+  isGreenCracker   Boolean         @default(true)
+  pesoCertified    Boolean         @default(true)
+  isActive         Boolean         @default(true)
+  saleItems        SaleItem[]
+  purchaseItems    PurchaseItem[]
+  stockMovements   StockMovement[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model Customer {
+  id            String   @id @default(uuid())
+  shopId        String
+  shop          Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  name          String
+  phone         String
+  email         String?
+  gstin         String?
+  addressLine   String?
+  city          String   @default("Sivakasi")
+  state         String   @default("Tamil Nadu")
+  creditBalance Decimal  @default(0.00)
+  sales         Sale[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Sale {
+  id             String      @id @default(uuid())
+  shopId         String
+  shop           Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customerId     String?
+  customer       Customer?   @relation(fields: [customerId], references: [id])
+  invoiceNumber  String
+  billingMode    String      @default("GST")
+  subtotal       Decimal
+  discountAmount Decimal     @default(0.00)
+  taxableValue   Decimal
+  cgstAmount     Decimal     @default(0.00)
+  sgstAmount     Decimal     @default(0.00)
+  totalTax       Decimal     @default(0.00)
+  roundOff       Decimal     @default(0.00)
+  grandTotal     Decimal
+  paidAmount     Decimal
+  balanceAmount  Decimal     @default(0.00)
+  paymentStatus  String      @default("PAID")
+  idempotencyKey String?
+  items          SaleItem[]
+  payments       Payment[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model SaleItem {
+  id             String   @id @default(uuid())
+  saleId         String
+  sale           Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id])
+  productName    String
+  tamilName      String?
+  sku            String
+  quantity       Int
+  mrp            Decimal
+  unitPrice      Decimal
+  discountAmount Decimal  @default(0.00)
+  taxableValue   Decimal
+  cgstAmount     Decimal  @default(0.00)
+  sgstAmount     Decimal  @default(0.00)
+  totalAmount    Decimal
+}
+
+model Payment {
+  id             String   @id @default(uuid())
+  saleId         String
+  sale           Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  paymentMethod  String
+  amount         Decimal
+  receivedAmount Decimal
+  changeGiven    Decimal  @default(0.00)
+  referenceNo    String?
+  createdAt      DateTime @default(now())
+}
+
+model Supplier {
+  id                 String     @id @default(uuid())
+  shopId             String
+  shop               Shop       @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  companyName        String
+  contactPerson      String?
+  phone              String
+  gstin              String?
+  city               String     @default("Sivakasi")
+  outstandingPayable Decimal    @default(0.00)
+  purchases          Purchase[]
+  createdAt          DateTime   @default(now())
+}
+
+model Purchase {
+  id                String         @id @default(uuid())
+  shopId            String
+  shop              Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  supplierId        String
+  supplier          Supplier       @relation(fields: [supplierId], references: [id])
+  supplierInvoiceNo String
+  invoiceDate       DateTime
+  subtotal          Decimal
+  taxAmount         Decimal
+  grandTotal        Decimal
+  paidAmount        Decimal        @default(0.00)
+  status            String         @default("POSTED")
+  items             PurchaseItem[]
+  createdAt         DateTime       @default(now())
+}
+
+model PurchaseItem {
+  id         String   @id @default(uuid())
+  purchaseId String
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  unitCost   Decimal
+  totalCost  Decimal
+}
+
+model StockMovement {
+  id           String   @id @default(uuid())
+  shopId       String
+  shop         Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  movementType String
+  quantity     Int
+  balanceAfter Int
+  remarks      String?
+  createdAt    DateTime @default(now())
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  shopId      String
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category    String
+  amount      Decimal
+  paidTo      String?
+  paymentMode String   @default("CASH")
+  remarks     String?
+  expenseDate DateTime @default(now())
+}

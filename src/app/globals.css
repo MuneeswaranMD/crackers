@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 11% 97%;
+    --foreground: 220 26% 14%;
+    --card: 0 0% 100%;
+    --border: 220 13% 91%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 220 26% 14%;
+  }
+
+  body {
+    @apply bg-[#F5F6F8] text-[#1F2937] antialiased selection:bg-amber-200 selection:text-amber-900 font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #F5F6F8;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Dark sidebar scrollbar */
+aside ::-webkit-scrollbar-track {
+  background: #111318;
+}
+aside ::-webkit-scrollbar-thumb {
+  background: #1F2937;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: transparent !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Animation utilities */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.2s ease-out;
+}
+
+/* Suppress scrollbar in category pills */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
