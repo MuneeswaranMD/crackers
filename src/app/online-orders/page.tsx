@@ -175,10 +175,20 @@ export default function OnlineOrdersPage() {
     const res = db.convertAndInvoiceExternalOrder(order.id, 'Counter Staff');
     if (res.success) {
       loadData();
+      if (res.saleId) {
+        const createdSale = db.getSaleById(res.saleId);
+        if (createdSale) {
+          fetch('/api/sales', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(createdSale),
+          }).catch((err) => console.warn('[Supabase Sync Warning]:', err));
+        }
+      }
       if (selectedOrder?.id === order.id) {
         setSelectedOrder(db.getExternalOrderById(order.id) || null);
       }
-      alert(`POS Invoice ${res.invoiceNumber} successfully created and inventory deducted!`);
+      alert(`POS Invoice ${res.invoiceNumber} successfully created and recorded in Supabase!`);
     } else {
       alert(`Error creating invoice: ${res.error}`);
     }

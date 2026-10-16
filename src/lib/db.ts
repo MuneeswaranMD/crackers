@@ -51,7 +51,7 @@ const STORAGE_KEYS = {
 
 // Initial Seed Data for Sivakasi / Tamil Nadu Crackers Retail Shop
 export const INITIAL_SHOP: Shop = {
-  id: 'shop-sivakasi-01',
+  id: '11111111-1111-1111-1111-111111111111',
   name: 'Sree Kalieswari Traders',
   tradeName: 'Sree Kalieswari Traders',
   gstin: '33AABCS1429B1Z8', // 33 is Tamil Nadu
@@ -116,7 +116,7 @@ export const INITIAL_EXTERNAL_ORDERS: ExternalOrder[] = [
   {
     id: 'ext-ord-8402',
     integrationId: '33333333-1111-1111-1111-111111111111',
-    shopId: 'shop-sivakasi-01',
+    shopId: '11111111-1111-1111-1111-111111111111',
     externalOrderId: '8402',
     orderNumber: '8402',
     status: 'processing',
@@ -197,7 +197,7 @@ export const INITIAL_EXTERNAL_ORDERS: ExternalOrder[] = [
   {
     id: 'ext-ord-8405',
     integrationId: '33333333-1111-1111-1111-111111111111',
-    shopId: 'shop-sivakasi-01',
+    shopId: '11111111-1111-1111-1111-111111111111',
     externalOrderId: '8405',
     orderNumber: '8405',
     status: 'processing',

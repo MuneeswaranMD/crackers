@@ -62,20 +62,43 @@ export default function SyncPage() {
     reader.readAsText(file);
   };
 
-  const handleTriggerSync = () => {
+  const handleTriggerSync = async () => {
     setSyncing(true);
     setStatusMsg(null);
 
-    setTimeout(() => {
-      // Simulate sync with cloud database
-      db.clearSyncQueue();
-      setQueue([]);
-      setSyncing(false);
-      setStatusMsg({
-        type: 'success',
-        text: 'All offline sales & inventory movements successfully synchronized to Supabase Cloud with idempotency verification!',
+    try {
+      const sales = db.getSales();
+      const orders = db.getExternalOrders();
+
+      const res = await fetch('/api/sync/supabase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sales, orders }),
       });
-    }, 1500);
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        db.clearSyncQueue();
+        setQueue([]);
+        setStatusMsg({
+          type: 'success',
+          text: data.message || 'All sales and orders successfully synchronized to Supabase Cloud PostgreSQL!',
+        });
+      } else {
+        setStatusMsg({
+          type: 'error',
+          text: data.error || 'Failed to synchronize with Supabase Cloud.',
+        });
+      }
+    } catch (err: any) {
+      setStatusMsg({
+        type: 'error',
+        text: err.message || 'Network error while syncing to Supabase.',
+      });
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const handleClearQueue = () => {

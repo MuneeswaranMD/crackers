@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { WooCommerceClient, normalizeWooCommerceOrder } from '@/lib/woocommerce';
 import { db } from '@/lib/db';
 import { IntegrationSyncLog } from '@/types';
+import { saveExternalOrderToSupabase } from '@/lib/serverDb';
 
 export const dynamic = 'force-dynamic';
 
@@ -108,6 +109,7 @@ export async function POST(req: NextRequest) {
           }
 
           db.saveExternalOrder(order);
+          await saveExternalOrderToSupabase(order);
           totalSynced++;
         } catch (itemErr) {
           console.error(`Failed to normalize order ${rawOrder.id}:`, itemErr);

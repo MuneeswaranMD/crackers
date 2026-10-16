@@ -28,7 +28,7 @@ model Shop {
   bankIfsc             String?
   bankBranch           String?
   upiId                String?
-  invoicePrefix        String            @default("SMF/")
+  invoicePrefix        String            @default("SKT/2026-27/")
   invoiceFooterNote    String?
   isActive             Boolean           @default(true)
   createdAt            DateTime          @default(now())

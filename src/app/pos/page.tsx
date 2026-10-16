@@ -391,6 +391,13 @@ export default function POSPage() {
         return;
       }
 
+      // Asynchronously persist sale to Supabase PostgreSQL in real-time
+      fetch('/api/sales', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fullSale),
+      }).catch((err) => console.warn('[Supabase Sync Background Warning]:', err));
+
       // Refresh Products stock in UI
       setProducts(db.getProducts());
       setLastFinalizedSale(fullSale);
