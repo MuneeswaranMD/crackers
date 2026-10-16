@@ -4,7 +4,7 @@ test.describe('Crackers Shop Invoice Billing POS - Master E2E Flow', () => {
   test('Complete POS Retail Billing & Inventory Lifecycle', async ({ page }) => {
     // 1. Visit POS Command Dashboard
     await page.goto('http://localhost:3000/');
-    await expect(page.locator('text=Sri Sree kalieswari traders Fireworks')).toBeVisible();
+    await expect(page.locator('text=Sree Kalieswari Traders').first()).toBeVisible();
 
     // 2. Open POS Billing Counter
     await page.click('text=Open POS Counter');
@@ -42,7 +42,7 @@ test.describe('Crackers Shop Invoice Billing POS - Master E2E Flow', () => {
     // 9. Navigate to Sales Invoices Register and verify invoice is recorded
     await page.click('text=Sales Invoices');
     await expect(page).toHaveURL(/.*sales/);
-    await expect(page.locator('text=SMF/2026-27/')).toBeVisible();
+    await expect(page.locator('text=SKT/2026-27/').first()).toBeVisible();
 
     // 10. Navigate to Stock Movements and verify automatic sale stock deduction
     await page.click('text=Inventory');
