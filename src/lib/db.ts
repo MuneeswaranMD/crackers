@@ -112,170 +112,7 @@ export const INITIAL_INTEGRATION: Integration = {
   updatedAt: new Date().toISOString(),
 };
 
-export const INITIAL_EXTERNAL_ORDERS: ExternalOrder[] = [
-  {
-    id: 'ext-ord-8402',
-    integrationId: '33333333-1111-1111-1111-111111111111',
-    shopId: '11111111-1111-1111-1111-111111111111',
-    externalOrderId: '8402',
-    orderNumber: '8402',
-    status: 'processing',
-    currency: 'INR',
-    totalAmount: 630.0,
-    subtotalAmount: 630.0,
-    taxAmount: 96.1,
-    shippingAmount: 0.0,
-    discountAmount: 0.0,
-    customerName: 'Sundaramurthy P',
-    customerEmail: 'sundar.tn@gmail.com',
-    customerPhone: '+91 98401 55678',
-    billingAddress: {
-      firstName: 'Sundaramurthy',
-      lastName: 'P',
-      address1: 'Plot 4, Anna Nagar 2nd Avenue',
-      city: 'Chennai',
-      state: 'Tamil Nadu',
-      postcode: '600040',
-      country: 'IN',
-      phone: '+91 98401 55678',
-      email: 'sundar.tn@gmail.com',
-    },
-    shippingAddress: {
-      firstName: 'Sundaramurthy',
-      lastName: 'P',
-      address1: 'Plot 4, Anna Nagar 2nd Avenue',
-      city: 'Chennai',
-      state: 'Tamil Nadu',
-      postcode: '600040',
-      country: 'IN',
-      phone: '+91 98401 55678',
-    },
-    paymentMethod: 'razorpay',
-    paymentMethodTitle: 'Razorpay UPI Online',
-    isPaid: true,
-    paidAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-    externalCreatedAt: new Date(Date.now() - 3600000 * 2.5).toISOString(),
-    externalUpdatedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-    syncStatus: 'IMPORTED',
-    items: [
-      {
-        id: 'ext-item-8402-1',
-        externalOrderId: 'ext-ord-8402',
-        externalItemId: '101',
-        externalProductId: '901',
-        sku: 'SPK-10-ELE',
-        name: '10cm Electric Sparklers',
-        quantity: 5,
-        unitPrice: 54.0,
-        subtotal: 270.0,
-        taxAmount: 41.18,
-        total: 270.0,
-        localProductId: 'prod-01',
-        mappingStatus: 'MATCHED',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: 'ext-item-8402-2',
-        externalOrderId: 'ext-ord-8402',
-        externalItemId: '102',
-        externalProductId: '904',
-        sku: 'FP-ASO-SPL',
-        name: 'Asoka Flower Pots Special',
-        quantity: 3,
-        unitPrice: 120.0,
-        subtotal: 360.0,
-        taxAmount: 54.91,
-        total: 360.0,
-        localProductId: 'prod-04',
-        mappingStatus: 'MATCHED',
-        createdAt: new Date().toISOString(),
-      },
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'ext-ord-8405',
-    integrationId: '33333333-1111-1111-1111-111111111111',
-    shopId: '11111111-1111-1111-1111-111111111111',
-    externalOrderId: '8405',
-    orderNumber: '8405',
-    status: 'processing',
-    currency: 'INR',
-    totalAmount: 570.0,
-    subtotalAmount: 570.0,
-    taxAmount: 86.95,
-    shippingAmount: 0.0,
-    discountAmount: 0.0,
-    customerName: 'Kavitha Rajan',
-    customerEmail: 'kavitha.cbe@yahoo.com',
-    customerPhone: '+91 94432 88990',
-    billingAddress: {
-      firstName: 'Kavitha',
-      lastName: 'Rajan',
-      address1: '12, RS Puram West',
-      city: 'Coimbatore',
-      state: 'Tamil Nadu',
-      postcode: '641002',
-      country: 'IN',
-      phone: '+91 94432 88990',
-      email: 'kavitha.cbe@yahoo.com',
-    },
-    shippingAddress: {
-      firstName: 'Kavitha',
-      lastName: 'Rajan',
-      address1: '12, RS Puram West',
-      city: 'Coimbatore',
-      state: 'Tamil Nadu',
-      postcode: '641002',
-      country: 'IN',
-      phone: '+91 94432 88990',
-    },
-    paymentMethod: 'phonepe',
-    paymentMethodTitle: 'PhonePe Direct UPI',
-    isPaid: true,
-    paidAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-    externalCreatedAt: new Date(Date.now() - 3600000 * 5.2).toISOString(),
-    externalUpdatedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-    syncStatus: 'IMPORTED',
-    items: [
-      {
-        id: 'ext-item-8405-1',
-        externalOrderId: 'ext-ord-8405',
-        externalItemId: '201',
-        externalProductId: '908',
-        sku: 'BMB-HYD-GRN',
-        name: 'Hydro Bomb Green Sound Blast',
-        quantity: 5,
-        unitPrice: 96.0,
-        subtotal: 480.0,
-        taxAmount: 73.22,
-        total: 480.0,
-        localProductId: 'prod-08',
-        mappingStatus: 'MATCHED',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: 'ext-item-8405-2',
-        externalOrderId: 'ext-ord-8405',
-        externalItemId: '202',
-        externalProductId: '907',
-        sku: 'GC-ASH-SPL',
-        name: 'Ground Chakkar Special Ashoka',
-        quantity: 1,
-        unitPrice: 90.0,
-        subtotal: 90.0,
-        taxAmount: 13.73,
-        total: 90.0,
-        localProductId: 'prod-07',
-        mappingStatus: 'MATCHED',
-        createdAt: new Date().toISOString(),
-      },
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+export const INITIAL_EXTERNAL_ORDERS: ExternalOrder[] = [];
 
 export const INITIAL_CATEGORIES: Category[] = [
   { id: 'cat-1', shopId: 'shop-sivakasi-01', name: 'Sparklers (கம்ப மத்தாப்பு)', displayOrder: 1, isActive: true },
@@ -846,8 +683,16 @@ export const db = {
     if (!storage.get<Integration[] | null>(STORAGE_KEYS.INTEGRATIONS, null)) {
       storage.set(STORAGE_KEYS.INTEGRATIONS, [INITIAL_INTEGRATION]);
     }
-    if (!storage.get<ExternalOrder[] | null>(STORAGE_KEYS.EXTERNAL_ORDERS, null)) {
-      storage.set(STORAGE_KEYS.EXTERNAL_ORDERS, INITIAL_EXTERNAL_ORDERS);
+    const existingOrders = storage.get<ExternalOrder[] | null>(STORAGE_KEYS.EXTERNAL_ORDERS, null);
+    if (!existingOrders) {
+      storage.set(STORAGE_KEYS.EXTERNAL_ORDERS, []);
+    } else {
+      const cleaned = existingOrders.filter(
+        (o) => o.id !== 'ext-ord-8402' && o.id !== 'ext-ord-8405'
+      );
+      if (cleaned.length !== existingOrders.length) {
+        storage.set(STORAGE_KEYS.EXTERNAL_ORDERS, cleaned);
+      }
     }
     if (!storage.get<ExternalProductMapping[] | null>(STORAGE_KEYS.PRODUCT_MAPPINGS, null)) {
       storage.set(STORAGE_KEYS.PRODUCT_MAPPINGS, []);
@@ -918,6 +763,15 @@ export const db = {
     else list.push(product);
     storage.set(STORAGE_KEYS.PRODUCTS, list);
     db.logAudit(`Product ${idx >= 0 ? 'Updated' : 'Created'}: ${product.name}`, 'Product', product.id);
+
+    // Persist directly to Supabase
+    if (typeof window !== 'undefined') {
+      fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(product),
+      }).catch((e) => console.warn('[Supabase Sync Product Warning]:', e));
+    }
   },
   deleteProduct: (id: string): void => {
     const list = db.getProducts().filter((p) => p.id !== id);
@@ -935,6 +789,15 @@ export const db = {
     if (idx >= 0) list[idx] = customer;
     else list.push(customer);
     storage.set(STORAGE_KEYS.CUSTOMERS, list);
+
+    // Persist directly to Supabase
+    if (typeof window !== 'undefined') {
+      fetch('/api/customers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customer),
+      }).catch((e) => console.warn('[Supabase Sync Customer Warning]:', e));
+    }
   },
 
   // Suppliers
@@ -1027,11 +890,17 @@ export const db = {
     sales.unshift(sale);
     storage.set(STORAGE_KEYS.SALES, sales);
 
-    // Queue Sync Operation
-    db.queueSync('SALE_SYNC', sale, sale.idempotencyKey);
-
     // Audit Log
     db.logAudit(`Finalized Invoice: ${sale.invoiceNumber} for ₹${sale.grandTotal}`, 'Sale', sale.id);
+
+    // Persist directly to Supabase
+    if (typeof window !== 'undefined') {
+      fetch('/api/sales', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sale),
+      }).catch((e) => console.warn('[Supabase Sync Sale Warning]:', e));
+    }
 
     return { success: true, saleId: sale.id };
   },
@@ -1309,6 +1178,15 @@ export const db = {
       orders.unshift(order);
     }
     storage.set(STORAGE_KEYS.EXTERNAL_ORDERS, orders);
+
+    // Persist directly to Supabase
+    if (typeof window !== 'undefined') {
+      fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order),
+      }).catch((e) => console.warn('[Supabase Sync Order Warning]:', e));
+    }
   },
 
   updateExternalOrderStatus: (orderId: string, status: ExternalOrder['status']): void => {

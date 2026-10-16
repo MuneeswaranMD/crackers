@@ -34,6 +34,15 @@ export default function SalesPage() {
     db.initDefaults();
     setSales(db.getSales());
     setShop(db.getShop());
+
+    fetch('/api/sales')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data)) {
+          setSales(data.data);
+        }
+      })
+      .catch((err) => console.warn('Failed to load sales from Supabase:', err));
   }, []);
 
   const filteredSales = sales.filter((s) => {

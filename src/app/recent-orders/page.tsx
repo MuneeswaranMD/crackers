@@ -37,11 +37,32 @@ export default function RecentOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'POS' | 'ONLINE'>('ALL');
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
-  const loadData = () => {
+  const loadData = async () => {
     db.initDefaults();
     setSales(db.getSales());
     setOnlineOrders(db.getExternalOrders());
     setShop(db.getShop());
+
+    try {
+      const [salesRes, ordersRes] = await Promise.all([
+        fetch('/api/sales'),
+        fetch('/api/orders'),
+      ]);
+      if (salesRes.ok) {
+        const sData = await salesRes.json();
+        if (sData.success && Array.isArray(sData.data)) {
+          setSales(sData.data);
+        }
+      }
+      if (ordersRes.ok) {
+        const oData = await ordersRes.json();
+        if (oData.success && Array.isArray(oData.data)) {
+          setOnlineOrders(oData.data);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch from Supabase:', err);
+    }
   };
 
   useEffect(() => {

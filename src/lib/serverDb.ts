@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { Sale, ExternalOrder, Customer, Product } from '@/types';
+import { Sale, ExternalOrder, Customer, Product, Shop, Category } from '@/types';
 
 let pool: Pool | null = null;
 
@@ -322,20 +322,421 @@ export async function saveExternalOrderToSupabase(
 /**
  * Fetch all sales directly from Supabase
  */
-export async function getSalesFromSupabase(): Promise<any[]> {
+export async function getSalesFromSupabase(): Promise<Sale[]> {
   const pool = getDbPool();
   const client = await pool.connect();
   try {
     const res = await client.query(
-      `SELECT s.*, c.name as customer_name, c.phone as customer_phone
+      `SELECT s.*, c.name as customer_name, c.phone as customer_phone,
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', si.id,
+              'product', json_build_object(
+                'id', p.id,
+                'name', si.product_name,
+                'tamilName', si.tamil_name,
+                'sku', si.sku,
+                'packSize', si.pack_size,
+                'uom', si.uom,
+                'imageUrl', p.image_url
+              ),
+              'quantity', si.quantity,
+              'mrp', si.mrp,
+              'unitPrice', si.unit_price,
+              'discountPercentage', si.discount_percentage,
+              'discountAmount', si.discount_amount,
+              'taxableValue', si.taxable_value,
+              'cgstRate', si.cgst_rate,
+              'cgstAmount', si.cgst_amount,
+              'sgstRate', si.sgst_rate,
+              'sgstAmount', si.sgst_amount,
+              'igstRate', si.igst_rate,
+              'igstAmount', si.igst_amount,
+              'totalTax', (COALESCE(si.cgst_amount, 0) + COALESCE(si.sgst_amount, 0) + COALESCE(si.igst_amount, 0)),
+              'totalAmount', si.total_amount
+            )
+          ) FILTER (WHERE si.id IS NOT NULL),
+          '[]'
+        ) as items,
+        COALESCE(
+          (
+            SELECT json_agg(
+              json_build_object(
+                'id', pay.id,
+                'paymentMethod', pay.payment_method,
+                'amount', pay.amount,
+                'receivedAmount', pay.received_amount,
+                'changeGiven', pay.change_given,
+                'referenceNumber', pay.reference_number,
+                'createdAt', pay.created_at
+              )
+            )
+            FROM payments pay
+            WHERE pay.sale_id = s.id
+          ),
+          '[]'
+        ) as payments
        FROM sales s
        LEFT JOIN customers c ON s.customer_id = c.id
+       LEFT JOIN sale_items si ON s.id = si.sale_id
+       LEFT JOIN products p ON si.product_id = p.id
        WHERE s.shop_id = $1
+       GROUP BY s.id, c.name, c.phone
        ORDER BY s.created_at DESC`,
       [SHOP_UUID]
     );
-    return res.rows;
+
+    return res.rows.map((r) => ({
+      id: r.id,
+      shopId: r.shop_id,
+      customerId: r.customer_id,
+      customerName: r.customer_name || 'Walk-in Retail Customer',
+      customerPhone: r.customer_phone || '',
+      cashierName: r.cashier_id || 'Counter POS 1',
+      deviceId: r.device_id,
+      invoiceNumber: r.invoice_number,
+      financialYear: r.financial_year,
+      invoiceType: r.invoice_type,
+      billingMode: r.billing_mode,
+      subtotal: parseFloat(r.subtotal) || 0,
+      discountAmount: parseFloat(r.discount_amount) || 0,
+      taxableValue: parseFloat(r.taxable_value) || 0,
+      cgstAmount: parseFloat(r.cgst_amount) || 0,
+      sgstAmount: parseFloat(r.sgst_amount) || 0,
+      igstAmount: parseFloat(r.igst_amount) || 0,
+      totalTax: parseFloat(r.total_tax) || 0,
+      roundOff: parseFloat(r.round_off) || 0,
+      grandTotal: parseFloat(r.grand_total) || 0,
+      paidAmount: parseFloat(r.paid_amount) || 0,
+      balanceAmount: parseFloat(r.balance_amount) || 0,
+      paymentStatus: r.payment_status,
+      paymentMethod: r.payments?.[0]?.paymentMethod || 'CASH',
+      status: r.status,
+      idempotencyKey: r.idempotency_key,
+      isSynced: true,
+      notes: r.notes,
+      items: r.items,
+      payments: r.payments,
+      createdAt: r.created_at,
+    }));
   } finally {
     client.release();
   }
 }
+
+/**
+ * Fetch all products directly from Supabase
+ */
+export async function getProductsFromSupabase(): Promise<Product[]> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(`
+      SELECT p.*, c.name as category_name
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      WHERE p.shop_id = $1
+      ORDER BY p.name ASC
+    `, [SHOP_UUID]);
+
+    return res.rows.map((r) => ({
+      id: r.id,
+      shopId: r.shop_id,
+      categoryId: r.category_id,
+      categoryName: r.category_name || 'Crackers',
+      sku: r.sku,
+      barcode: r.barcode || '',
+      name: r.name,
+      tamilName: r.tamil_name || '',
+      brand: r.brand || 'Standard Fireworks',
+      packSize: r.pack_size || '1 Box',
+      uom: r.uom || 'BOX',
+      purchasePrice: parseFloat(r.purchase_price) || 0,
+      mrp: parseFloat(r.mrp) || 0,
+      sellingPrice: parseFloat(r.selling_price) || 0,
+      discountAllowed: r.discount_allowed !== false,
+      maxDiscountPct: parseFloat(r.max_discount_pct) || 80,
+      currentStock: parseInt(r.current_stock, 10) || 0,
+      minStockAlert: parseInt(r.min_stock_alert, 10) || 10,
+      isGreenCracker: r.is_green_cracker !== false,
+      pesoCertified: r.peso_certified !== false,
+      isActive: r.is_active !== false,
+      imageUrl: r.image_url || '/images/products/sparklers.jpg',
+    }));
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Save / Update a product directly in Supabase
+ */
+export async function saveProductToSupabase(p: Product): Promise<{ success: boolean; id?: string }> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(`
+      INSERT INTO products (
+        shop_id, sku, barcode, name, tamil_name, brand, pack_size, uom,
+        purchase_price, mrp, selling_price, discount_allowed, max_discount_pct,
+        current_stock, min_stock_alert, is_green_cracker, peso_certified,
+        is_active, image_url
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8,
+        $9, $10, $11, $12, $13,
+        $14, $15, $16, $17,
+        $18, $19
+      )
+      ON CONFLICT (shop_id, sku) DO UPDATE SET
+        name = EXCLUDED.name,
+        tamil_name = EXCLUDED.tamil_name,
+        mrp = EXCLUDED.mrp,
+        selling_price = EXCLUDED.selling_price,
+        current_stock = EXCLUDED.current_stock,
+        image_url = EXCLUDED.image_url,
+        updated_at = NOW()
+      RETURNING id
+    `, [
+      SHOP_UUID,
+      p.sku,
+      p.barcode || null,
+      p.name,
+      p.tamilName || null,
+      p.brand || 'Standard Fireworks',
+      p.packSize || '1 Box',
+      p.uom || 'BOX',
+      p.purchasePrice || 0,
+      p.mrp || 0,
+      p.sellingPrice || 0,
+      p.discountAllowed !== false,
+      p.maxDiscountPct || 80,
+      p.currentStock || 0,
+      p.minStockAlert || 10,
+      p.isGreenCracker !== false,
+      p.pesoCertified !== false,
+      p.isActive !== false,
+      p.imageUrl || null,
+    ]);
+    return { success: true, id: res.rows[0].id };
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Fetch all categories directly from Supabase
+ */
+export async function getCategoriesFromSupabase(): Promise<Category[]> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(`
+      SELECT * FROM categories WHERE shop_id = $1 ORDER BY display_order ASC
+    `, [SHOP_UUID]);
+
+    return res.rows.map((r) => ({
+      id: r.id,
+      shopId: r.shop_id,
+      name: r.name,
+      tamilName: r.tamil_name || undefined,
+      displayOrder: r.display_order,
+      isActive: r.is_active,
+    }));
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Fetch all customers directly from Supabase
+ */
+export async function getCustomersFromSupabase(): Promise<Customer[]> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(`
+      SELECT * FROM customers WHERE shop_id = $1 ORDER BY name ASC
+    `, [SHOP_UUID]);
+
+    return res.rows.map((r) => ({
+      id: r.id,
+      shopId: r.shop_id,
+      name: r.name,
+      phone: r.phone,
+      email: r.email || undefined,
+      gstin: r.gstin || undefined,
+      addressLine: r.address_line || undefined,
+      city: r.city || 'Sivakasi',
+      state: r.state || 'Tamil Nadu',
+      creditBalance: parseFloat(r.credit_balance) || 0,
+      isActive: r.is_active,
+    }));
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Save / Update customer directly in Supabase
+ */
+export async function saveCustomerToSupabase(c: Customer): Promise<{ success: boolean; id?: string }> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(`
+      INSERT INTO customers (
+        shop_id, name, phone, email, gstin, address_line, city, state, credit_balance, is_active
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING id
+    `, [
+      SHOP_UUID,
+      c.name,
+      c.phone,
+      c.email || null,
+      c.gstin || null,
+      c.addressLine || null,
+      c.city || 'Sivakasi',
+      c.state || 'Tamil Nadu',
+      c.creditBalance || 0,
+      c.isActive !== false,
+    ]);
+    return { success: true, id: res.rows[0].id };
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Fetch all external WooCommerce orders directly from Supabase
+ */
+export async function getExternalOrdersFromSupabase(): Promise<ExternalOrder[]> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(`
+      SELECT o.*,
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', i.id,
+              'externalOrderId', o.id,
+              'externalItemId', i.external_item_id,
+              'externalProductId', i.external_product_id,
+              'sku', i.sku,
+              'name', i.name,
+              'quantity', i.quantity,
+              'unitPrice', i.unit_price,
+              'subtotal', i.subtotal,
+              'total', i.total,
+              'localProductId', i.local_product_id,
+              'mappingStatus', i.mapping_status
+            )
+          ) FILTER (WHERE i.id IS NOT NULL),
+          '[]'
+        ) as items
+      FROM external_orders o
+      LEFT JOIN external_order_items i ON o.id = i.external_order_id
+      WHERE o.shop_id = $1
+      GROUP BY o.id
+      ORDER BY o.external_created_at DESC
+    `, [SHOP_UUID]);
+
+    return res.rows.map((r) => ({
+      id: r.id,
+      integrationId: r.integration_id,
+      shopId: r.shop_id,
+      externalOrderId: r.external_order_id,
+      orderNumber: r.order_number,
+      status: r.status,
+      currency: r.currency || 'INR',
+      totalAmount: parseFloat(r.total_amount) || 0,
+      subtotalAmount: parseFloat(r.subtotal_amount) || 0,
+      taxAmount: parseFloat(r.tax_amount) || 0,
+      shippingAmount: parseFloat(r.shipping_amount) || 0,
+      discountAmount: parseFloat(r.discount_amount) || 0,
+      customerName: r.customer_name,
+      customerEmail: r.customer_email,
+      customerPhone: r.customer_phone,
+      billingAddress: r.billing_address || {},
+      shippingAddress: r.shipping_address || {},
+      paymentMethod: r.payment_method,
+      paymentMethodTitle: r.payment_method_title,
+      isPaid: r.is_paid,
+      externalCreatedAt: r.external_created_at,
+      externalUpdatedAt: r.external_updated_at,
+      syncStatus: r.sync_status,
+      localInvoiceId: r.local_invoice_id,
+      notes: r.notes,
+      items: r.items,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+    }));
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Fetch Shop profile from Supabase
+ */
+export async function getShopFromSupabase(): Promise<Shop> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(`SELECT * FROM shops WHERE id = $1 LIMIT 1`, [SHOP_UUID]);
+    if (res.rows.length === 0) {
+      return {
+        id: SHOP_UUID,
+        name: 'Sree Kalieswari Traders',
+        tradeName: 'Sree Kalieswari Traders',
+        gstin: '33AABCS1429B1Z8',
+        licenseNumber: 'PESO/E/TN/2024/09842',
+        licenseValidUpto: '2028-03-31',
+        phone: '9843749750, 94431 23456',
+        email: 'sales@sreekalieswaritraders.com',
+        addressLine1: 'No. 42, Bypass Road, Near Bus Stand',
+        city: 'Sivakasi',
+        state: 'Tamil Nadu',
+        stateCode: '33',
+        pincode: '626123',
+        bankName: 'State Bank of India',
+        bankAccountNo: '30492817492',
+        bankIfsc: 'SBIN0000921',
+        bankBranch: 'Sivakasi Main Branch',
+        upiId: '9843749750',
+        invoicePrefix: 'SKT/2026-27/',
+        invoiceFooterNote: 'Subject to Sivakasi Jurisdiction. Green Crackers tested as per CSIR-NEERI & PESO guidelines.',
+        isActive: true,
+      };
+    }
+    const r = res.rows[0];
+    return {
+      id: r.id,
+      name: r.name,
+      tradeName: r.trade_name || r.name,
+      gstin: r.gstin || '',
+      licenseNumber: r.license_number || '',
+      licenseValidUpto: r.license_valid_upto || '',
+      phone: r.phone || '',
+      email: r.email || '',
+      addressLine1: r.address_line1 || '',
+      addressLine2: r.address_line2 || '',
+      city: r.city || 'Sivakasi',
+      state: r.state || 'Tamil Nadu',
+      stateCode: r.state_code || '33',
+      pincode: r.pincode || '',
+      bankName: r.bank_name || '',
+      bankAccountNo: r.bank_account_no || '',
+      bankIfsc: r.bank_ifsc || '',
+      bankBranch: r.bank_branch || '',
+      upiId: r.upi_id || '9843749750',
+      invoicePrefix: r.invoice_prefix || 'SKT/2026-27/',
+      invoiceFooterNote: r.invoice_footer_note || '',
+      isActive: r.is_active,
+    };
+  } finally {
+    client.release();
+  }
+}
+

@@ -19,9 +19,21 @@ export default function CustomersPage() {
   const [city, setCity] = useState('Madurai');
   const [creditBalance, setCreditBalance] = useState('0');
 
-  const loadData = () => {
+  const loadData = async () => {
     db.initDefaults();
     setCustomers(db.getCustomers());
+
+    try {
+      const res = await fetch('/api/customers');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCustomers(data.data);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch customers from Supabase:', err);
+    }
   };
 
   useEffect(() => {

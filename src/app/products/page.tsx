@@ -48,10 +48,31 @@ export default function ProductsPage() {
   const [minStockAlert, setMinStockAlert] = useState('20');
   const [isGreenCracker, setIsGreenCracker] = useState(true);
 
-  const loadData = () => {
+  const loadData = async () => {
     db.initDefaults();
     setProducts(db.getProducts());
     setCategories(db.getCategories());
+
+    try {
+      const [prodsRes, catsRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/categories'),
+      ]);
+      if (prodsRes.ok) {
+        const pData = await prodsRes.json();
+        if (pData.success && Array.isArray(pData.data) && pData.data.length > 0) {
+          setProducts(pData.data);
+        }
+      }
+      if (catsRes.ok) {
+        const cData = await catsRes.json();
+        if (cData.success && Array.isArray(cData.data) && cData.data.length > 0) {
+          setCategories(cData.data);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch products from Supabase:', err);
+    }
   };
 
   useEffect(() => {

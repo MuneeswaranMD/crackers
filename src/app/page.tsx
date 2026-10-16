@@ -44,12 +44,34 @@ export default function DashboardPage() {
   const [dateFilter, setDateFilter] = useState<'today' | 'this_week' | 'all'>('today');
   const [loading, setLoading] = useState(true);
 
-  const loadData = () => {
+  const loadData = async () => {
     setLoading(true);
     db.initDefaults();
     setSales(db.getSales());
     setProducts(db.getProducts());
-    setLoading(false);
+
+    try {
+      const [salesRes, prodsRes] = await Promise.all([
+        fetch('/api/sales'),
+        fetch('/api/products'),
+      ]);
+      if (salesRes.ok) {
+        const sData = await salesRes.json();
+        if (sData.success && Array.isArray(sData.data)) {
+          setSales(sData.data);
+        }
+      }
+      if (prodsRes.ok) {
+        const pData = await prodsRes.json();
+        if (pData.success && Array.isArray(pData.data) && pData.data.length > 0) {
+          setProducts(pData.data);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load Dashboard data from Supabase:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

@@ -65,7 +65,6 @@ const NAVIGATION_ITEMS = [
   { name: 'Users & Roles', href: '/users', icon: ShieldCheck, roles: ['OWNER_ADMIN'] },
   { name: 'Printer Settings', href: '/printer-settings', icon: Printer, roles: ['OWNER_ADMIN', 'CASHIER'] },
   { name: 'Shop Settings', href: '/shop-settings', icon: Settings, roles: ['OWNER_ADMIN'] },
-  { name: 'Backup & Sync', href: '/sync', icon: RefreshCw, roles: ['OWNER_ADMIN'] },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -500,28 +499,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <span className="hidden sm:inline">Recent Orders</span>
             </Link>
 
-            {/* Online/Offline Status Indicator */}
+            {/* Supabase Cloud Live Status Indicator */}
             <div
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
                 online
                   ? 'bg-emerald-50 text-[#16A34A] border border-emerald-200'
                   : 'bg-rose-50 text-[#DC2626] border border-rose-200 animate-pulse'
               }`}
-              title={online ? 'Connected to local network & Supabase cloud sync' : 'Operating in offline local storage mode'}
+              title={online ? 'Connected directly to Supabase Cloud PostgreSQL database' : 'Network offline'}
             >
               {online ? <Wifi className="w-3.5 h-3.5 text-[#16A34A]" /> : <WifiOff className="w-3.5 h-3.5 text-[#DC2626]" />}
-              <span className="hidden lg:inline">{online ? 'Cloud Live' : 'Offline'}</span>
+              <span className="hidden sm:inline">{online ? 'Supabase Live' : 'Offline'}</span>
             </div>
-
-            {/* Pending Synchronization Indicator */}
-            <Link
-              href="/sync"
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-[#1F2937] border border-slate-200 transition"
-              title="Cloud Sync Queue Status"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 text-slate-600 ${pendingSyncCount > 0 ? 'animate-spin' : ''}`} />
-              <span>{pendingSyncCount > 0 ? `${pendingSyncCount} Pending Sync` : 'Synced'}</span>
-            </Link>
 
             {/* Printer Status */}
             <Link

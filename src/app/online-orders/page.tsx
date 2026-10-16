@@ -84,15 +84,39 @@ export default function OnlineOrdersPage() {
   } | null>(null);
   const [selectedLocalProdId, setSelectedLocalProdId] = useState('');
 
-  const loadData = () => {
+  const loadData = async () => {
     db.initDefaults();
-    setOrders(db.getExternalOrders());
     setProducts(db.getProducts());
     setMappings(db.getProductMappings());
     setIntegration(db.getIntegration());
     setSyncLogs(db.getSyncLogs());
     setWebhookEvents(db.getWebhookEvents());
     setShop(db.getShop());
+
+    try {
+      const [ordersRes, prodsRes] = await Promise.all([
+        fetch('/api/orders'),
+        fetch('/api/products'),
+      ]);
+      if (ordersRes.ok) {
+        const oData = await ordersRes.json();
+        if (oData.success && Array.isArray(oData.data)) {
+          setOrders(oData.data);
+        } else {
+          setOrders(db.getExternalOrders());
+        }
+      } else {
+        setOrders(db.getExternalOrders());
+      }
+      if (prodsRes.ok) {
+        const pData = await prodsRes.json();
+        if (pData.success && Array.isArray(pData.data) && pData.data.length > 0) {
+          setProducts(pData.data);
+        }
+      }
+    } catch {
+      setOrders(db.getExternalOrders());
+    }
   };
 
   useEffect(() => {

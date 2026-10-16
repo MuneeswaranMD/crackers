@@ -86,7 +86,7 @@ export default function POSPage() {
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const loadInitialData = () => {
+  const loadInitialData = async () => {
     db.initDefaults();
     setProducts(db.getProducts());
     setCategories(db.getCategories());
@@ -94,6 +94,34 @@ export default function POSPage() {
     setHeldBills(db.getHeldBills());
     const settings = db.getSettings();
     setBillingMode(settings.defaultBillingMode);
+
+    try {
+      const [prodsRes, catsRes, custsRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/categories'),
+        fetch('/api/customers'),
+      ]);
+      if (prodsRes.ok) {
+        const pData = await prodsRes.json();
+        if (pData.success && Array.isArray(pData.data) && pData.data.length > 0) {
+          setProducts(pData.data);
+        }
+      }
+      if (catsRes.ok) {
+        const cData = await catsRes.json();
+        if (cData.success && Array.isArray(cData.data) && cData.data.length > 0) {
+          setCategories(cData.data);
+        }
+      }
+      if (custsRes.ok) {
+        const cuData = await custsRes.json();
+        if (cuData.success && Array.isArray(cuData.data) && cuData.data.length > 0) {
+          setCustomers(cuData.data);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch POS initial data from Supabase:', err);
+    }
   };
 
   useEffect(() => {

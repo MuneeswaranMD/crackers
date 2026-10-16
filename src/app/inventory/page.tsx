@@ -24,10 +24,22 @@ export default function InventoryPage() {
   const [activeTab, setActiveTab] = useState<'balances' | 'ledger'>('balances');
   const [search, setSearch] = useState('');
 
-  const loadData = () => {
+  const loadData = async () => {
     db.initDefaults();
     setProducts(db.getProducts());
     setMovements(db.getStockMovements());
+
+    try {
+      const res = await fetch('/api/products');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setProducts(data.data);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch inventory from Supabase:', err);
+    }
   };
 
   useEffect(() => {
