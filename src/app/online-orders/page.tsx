@@ -528,7 +528,7 @@ export default function OnlineOrdersPage() {
                           <td className="py-3 px-4">
                             <div className="font-bold text-slate-900">{ord.customerName}</div>
                             <div className="text-[10px] text-slate-500">
-                              {ord.shippingAddress.city}, {ord.shippingAddress.state} • {ord.customerPhone || 'No Phone'}
+                              {ord.shippingAddress?.city || ord.billingAddress?.city || 'Tamil Nadu'}, {ord.shippingAddress?.state || ord.billingAddress?.state || 'TN'} • {ord.customerPhone || 'No Phone'}
                             </div>
                           </td>
                           <td className="py-3 px-4 text-slate-700 font-semibold">
@@ -970,6 +970,7 @@ export default function OnlineOrdersPage() {
                 <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-black">
                   {selectedOrder.status.toUpperCase()}
                 </span>
+                
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
@@ -1004,11 +1005,11 @@ export default function OnlineOrdersPage() {
                     <span>Tamil Nadu Delivery Address</span>
                   </div>
                   <div className="text-slate-700 font-medium">
-                    {selectedOrder.shippingAddress.address1}
-                    {selectedOrder.shippingAddress.address2 ? `, ${selectedOrder.shippingAddress.address2}` : ''}
+                    {selectedOrder.shippingAddress?.address1 || selectedOrder.billingAddress?.address1 || 'Customer Address'}
+                    {selectedOrder.shippingAddress?.address2 ? `, ${selectedOrder.shippingAddress.address2}` : ''}
                   </div>
                   <div className="text-slate-700 font-bold">
-                    {selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state} - {selectedOrder.shippingAddress.postcode}
+                    {selectedOrder.shippingAddress?.city || selectedOrder.billingAddress?.city || 'Sivakasi'}, {selectedOrder.shippingAddress?.state || selectedOrder.billingAddress?.state || 'Tamil Nadu'} {selectedOrder.shippingAddress?.postcode ? `- ${selectedOrder.shippingAddress.postcode}` : ''}
                   </div>
                   <div className="text-slate-500 text-[10px]">
                     Payment: <strong>{selectedOrder.paymentMethodTitle || selectedOrder.paymentMethod}</strong> (

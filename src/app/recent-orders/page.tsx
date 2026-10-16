@@ -39,8 +39,6 @@ export default function RecentOrdersPage() {
 
   const loadData = async () => {
     db.initDefaults();
-    setSales(db.getSales());
-    setOnlineOrders(db.getExternalOrders());
     setShop(db.getShop());
 
     try {
@@ -52,16 +50,26 @@ export default function RecentOrdersPage() {
         const sData = await salesRes.json();
         if (sData.success && Array.isArray(sData.data)) {
           setSales(sData.data);
+        } else {
+          setSales(db.getSales());
         }
+      } else {
+        setSales(db.getSales());
       }
       if (ordersRes.ok) {
         const oData = await ordersRes.json();
         if (oData.success && Array.isArray(oData.data)) {
           setOnlineOrders(oData.data);
+        } else {
+          setOnlineOrders(db.getExternalOrders());
         }
+      } else {
+        setOnlineOrders(db.getExternalOrders());
       }
     } catch (err) {
       console.warn('Failed to fetch from Supabase:', err);
+      setSales(db.getSales());
+      setOnlineOrders(db.getExternalOrders());
     }
   };
 
@@ -92,12 +100,12 @@ export default function RecentOrdersPage() {
         : undefined,
       customerName: s.customerName || 'Retail Walk-in Customer',
       customerPhone: s.customerPhone,
-      createdAt: s.createdAt,
+      createdAt: s.createdAt || new Date().toISOString(),
       grandTotal: s.grandTotal,
       paymentMethod: s.paymentMethod,
       paymentStatus: s.paymentStatus,
       status: s.status,
-      itemsCount: s.items.reduce((acc, i) => acc + i.quantity, 0),
+      itemsCount: s.items?.reduce((acc, i) => acc + (i.quantity || 0), 0) || 0,
       rawSale: s,
     })),
     ...onlineOrders
@@ -109,12 +117,12 @@ export default function RecentOrdersPage() {
         externalOrderNumber: o.orderNumber,
         customerName: o.customerName || 'Online Store Customer',
         customerPhone: o.customerPhone,
-        createdAt: o.externalCreatedAt,
+        createdAt: o.externalCreatedAt || o.createdAt || new Date().toISOString(),
         grandTotal: o.totalAmount,
         paymentMethod: (o.paymentMethodTitle || 'ONLINE') as any,
         paymentStatus: o.isPaid ? 'PAID' : 'PENDING',
         status: o.status.toUpperCase(),
-        itemsCount: o.items?.reduce((acc, i) => acc + i.quantity, 0) || 0,
+        itemsCount: o.items?.reduce((acc, i) => acc + (i.quantity || 0), 0) || 0,
         rawOrder: o,
       })),
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

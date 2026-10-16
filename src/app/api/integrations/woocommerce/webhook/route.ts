@@ -5,7 +5,7 @@ import {
 } from '@/lib/woocommerce';
 import { db } from '@/lib/db';
 import { WebhookEvent, ExternalOrder } from '@/types';
-import { Client } from 'pg';
+import { saveExternalOrderToSupabase } from '@/lib/serverDb';
 
 export const dynamic = 'force-dynamic';
 
@@ -117,64 +117,11 @@ export async function POST(req: NextRequest) {
       eventRecord.processedAt = new Date().toISOString();
       db.saveWebhookEvent(eventRecord);
 
-      // Also persist to Supabase PostgreSQL database if available
-      if (process.env.DATABASE_URL) {
-        try {
-          const pgClient = new Client({
-            connectionString: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false },
-          });
-          await pgClient.connect();
-
-          await pgClient.query(`
-            INSERT INTO external_orders (
-              id, integration_id, shop_id, external_order_id, order_number,
-              status, currency, total_amount, subtotal_amount, tax_amount,
-              shipping_amount, discount_amount, customer_name, customer_email,
-              customer_phone, billing_address, shipping_address, payment_method,
-              payment_method_title, is_paid, external_created_at, external_updated_at,
-              sync_status, raw_data
-            ) VALUES (
-              $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
-              $15, $16, $17, $18, $19, $20, $21, $22, $23, $24
-            ) ON CONFLICT (integration_id, external_order_id) DO UPDATE SET
-              status = EXCLUDED.status,
-              total_amount = EXCLUDED.total_amount,
-              tax_amount = EXCLUDED.tax_amount,
-              external_updated_at = EXCLUDED.external_updated_at,
-              raw_data = EXCLUDED.raw_data,
-              updated_at = NOW();
-          `, [
-            '11111111-2222-3333-4444-' + String(order.externalOrderId).padStart(12, '0').slice(-12),
-            integration.id,
-            '11111111-1111-1111-1111-111111111111',
-            order.externalOrderId,
-            order.orderNumber,
-            order.status,
-            order.currency,
-            order.totalAmount,
-            order.subtotalAmount,
-            order.taxAmount,
-            order.shippingAmount,
-            order.discountAmount,
-            order.customerName,
-            order.customerEmail,
-            order.customerPhone,
-            JSON.stringify(order.billingAddress),
-            JSON.stringify(order.shippingAddress),
-            order.paymentMethod,
-            order.paymentMethodTitle,
-            order.isPaid,
-            order.externalCreatedAt,
-            order.externalUpdatedAt,
-            order.syncStatus,
-            JSON.stringify(order.rawData || {}),
-          ]);
-
-          await pgClient.end();
-        } catch (dbErr) {
-          console.warn('[WooCommerce Webhook] Supabase sync warning (persisted locally):', dbErr);
-        }
+      // Also persist to Supabase PostgreSQL database
+      try {
+        await saveExternalOrderToSupabase(order);
+      } catch (dbErr) {
+        console.warn('[WooCommerce Webhook] Supabase sync warning:', dbErr);
       }
 
       return NextResponse.json({

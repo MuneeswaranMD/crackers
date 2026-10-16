@@ -74,7 +74,7 @@ export async function saveSaleToSupabase(sale: Sale): Promise<{ success: boolean
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
         $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
-        $21, $22, $23, $24, $25
+        $21, $22, $23, $24
       )
       ON CONFLICT (shop_id, invoice_number) DO UPDATE SET
         paid_amount = EXCLUDED.paid_amount,
@@ -129,11 +129,11 @@ export async function saveSaleToSupabase(sale: Sale): Promise<{ success: boolean
               hsn_code, pack_size, uom, quantity, mrp,
               unit_price, discount_percentage, discount_amount, taxable_value,
               cgst_rate, cgst_amount, sgst_rate, sgst_amount, igst_rate,
-              igst_amount, total_tax, total_amount
+              igst_amount, total_amount
             ) VALUES (
               $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
               $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
-              $21, $22
+              $21
             ) ON CONFLICT DO NOTHING`,
             [
               dbSaleId,
@@ -156,7 +156,6 @@ export async function saveSaleToSupabase(sale: Sale): Promise<{ success: boolean
               item.sgstAmount,
               item.igstRate,
               item.igstAmount,
-              item.totalTax,
               item.totalAmount,
             ]
           );
@@ -194,10 +193,11 @@ export async function saveSaleToSupabase(sale: Sale): Promise<{ success: boolean
       for (const pay of sale.payments) {
         await client.query(
           `INSERT INTO payments (
-            sale_id, payment_method, amount, received_amount, change_given,
+            shop_id, sale_id, payment_method, amount, received_amount, change_given,
             reference_number, created_at
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
           [
+            SHOP_UUID,
             dbSaleId,
             pay.paymentMethod,
             pay.amount,
@@ -629,14 +629,22 @@ export async function getExternalOrdersFromSupabase(): Promise<ExternalOrder[]> 
               'unitPrice', i.unit_price,
               'subtotal', i.subtotal,
               'total', i.total,
-              'localProductId', i.local_product_id,
-              'mappingStatus', i.mapping_status
+              'localProductId', COALESCE(i.local_product_id, p.id),
+              'mappingStatus', CASE WHEN (i.local_product_id IS NOT NULL OR p.id IS NOT NULL) THEN 'MATCHED' ELSE 'PENDING' END,
+              'localProduct', CASE WHEN p.id IS NOT NULL THEN json_build_object(
+                'id', p.id,
+                'name', p.name,
+                'sku', p.sku,
+                'sellingPrice', p.selling_price,
+                'imageUrl', p.image_url
+              ) ELSE NULL END
             )
           ) FILTER (WHERE i.id IS NOT NULL),
           '[]'
         ) as items
       FROM external_orders o
       LEFT JOIN external_order_items i ON o.id = i.external_order_id
+      LEFT JOIN products p ON (i.local_product_id = p.id OR (i.sku IS NOT NULL AND i.sku <> '' AND i.sku = p.sku))
       WHERE o.shop_id = $1
       GROUP BY o.id
       ORDER BY o.external_created_at DESC
