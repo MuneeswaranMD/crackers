@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased bg-[#111318] font-sans selection:bg-amber-400 selection:text-slate-950">
-        <Suspense fallback={<Preloader message="Loading Averqon POS..." />}>
+        <Suspense fallback={<Preloader message="Loading POS..." />}>
           <AuthProvider>
             <AppShell>{children}</AppShell>
           </AuthProvider>

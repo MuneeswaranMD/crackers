@@ -181,7 +181,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   // Loading state while verifying authentication
   if (loading) {
-    return <Preloader message="Authenticating staff terminal session..." />;
+    return <Preloader message="Authenticating..." />;
   }
 
   // If unauthenticated on protected route: render blank background while redirecting
