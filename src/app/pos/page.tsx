@@ -229,22 +229,26 @@ export default function POSPage() {
     }
   };
 
-  // Barcode / Quick SKU enter key handler
+  // Barcode / Serial No / Quick SKU enter key handler
   const handleBarcodeSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
       e.preventDefault();
       const code = searchQuery.trim().toLowerCase();
+      const numCode = code.replace(/^#|^af-0*|^s\.?no:?\s*/i, '');
       const matched = products.find(
         (p) =>
           p.barcode.toLowerCase() === code ||
+          p.barcode === numCode ||
           p.sku.toLowerCase() === code ||
-          p.name.toLowerCase() === code
+          p.sku.toLowerCase() === `af-${numCode.padStart(3, '0')}` ||
+          p.name.toLowerCase() === code ||
+          p.name.toLowerCase().startsWith(code)
       );
       if (matched) {
         addToCart(matched);
         setSearchQuery('');
       } else {
-        setErrorBanner(`No fireworks found with Barcode/SKU: "${searchQuery}"`);
+        setErrorBanner(`No fireworks found with Serial No / SKU / Barcode: "${searchQuery}"`);
       }
     }
   };
@@ -457,6 +461,9 @@ export default function POSPage() {
 
   // Filtered Products List
   const filteredProducts = useMemo(() => {
+    const trimmed = searchQuery.trim().toLowerCase();
+    const numQuery = trimmed.replace(/^#|^af-0*|^s\.?no:?\s*/i, '');
+
     return products.filter((p) => {
       if (filterLowStockOnly && p.currentStock > p.minStockAlert) {
         return false;
@@ -466,12 +473,16 @@ export default function POSPage() {
       }
       const matchesCategory = selectedCategory === 'ALL' || p.categoryId === selectedCategory;
       const matchesSearch =
-        !searchQuery ||
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (p.tamilName && p.tamilName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        p.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (p.barcode && p.barcode.includes(searchQuery)) ||
-        p.brand.toLowerCase().includes(searchQuery.toLowerCase());
+        !trimmed ||
+        p.barcode === numQuery ||
+        p.barcode.toLowerCase().includes(trimmed) ||
+        p.sku.toLowerCase() === trimmed ||
+        p.sku.toLowerCase() === `af-${numQuery.padStart(3, '0')}` ||
+        p.sku.toLowerCase().includes(trimmed) ||
+        p.name.toLowerCase().includes(trimmed) ||
+        (p.tamilName && p.tamilName.toLowerCase().includes(trimmed)) ||
+        p.brand.toLowerCase().includes(trimmed);
+
       return matchesCategory && matchesSearch;
     });
   }, [products, selectedCategory, searchQuery, filterLowStockOnly, filterPopularOnly]);
@@ -690,8 +701,13 @@ export default function POSPage() {
 
                 {/* Product Name, Tamil Title & SKU */}
                 <div className="my-1">
-                  <div className="font-bold text-[#1F2937] text-xs leading-snug group-hover:text-amber-700 line-clamp-2">
-                    {prod.name}
+                  <div className="flex items-start justify-between gap-1">
+                    <div className="font-bold text-[#1F2937] text-xs leading-snug group-hover:text-amber-700 line-clamp-2">
+                      {prod.name}
+                    </div>
+                    <span className="font-mono text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+                      #{prod.barcode || prod.sku.replace('AF-', '')}
+                    </span>
                   </div>
                   {prod.tamilName && (
                     <div className="text-[11px] text-[#6B7280] font-medium line-clamp-1 mt-0.5">
@@ -708,12 +724,20 @@ export default function POSPage() {
                 <div className="pt-2 border-t border-slate-100 mt-2 flex items-end justify-between">
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-[#6B7280] line-through">
-                        ₹{prod.mrp.toFixed(0)}
-                      </span>
-                      {discountPct > 0 && (
-                        <span className="text-[9px] font-extrabold px-1 rounded bg-amber-100 text-amber-800">
-                          -{discountPct}%
+                      {prod.discountAllowed && prod.mrp > prod.sellingPrice ? (
+                        <>
+                          <span className="text-[10px] text-[#6B7280] line-through">
+                            ₹{prod.mrp.toFixed(0)}
+                          </span>
+                          {discountPct > 0 && (
+                            <span className="text-[9px] font-extrabold px-1 rounded bg-amber-100 text-amber-800">
+                              Save {discountPct}%
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
+                          NET RATE
                         </span>
                       )}
                     </div>

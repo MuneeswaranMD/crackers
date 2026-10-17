@@ -7,8 +7,8 @@ import AppShell from '@/components/layout/AppShell';
 import Preloader from '@/components/ui/Preloader';
 
 export const metadata: Metadata = {
-  title: 'Crackers POS - Sree Kalieswari Traders (Sivakasi)',
-  description: 'Sree Kalieswari Traders - Sivakasi Crackers & Fireworks Retail Billing POS Terminal powered by Averqon',
+  title: 'AGANA FIREWORKS - Sri Kalieswari Traders (Thayilpatti, Sivakasi)',
+  description: 'Agana Fireworks (Sri Kalieswari Traders) - Sivakasi Crackers & Fireworks Retail Billing POS Terminal (Catalog 2026)',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },

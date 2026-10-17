@@ -436,8 +436,13 @@ export async function getProductsFromSupabase(): Promise<Product[]> {
       SELECT p.*, c.name as category_name
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
-      WHERE p.shop_id = $1
-      ORDER BY p.name ASC
+      WHERE p.shop_id = $1 AND p.is_active = true
+      ORDER BY 
+        CASE 
+          WHEN p.barcode ~ '^[0-9]+$' THEN p.barcode::INT 
+          ELSE 9999 
+        END ASC, 
+        p.name ASC
     `, [SHOP_UUID]);
 
     return res.rows.map((r) => ({
@@ -696,25 +701,27 @@ export async function getShopFromSupabase(): Promise<Shop> {
     if (res.rows.length === 0) {
       return {
         id: SHOP_UUID,
-        name: 'Sree Kalieswari Traders',
-        tradeName: 'Sree Kalieswari Traders',
+        name: 'AGANA FIREWORKS',
+        tradeName: 'SRI KALIESWARI TRADERS',
         gstin: '33AABCS1429B1Z8',
-        licenseNumber: 'PESO/E/TN/2024/09842',
-        licenseValidUpto: '2028-03-31',
-        phone: '9843749750, 94431 23456',
-        email: 'sales@sreekalieswaritraders.com',
-        addressLine1: 'No. 42, Bypass Road, Near Bus Stand',
+        licenseNumber: 'PESO/E/TN/2026/09842',
+        licenseValidUpto: '2029-03-31',
+        phone: '98437 49750, 63827 71327',
+        email: 'sales@aganafireworks.com',
+        addressLine1: 'Thayilpatti (Via)',
+        addressLine2: 'Proprietors: P. Arjun & P. Deepak',
         city: 'Sivakasi',
         state: 'Tamil Nadu',
         stateCode: '33',
-        pincode: '626123',
+        pincode: '626128',
         bankName: 'State Bank of India',
         bankAccountNo: '30492817492',
         bankIfsc: 'SBIN0000921',
         bankBranch: 'Sivakasi Main Branch',
         upiId: '9843749750',
-        invoicePrefix: 'SKT/2026-27/',
-        invoiceFooterNote: 'Subject to Sivakasi Jurisdiction. Green Crackers tested as per CSIR-NEERI & PESO guidelines.',
+        invoicePrefix: 'AF/2026-27/',
+        invoiceFooterNote:
+          '1. Green Crackers certified by CSIR-NEERI & PESO regulations.\n2. Minimum Order Value: Rs.3000/- | Packing charge @ 3% extra.\n3. F.O.R Lorry freight extra, paid by customer at transport office.\n4. Subject to Sivakasi Jurisdiction.',
         isActive: true,
       };
     }

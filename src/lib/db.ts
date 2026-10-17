@@ -49,32 +49,10 @@ const STORAGE_KEYS = {
   SYNC_LOGS: 'crackers_pos_sync_logs',
 };
 
-// Initial Seed Data for Sivakasi / Tamil Nadu Crackers Retail Shop
-export const INITIAL_SHOP: Shop = {
-  id: '11111111-1111-1111-1111-111111111111',
-  name: 'Sree Kalieswari Traders',
-  tradeName: 'Sree Kalieswari Traders',
-  gstin: '33AABCS1429B1Z8', // 33 is Tamil Nadu
-  licenseNumber: 'PESO/E/TN/2024/09842',
-  licenseValidUpto: '2028-03-31',
-  phone: '9843749750, 94431 23456',
-  email: 'sales@sreekalieswaritraders.com',
-  addressLine1: 'No. 42, Bypass Road, Near Bus Stand',
-  addressLine2: 'Opp. Standard Fire Works Godown',
-  city: 'Sivakasi',
-  state: 'Tamil Nadu',
-  stateCode: '33',
-  pincode: '626123',
-  bankName: 'State Bank of India',
-  bankAccountNo: '30492817492',
-  bankIfsc: 'SBIN0000921',
-  bankBranch: 'Sivakasi Main Branch',
-  upiId: '9843749750',
-  invoicePrefix: 'SKT/2026-27/',
-  invoiceFooterNote:
-    '1. Green Crackers manufactured under PESO & CSIR-NEERI regulations.\n2. Goods once sold will not be returned unless damaged prior to sale.\n3. Keep in dry place away from flame and children without adult supervision.\n4. Subject to Sivakasi Jurisdiction.',
-  isActive: true,
-};
+import { AGANA_SHOP, AGANA_CATEGORIES, AGANA_PRODUCTS } from './aganaCatalog';
+
+// Initial Seed Data for Agana Fireworks / Sivakasi
+export const INITIAL_SHOP: Shop = AGANA_SHOP;
 
 export const INITIAL_SETTINGS: ShopSetting = {
   id: 'set-01',
@@ -114,17 +92,7 @@ export const INITIAL_INTEGRATION: Integration = {
 
 export const INITIAL_EXTERNAL_ORDERS: ExternalOrder[] = [];
 
-export const INITIAL_CATEGORIES: Category[] = [
-  { id: 'cat-1', shopId: 'shop-sivakasi-01', name: 'Sparklers (கம்ப மத்தாப்பு)', displayOrder: 1, isActive: true },
-  { id: 'cat-2', shopId: 'shop-sivakasi-01', name: 'Flower Pots (புஸ்வாணம்)', displayOrder: 2, isActive: true },
-  { id: 'cat-3', shopId: 'shop-sivakasi-01', name: 'Ground Chakkars (தரை சக்கரம்)', displayOrder: 3, isActive: true },
-  { id: 'cat-4', shopId: 'shop-sivakasi-01', name: 'Sound Crackers & Bombs (வெடி & பாம்)', displayOrder: 4, isActive: true },
-  { id: 'cat-5', shopId: 'shop-sivakasi-01', name: 'Rockets (வான வெடி / ராக்கெட்)', displayOrder: 5, isActive: true },
-  { id: 'cat-6', shopId: 'shop-sivakasi-01', name: 'Aerial Skyshots (மல்டி ஷாட்)', displayOrder: 6, isActive: true },
-  { id: 'cat-7', shopId: 'shop-sivakasi-01', name: 'Repeating Garlands (சரவெடி / வாலா)', displayOrder: 7, isActive: true },
-  { id: 'cat-8', shopId: 'shop-sivakasi-01', name: 'Gift Boxes & Assorted Packs', displayOrder: 8, isActive: true },
-  { id: 'cat-9', shopId: 'shop-sivakasi-01', name: 'Kids Novelties & Roll Caps', displayOrder: 9, isActive: true },
-];
+export const INITIAL_CATEGORIES: Category[] = AGANA_CATEGORIES;
 
 export const CATEGORY_IMAGE_MAP: Record<string, string> = {
   'cat-1': '/images/products/sparklers.jpg',
@@ -153,12 +121,12 @@ export function getProductImageUrl(prod: Partial<Product>): string {
   return '/images/products/sparklers.jpg';
 }
 
-export const INITIAL_PRODUCTS: Product[] = [];
+export const INITIAL_PRODUCTS: Product[] = AGANA_PRODUCTS;
 
 export const INITIAL_CUSTOMERS: Customer[] = [
   {
     id: 'cust-1',
-    shopId: 'shop-sivakasi-01',
+    shopId: '11111111-1111-1111-1111-111111111111',
     name: 'R. Senthil Nathan',
     phone: '9842155667',
     email: 'senthil.nathan@gmail.com',
@@ -170,7 +138,7 @@ export const INITIAL_CUSTOMERS: Customer[] = [
   },
   {
     id: 'cust-2',
-    shopId: 'shop-sivakasi-01',
+    shopId: '11111111-1111-1111-1111-111111111111',
     name: 'M. Anand Kumar (Wholesale)',
     phone: '9789422331',
     email: 'anand.crackers@yahoo.com',
@@ -186,7 +154,7 @@ export const INITIAL_CUSTOMERS: Customer[] = [
 export const INITIAL_SUPPLIERS: Supplier[] = [
   {
     id: 'sup-1',
-    shopId: 'shop-sivakasi-01',
+    shopId: '11111111-1111-1111-1111-111111111111',
     companyName: 'Standard Fireworks Pvt Ltd',
     contactPerson: 'K. Rajasekaran',
     phone: '04562-220144',
@@ -199,7 +167,7 @@ export const INITIAL_SUPPLIERS: Supplier[] = [
   },
   {
     id: 'sup-2',
-    shopId: 'shop-sivakasi-01',
+    shopId: '11111111-1111-1111-1111-111111111111',
     companyName: 'Coronation Fireworks Co.',
     contactPerson: 'S. Ramanathan',
     phone: '04562-224455',
@@ -260,42 +228,19 @@ export const db = {
   // Initialization
   initDefaults: () => {
     const existingShop = storage.get<Shop | null>(STORAGE_KEYS.SHOP, null);
-    if (!existingShop) {
+    if (!existingShop || existingShop.name !== 'AGANA FIREWORKS') {
       storage.set(STORAGE_KEYS.SHOP, INITIAL_SHOP);
-    } else if (
-      existingShop.name?.includes('Sri Sree kalieswari traders') ||
-      existingShop.name?.includes('Sree kalieswari traders')
-    ) {
-      const migratedShop: Shop = {
-        ...existingShop,
-        name: 'Sree Kalieswari Traders',
-        tradeName: 'Sree Kalieswari Traders',
-        email: existingShop.email?.includes('Sree kalieswari traders')
-          ? 'sales@sreekalieswaritraders.com'
-          : existingShop.email,
-        upiId: existingShop.upiId?.includes('Sree kalieswari traders')
-          ? 'kalieswaritraders@sbi'
-          : existingShop.upiId,
-        invoicePrefix: existingShop.invoicePrefix?.startsWith('SMF')
-          ? 'SKT/2026-27/'
-          : existingShop.invoicePrefix,
-      };
-      storage.set(STORAGE_KEYS.SHOP, migratedShop);
     }
     if (!storage.get<ShopSetting | null>(STORAGE_KEYS.SETTINGS, null)) {
       storage.set(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
     }
-    if (!storage.get<Category[] | null>(STORAGE_KEYS.CATEGORIES, null)) {
+    const existingCats = storage.get<Category[] | null>(STORAGE_KEYS.CATEGORIES, null);
+    if (!existingCats || existingCats.length < 20) {
       storage.set(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
     }
     const existingProds = storage.get<Product[] | null>(STORAGE_KEYS.PRODUCTS, null);
-    if (!existingProds) {
-      storage.set(STORAGE_KEYS.PRODUCTS, []);
-    } else {
-      const cleaned = existingProds.filter((p) => !p.id.startsWith('prod-'));
-      if (cleaned.length !== existingProds.length) {
-        storage.set(STORAGE_KEYS.PRODUCTS, cleaned);
-      }
+    if (!existingProds || existingProds.length < 50 || existingProds.some((p) => !p.sku.startsWith('AF-'))) {
+      storage.set(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
     }
     if (!storage.get<Customer[] | null>(STORAGE_KEYS.CUSTOMERS, null)) {
       storage.set(STORAGE_KEYS.CUSTOMERS, INITIAL_CUSTOMERS);

@@ -176,6 +176,119 @@ export default function ProductsPage() {
     }
   };
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleImportCSV = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (!text) return;
+
+      const parseCSVLine = (line: string) => {
+        const result: string[] = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const c = line[i];
+          if (c === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+              cur += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (c === ',' && !inQuotes) {
+            result.push(cur.trim());
+            cur = '';
+          } else {
+            cur += c;
+          }
+        }
+        result.push(cur.trim());
+        return result;
+      };
+
+      const lines = text.split('\n').filter((l) => l.trim().length > 0);
+      if (lines.length < 2) return;
+
+      const header = parseCSVLine(lines[0]).map((h) => h.toLowerCase());
+      let count = 0;
+
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVLine(lines[i]);
+        if (cols.length < 2) continue;
+
+        let sku = '';
+        let name = '';
+        let mrp = 0;
+        let sellingPrice = 0;
+        let packSize = '1 Box';
+        let categoryName = 'Crackers';
+
+        const skuIdx = header.findIndex((h) => h.includes('sku') || h.includes('serial'));
+        const nameIdx = header.findIndex((h) => h.includes('name'));
+        const mrpIdx = header.findIndex((h) => h.includes('mrp') || h.includes('market'));
+        const priceIdx = header.findIndex((h) => h.includes('selling') || h.includes('net') || h.includes('price'));
+        const catIdx = header.findIndex((h) => h.includes('cat'));
+        const packIdx = header.findIndex((h) => h.includes('pack') || h.includes('unit'));
+
+        if (nameIdx >= 0 && cols[nameIdx]) {
+          name = cols[nameIdx].replace(/^"|"$/g, '');
+        }
+        if (skuIdx >= 0 && cols[skuIdx]) {
+          sku = cols[skuIdx].replace(/^"|"$/g, '');
+          if (!sku.startsWith('AF-') && /^\d+$/.test(sku)) {
+            sku = `AF-${sku.padStart(3, '0')}`;
+          }
+        } else {
+          sku = `AF-${String(Date.now() + i).slice(-4)}`;
+        }
+
+        if (mrpIdx >= 0) mrp = parseFloat(cols[mrpIdx]) || 0;
+        if (priceIdx >= 0) sellingPrice = parseFloat(cols[priceIdx]) || mrp;
+        if (catIdx >= 0 && cols[catIdx]) categoryName = cols[catIdx].replace(/^"|"$/g, '');
+        if (packIdx >= 0 && cols[packIdx]) packSize = cols[packIdx].replace(/^"|"$/g, '');
+
+        if (!name) continue;
+
+        const existing = products.find((p) => p.sku === sku || p.name.toLowerCase() === name.toLowerCase());
+        const prodObj: Product = {
+          id: existing ? existing.id : `prod-imp-${Date.now()}-${i}`,
+          shopId: '11111111-1111-1111-1111-111111111111',
+          categoryId: existing?.categoryId || '',
+          categoryName,
+          sku,
+          barcode: sku.replace(/\D/g, '') || '',
+          name,
+          brand: existing?.brand || 'Agana Fireworks',
+          packSize,
+          uom: packSize.toLowerCase().includes('pkt') ? 'PKT' : 'BOX',
+          purchasePrice: Math.round(sellingPrice * 0.7),
+          mrp,
+          sellingPrice,
+          discountAllowed: mrp > sellingPrice,
+          maxDiscountPct: mrp > sellingPrice ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0,
+          currentStock: existing?.currentStock || 100,
+          minStockAlert: 10,
+          isGreenCracker: true,
+          pesoCertified: true,
+          isActive: true,
+        };
+
+        db.saveProduct(prodObj);
+        count++;
+      }
+
+      loadData();
+      alert(`Successfully imported / updated ${count} products from CSV!`);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+    reader.readAsText(file);
+  };
+
   const exportCSV = () => {
     const headers = [
       'SKU',
@@ -248,6 +361,21 @@ export default function ProductsPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImportCSV}
+            accept=".csv"
+            className="hidden"
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition"
+            title="Import or update prices from CSV"
+          >
+            <Upload className="w-4 h-4 text-slate-600" />
+            <span>Import CSV</span>
+          </button>
           <button
             onClick={exportCSV}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition"

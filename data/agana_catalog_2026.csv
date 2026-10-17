@@ -1,0 +1,207 @@
+serial_number_as_printed,product_name_as_extracted,category,unit,market_price_inr,discount_text,net_selling_price_inr,review_flag,source_line
+1,"3 1/2"" Lakshmi",ONE SOUND CRACKERS,1_PKT,80.0,80% DISCOUNT,16,," 1    3 1/2"" Lakshmi                 3 1/2"" ல          மி                      1 PKT    80    80% DISCOUNT   16"
+2,"2 3/4"" Kuruvi",ONE SOUND CRACKERS,1_PKT,50.0,80% DISCOUNT,10,," 2    2 3/4"" Kuruvi                  2 3/4""        வ                           1 PKT    50    80% DISCOUNT   10"
+3,"4"" Lakshmi",ONE SOUND CRACKERS,1_PKT,120.0,80% DISCOUNT,24,," 3    4"" Lakshmi                     4"" ல         மி                           1 PKT   120    80% DISCOUNT   24"
+4,"4"" Deluxe Lakshmi",ONE SOUND CRACKERS,1_PKT,190.0,80% DISCOUNT,38,," 4    4"" Deluxe Lakshmi              4""     ல          ல         மி            1 PKT   190    80% DISCOUNT   38"
+5,"4"" Gold Lakshmi",ONE SOUND CRACKERS,1_PKT,200.0,80% DISCOUNT,40,," 5    4"" Gold Lakshmi                4"" ேகா             ல        மி            1 PKT   200    80% DISCOUNT   40"
+6,"5"" Jallikattu",ONE SOUND CRACKERS,1_PKT,300.0,80% DISCOUNT,70,Net rate does not exactly equal 20% of market rate; preserved as printed.," 6    5"" Jallikattu                  5"" ஜ       லி க                           1 PKT   300    80% DISCOUNT   70"
+7,"6"" Special Lion king",ONE SOUND CRACKERS,1_PKT,450.0,80% DISCOUNT,90,," 7    6"" Special Lion king           6""       ெபஷ           லய        கி       1 PKT   450    80% DISCOUNT   90"
+8,28 Chorsa,CHORSA & GIANT CRACKERS,1_PKT,90.0,80% DISCOUNT,18,, 8    28 Chorsa                      28 ேசா சா                                 1 PKT    90    80% DISCOUNT   18
+9,28 Giant,CHORSA & GIANT CRACKERS,1_PKT,150.0,80% DISCOUNT,30,, 9    28 Giant                       28 ெஜய                                    1 PKT   150    80% DISCOUNT   30
+10,56 Giant,CHORSA & GIANT CRACKERS,1_PKT,300.0,80% DISCOUNT,60,,10    56 Giant                       56 ெஜய                                    1 PKT   300    80% DISCOUNT   60
+11,24 Deluxe,DELUXE CRACKERS,1_PKT,250.0,80% DISCOUNT,50,, 11   24 Deluxe                      24     ல                                  1 PKT   250    80% DISCOUNT    50
+12,50 Deluxe,DELUXE CRACKERS,1_PKT,500.0,80% DISCOUNT,100,,12    50 Deluxe                      50     ல                                  1 PKT   500    80% DISCOUNT   100
+13,100 Deluxe,DELUXE CRACKERS,1_PKT,1250.0,80% DISCOUNT,250,,13    100 Deluxe                     100      ல                                1 PKT 1250     80% DISCOUNT   250
+14,Red Bijili,BIJILI CRACKERS,1_PKT,175.0,80% DISCOUNT,35,,14    Red Bijili                     சிவ          ப ஜிலி                       1 PKT   175    80% DISCOUNT   35
+15,Stripped Bijili,BIJILI CRACKERS,1_PKT,200.0,80% DISCOUNT,40,,15    Stripped Bijili                ேகா        ப ஜிலி                         1 PKT   200    80% DISCOUNT   40
+16,Special Bijili,BIJILI CRACKERS,1_PKT,250.0,80% DISCOUNT,50,,16    Special Bijili                       ெபச         ப ஜிலி                  1 PKT   250    80% DISCOUNT   50
+17,1K Magic,CLASSIC GARLANDS CRACKERS,1_BOX,1000.0,80% DISCOUNT,200,,17    1K Magic                       1K ேமஜி                                   1 BOX   1000 80% DISCOUNT      200
+18,2K Magic,CLASSIC GARLANDS CRACKERS,1_BOX,2000.0,80% DISCOUNT,400,,18    2K Magic                       2K ேமஜி                                   1 BOX   2000 80% DISCOUNT      400
+19,5K Magic,CLASSIC GARLANDS CRACKERS,1_BOX,5000.0,80% DISCOUNT,1000,,19    5K Magic                       5K ேமஜி                                   1 BOX   5000 80% DISCOUNT     1000
+20,10K Magic,CLASSIC GARLANDS CRACKERS,1_BOX,10000.0,80% DISCOUNT,2000,,20    10K Magic                      10K ேமஜி                                  1 BOX 10000 80% DISCOUNT      2000
+21,0.1K Magic,PREMIUM GARLANDS CRACKERS,1_BOX,250.0,80% DISCOUNT,50,, 21   0.1K Magic                     0.1K ேமஜி                                 1 BOX    250 80% DISCOUNT      50
+22,0.2K Magic,PREMIUM GARLANDS CRACKERS,1_BOX,500.0,80% DISCOUNT,100,, 22   0.2K Magic                     0.2K ேமஜி                                 1 BOX    500 80% DISCOUNT     100
+23,0.3K Magic,PREMIUM GARLANDS CRACKERS,1_BOX,600.0,80% DISCOUNT,120,, 23   0.3K Magic                     0.3K ேமஜி                                 1 BOX    600 80% DISCOUNT     120
+24,0.6K Magic,PREMIUM GARLANDS CRACKERS,1_BOX,900.0,80% DISCOUNT,180,, 24   0.6K Magic                     0.6K ேமஜி                                 1 BOX    900 80% DISCOUNT     180
+25,1K Magic,PREMIUM GARLANDS CRACKERS,1_BOX,1600.0,80% DISCOUNT,320,, 25   1K Magic                       1K ேமஜி                                   1 BOX   1600 80% DISCOUNT     320
+26,2K Magic,PREMIUM GARLANDS CRACKERS,1_BOX,3200.0,80% DISCOUNT,640,, 26   2K Magic                       2K ேமஜி                                   1 BOX   3200 80% DISCOUNT     640
+27,5K Magic,PREMIUM GARLANDS CRACKERS,1_BOX,8000.0,80% DISCOUNT,1600,, 27   5K Magic                       5K ேமஜி                                   1 BOX   8000 80% DISCOUNT     1600
+28,10K Magic,PREMIUM GARLANDS CRACKERS,1_BOX,16000.0,80% DISCOUNT,3200,, 28   10K Magic                      10K ேமஜி                                  1 BOX 16000 80% DISCOUNT      3200
+29,Hydro Bomb,MEGA SOUND BOMB,1_BOX,500.0,80% DISCOUNT,100,, 29   Hydro Bomb                     ைஹ ேரா              பா                    1 BOX   500    80% DISCOUNT   100
+30,King of King (Thunder Bomb),MEGA SOUND BOMB,1_BOX,600.0,80% DISCOUNT,120,, 30   King of King (Thunder Bomb)    கி       ஆ    கி       (த    ட   பா   )   1 BOX   600    80% DISCOUNT   120
+31,Classic Bomb (Gemini Shikar,MEGA SOUND BOMB,1_BOX,700.0,80% DISCOUNT,140,, 31   Classic Bomb (Gemini Shikari) கிளாசி         பா       (ெஜமின சிகா )      1 BOX   700    80% DISCOUNT   140
+32,Agni Bomb (Dinosaur),MEGA SOUND BOMB,1_BOX,1200.0,80% DISCOUNT,240,, 32   Agni Bomb (Dinosaur)           அ ன பா              (ைடேனாச )             1 BOX 1200     80% DISCOUNT   240
+33,Digital Bomb Mega Dts,MEGA SOUND BOMB,1_BOX,1400.0,80% DISCOUNT,280,, 33   Digital Bomb Mega Dts               ஜி ட      பா        ெமகா TDS 1 BOX           1400   80% DISCOUNT   280
+34,1/4 kg Paper Bomb,PAPER BOMB,1_BOX,250.0,80% DISCOUNT,50,, 34   1/4 kg Paper Bomb              1/4 கிேலா ேப ப               பா           1 BOX   250    80% DISCOUNT    50
+35,1/2 Kg Paper Bomb,PAPER BOMB,1_BOX,500.0,80% DISCOUNT,100,, 35   1/2 Kg Paper Bomb              1/2 கிேலா ேப ப               பா           1 BOX   500    80% DISCOUNT   100
+36,1kg Paper Bomb,PAPER BOMB,1_BOX,1000.0,80% DISCOUNT,200,, 36   1kg Paper Bomb                 1 கிேலா ேப ப                பா            1 BOX 1000     80% DISCOUNT   200
+37,Red Dragon (10 Pcs),PAPER BOMB,1_BOX,2000.0,80% DISCOUNT,400,, 37   Red Dragon (10 Pcs)            ெர         ராக         (10 Pcs)           1 BOX 2000     80% DISCOUNT   400
+38,Baby Rocket,ROCKET,1_BOX,225.0,80% DISCOUNT,45,,38    Baby Rocket                       ேபப ரா ெக                                             1 BOX   225    80% DISCOUNT   45
+39,Rocket Bomb,ROCKET,1_BOX,325.0,80% DISCOUNT,65,,39    Rocket Bomb                       ரா ெக          பா                                     1 BOX   325    80% DISCOUNT   65
+40,Lunik Rocket,ROCKET,1_BOX,650.0,80% DISCOUNT,130,,40    Lunik Rocket                            ன     ரா ெக                                     1 BOX   650    80% DISCOUNT   130
+41,2 Sound Rocket,ROCKET,1_BOX,700.0,80% DISCOUNT,140,,41    2 Sound Rocket                    2 ச                ரா ெக                              1 BOX   700    80% DISCOUNT   140
+42,Whistling Rocket,ROCKET,1_BOX,1200.0,80% DISCOUNT,240,,42    Whistling Rocket                  வ சிலி         ரா ெக                                  1 BOX 1200     80% DISCOUNT   240
+43,"1 1/2"" Twinkling Star",TWINKLING STAR,1_BOX,150.0,80% DISCOUNT,30,," 43   1 1/2"" Twinkling Star             1 1/2"" சா ைட                                          1 BOX   150    80% DISCOUNT   30"
+44,"4"" Twinkling Star",TWINKLING STAR,1_BOX,400.0,80% DISCOUNT,80,," 44   4"" Twinkling Star                 4"" சா ைட                                              1 BOX   400    80% DISCOUNT   80"
+45,Flower Pot Small,FLOWER POT NIGHT SERIES,1_BOX,350.0,80% DISCOUNT,70,, 45   Flower Pot Small                       ச         மா                                     1 BOX    350   80% DISCOUNT    70
+46,Flower Pot Big,FLOWER POT NIGHT SERIES,1_BOX,450.0,80% DISCOUNT,90,, 46   Flower Pot Big                         ச     ப                                          1 BOX    450   80% DISCOUNT    90
+47,Flower Pot Special,FLOWER POT NIGHT SERIES,1_BOX,550.0,80% DISCOUNT,110,, 47   Flower Pot Special                     ச         ெபஷ                                    1 BOX    550   80% DISCOUNT   110
+48,Flower Pot Super Deluxe (2,FLOWER POT NIGHT SERIES,1_BOX,800.0,80% DISCOUNT,160,, 48   Flower Pot Super Deluxe (2 Pcs)        ச             ப     ல              (2 Pcs) 1 BOX          800   80% DISCOUNT   160
+49,Flower Pot Asoka,FLOWER POT NIGHT SERIES,1_BOX,700.0,80% DISCOUNT,140,, 49   Flower Pot Asoka                       ச     அேசாகா                                     1 BOX    700   80% DISCOUNT   140
+50,Flower Pot Colour Koti,FLOWER POT NIGHT SERIES,1_BOX,1200.0,80% DISCOUNT,240,, 50   Flower Pot Colour Koti                 ச     கல          ேகா                            1 BOX   1200   80% DISCOUNT   240
+51,Deluxe Colour Koti (10pcs),FLOWER POT NIGHT SERIES,1_BOX,1750.0,80% DISCOUNT,350,, 51   Deluxe Colour Koti (10pcs)         ல         கல          ேகா           (10 Pcs)         1 BOX   1750   80% DISCOUNT   350
+52,Tri Colour (5 Pcs),FLOWER POT NIGHT SERIES,1_BOX,1600.0,80% DISCOUNT,320,, 52   Tri Colour (5 Pcs)                 ைர கல             (5 Pcs)                            1 BOX   1600   80% DISCOUNT   320
+53,Luck Value (5 Pcs),FLOWER POT NIGHT SERIES,1_BOX,1000.0,80% DISCOUNT,200,, 53   Luck Value (5 Pcs)                ல     ேவ           (5 Pcs)                            1 BOX   1000   80% DISCOUNT   200
+54,Mega Luck Deluxe (10 Pcs),FLOWER POT NIGHT SERIES,1_BOX,3500.0,80% DISCOUNT,700,, 54   Mega Luck Deluxe (10 Pcs)         ெமகா ல             ல         (10 Pcs)                 1 BOX   3500   80% DISCOUNT   700
+55,Ground Chakkar Big,GROUND CHAKKAR,1_BOX,250.0,80% DISCOUNT,50,, 55   Ground Chakkar Big                தைர ச கர                 ப                            1 BOX   250    80% DISCOUNT    50
+56,Ground Chakkar Special,GROUND CHAKKAR,1_BOX,500.0,80% DISCOUNT,100,, 56   Ground Chakkar Special            தைர ச கர                     ெபஷ                      1 BOX   500    80% DISCOUNT   100
+57,Ground Chakkar Deluxe,GROUND CHAKKAR,1_BOX,800.0,80% DISCOUNT,160,, 57   Ground Chakkar Deluxe             தைர ச கர                     ல                        1 BOX   800    80% DISCOUNT   160
+58,Wire Chakkar,GROUND CHAKKAR,1_BOX,1000.0,80% DISCOUNT,200,, 58   Wire Chakkar                      வய        ச கர                                        1 BOX   1000   80% DISCOUNT   200
+59,Super Deluxe,GROUND CHAKKAR,1_BOX,1200.0,80% DISCOUNT,240,, 59   Super Deluxe                            ப        ல                                      1 BOX   1200   80% DISCOUNT   240
+60,Peacock Feather (5 Pcs),PEACOCK FOUNTAIN,1_BOX,600.0,80% DISCOUNT,120,, 60   Peacock Feather (5 Pcs)           பகா       ெபத          (5 Pcs)                        1 BOX    600   80% DISCOUNT   120
+61,Mega Peacock (3 Wings),PEACOCK FOUNTAIN,1_BOX,900.0,80% DISCOUNT,180,, 61   Mega Peacock (3 Wings)            ெமகா பகா                (3 Wings)                     1 BOX    900   80% DISCOUNT   180
+62,Mega Peacock (5 Wings),PEACOCK FOUNTAIN,1_BOX,1000.0,80% DISCOUNT,200,, 62   Mega Peacock (5 Wings)            ெமகா பகா                (5 Wings)                     1 BOX   1000   80% DISCOUNT   200
+63,Pada Peacock,PEACOCK FOUNTAIN,1_BOX,2400.0,80% DISCOUNT,480,, 63   Pada Peacock                      படா பகா                                               1 BOX   2400   80% DISCOUNT   480
+64,Siren Pada Peacock,PEACOCK FOUNTAIN,1_BOX,3000.0,80% DISCOUNT,600,, 64   Siren Pada Peacock                ைசர        படா பகா                                    1 BOX   3000   80% DISCOUNT   600
+65,Silver Moon (5 Pcs),AMAZING NIGHT SERIES FOUNTAIN,1_BOX,1100.0,80% DISCOUNT,220,, 65   Silver Moon (5 Pcs)               சி    வ                 (5 Pcs)                       1 BOX   1100   80% DISCOUNT   220
+66,Red Bloom (5 Pcs),AMAZING NIGHT SERIES FOUNTAIN,1_BOX,1100.0,80% DISCOUNT,220,, 66   Red Bloom (5 Pcs)                 ெர                     (5 Pcs)                        1 BOX   1100   80% DISCOUNT   220
+67,Gold Coin (5 Pcs),AMAZING NIGHT SERIES FOUNTAIN,1_BOX,1100.0,80% DISCOUNT,220,, 67   Gold Coin (5 Pcs)                 ேகா            காய           (5 Pcs)                  1 BOX   1100   80% DISCOUNT   220
+68,Green Flash (5 Pcs),AMAZING NIGHT SERIES FOUNTAIN,1_BOX,1100.0,80% DISCOUNT,220,, 68   Green Flash (5 Pcs)               கி        ப ளா            (5 Pcs)                     1 BOX   1100   80% DISCOUNT   220
+69,Little Fish (5 Pcs),AMAZING NIGHT SERIES FOUNTAIN,1_BOX,1100.0,80% DISCOUNT,220,, 69   Little Fish (5 Pcs)               லி             ப         (5 Pcs)                      1 BOX   1100   80% DISCOUNT   220
+70,Peacock (2 pcs),TWO PCS SPECIAL FOUNTAIN,1_BOX,1050.0,80% DISCOUNT,210,, 70   Peacock (2 pcs)                   பகா       (2 Pcs)                                     1 BOX   1050   80% DISCOUNT   210
+71,Cock Fight (2pcs),TWO PCS SPECIAL FOUNTAIN,1_BOX,1050.0,80% DISCOUNT,210,, 71   Cock Fight (2pcs)                 கா        ைப       (2 Pcs)                            1 BOX   1050   80% DISCOUNT   210
+72,Pride Popcorn (2 pcs),TWO PCS SPECIAL FOUNTAIN,1_BOX,1050.0,80% DISCOUNT,210,, 72   Pride Popcorn (2 pcs)             ப ைர       பா கா                  (2 Pcs)             1 BOX   1050   80% DISCOUNT   210
+73,Ultra Voltage (2 pcs),TWO PCS SPECIAL FOUNTAIN,1_BOX,1050.0,80% DISCOUNT,210,, 73   Ultra Voltage (2 pcs)             அ         ரா ேஹா             ேட             (2 Pcs)   1 BOX   1050   80% DISCOUNT   210
+74,Mojito (2 pcs),TWO PCS SPECIAL FOUNTAIN,1_BOX,1050.0,80% DISCOUNT,210,, 74   Mojito (2 pcs)                    ெமாஜிேடா (2 Pcs)                                      1 BOX   1050   80% DISCOUNT   210
+75,Lollipops (2 pcs),TWO PCS SPECIAL FOUNTAIN,1_BOX,1050.0,80% DISCOUNT,210,, 75   Lollipops (2 pcs)                 லாலிபா                  (2 Pcs)                       1 BOX   1050   80% DISCOUNT   210
+76,Siren (3 Pcs),KIDS SPECIAL COLLECTIONS,1_BOX,1100.0,80% DISCOUNT,220,,76    Siren (3 Pcs)              ைசர           (3 Pcs)                                  1 BOX   1100   80% DISCOUNT   220
+77,Colour Rain (5 Pcs),KIDS SPECIAL COLLECTIONS,1_BOX,600.0,80% DISCOUNT,120,,77    Colour Rain (5 Pcs)        கல        ெரய             (5 Pcs)                      1 BOX   600    80% DISCOUNT   120
+78,Golden Rain(5pcs),KIDS SPECIAL COLLECTIONS,1_BOX,600.0,80% DISCOUNT,120,,78    Golden Rain(5pcs)          ேகா        ட        ெரய              (5 Pcs)           1 BOX   600    80% DISCOUNT   120
+79,Helicopter(5 Pcs),KIDS SPECIAL COLLECTIONS,1_BOX,550.0,80% DISCOUNT,110,,79    Helicopter(5 Pcs)          ெஹலிகா ட                      (5 Pcs)                  1 BOX   550    80% DISCOUNT   110
+80,Bambara(10 Pcs),KIDS SPECIAL COLLECTIONS,1_BOX,600.0,80% DISCOUNT,120,,80    Bambara(10 Pcs)            ப பர           (10 Pcs)                                1 BOX   600    80% DISCOUNT   120
+81,Photo Flash(5 Pcs),KIDS SPECIAL COLLECTIONS,1_BOX,400.0,80% DISCOUNT,80,,81    Photo Flash(5 Pcs)         ேபா ேடா ப ளா                           (5 Pcs)         1 BOX   400    80% DISCOUNT   80
+82,Kit Kat,KIDS SPECIAL COLLECTIONS,1_BOX,150.0,80% DISCOUNT,30,,82    Kit Kat                    கி     ேக                                              1 BOX   150    80% DISCOUNT   30
+83,Smoke(3pcs),KIDS SPECIAL COLLECTIONS,1_BOX,900.0,80% DISCOUNT,180,,83    Smoke(3pcs)                     ேமா          (5 Pcs)                              1 BOX   900    80% DISCOUNT   180
+84,Bat & Ball,KIDS SPECIAL COLLECTIONS,1_BOX,1200.0,80% DISCOUNT,240,,84    Bat & Ball                 ேப        & பா                                         1 BOX   1200   80% DISCOUNT   240
+85,Black Money,KIDS SPECIAL COLLECTIONS,1_BOX,1100.0,80% DISCOUNT,220,,85    Black Money                ப ளா          மண                                       1 BOX   1100   80% DISCOUNT   220
+86,Mini Water Queen,KIDS SPECIAL COLLECTIONS,1_BOX,600.0,80% DISCOUNT,120,,86    Mini Water Queen           மின வா ட                         ய                     1 BOX   600    80% DISCOUNT   120
+87,Water Queen,KIDS SPECIAL COLLECTIONS,1_BOX,1100.0,80% DISCOUNT,220,,87    Water Queen                வா ட                ய                                  1 BOX   1100   80% DISCOUNT   220
+88,"6""tin",KIDS SPECIAL COLLECTIONS,1_BOX,900.0,80% DISCOUNT,180,,"88    6""tin                      6""                                                     1 BOX   900    80% DISCOUNT   180"
+89,Pinkie Pie,KIDS SPECIAL COLLECTIONS,1_BOX,1100.0,80% DISCOUNT,220,,89    Pinkie Pie                 ப     கி ைப                                            1 BOX   1100   80% DISCOUNT   220
+90,Blossom,KIDS SPECIAL COLLECTIONS,1_BOX,1100.0,80% DISCOUNT,220,,90    Blossom                    ப ளாச                                                  1 BOX   1100   80% DISCOUNT   220
+91,Flora(5pcs),KIDS SPECIAL COLLECTIONS,1_BOX,500.0,80% DISCOUNT,100,,91    Flora(5pcs)                 ேளாரா (5 Pcs)                                         1 BOX   500    80% DISCOUNT   100
+92,Butterﬂy,KIDS SPECIAL COLLECTIONS,1_BOX,650.0,80% DISCOUNT,130,,92    Butterﬂy                   ப ட ப ைள                                               1 BOX   650    80% DISCOUNT   130
+93,Warrior Squard,KIDS SPECIAL COLLECTIONS,1_BOX,600.0,80% DISCOUNT,120,,93    Warrior Squard             வா ய                      வா                           1 BOX   600    80% DISCOUNT   120
+94,Play Bingo,KIDS SPECIAL COLLECTIONS,1_BOX,600.0,80% DISCOUNT,120,,94    Play Bingo                 ப ேள ப             ேகா                                 1 BOX   600    80% DISCOUNT   120
+95,Shooting Club(5pcs),KIDS SPECIAL COLLECTIONS,1_BOX,1000.0,80% DISCOUNT,200,,95    Shooting Club(5pcs)                       கிள          (5 Pcs)                    1 BOX   1000   80% DISCOUNT   200
+96,Rotating Sparklers,KIDS SPECIAL COLLECTIONS,1_BOX,1100.0,80% DISCOUNT,220,,96    Rotating Sparklers         ெராேட                       பா           ள             1 BOX   1100   80% DISCOUNT   220
+97,Ring O Ring,KIDS SPECIAL COLLECTIONS,1_BOX,800.0,80% DISCOUNT,160,,97    Ring O Ring                       ஓ                                               1 BOX   800    80% DISCOUNT   160
+98,Whistling Dixie,KIDS SPECIAL COLLECTIONS,1_BOX,650.0,80% DISCOUNT,130,,98    Whistling Dixie            வ சிலி                   சி                            1 BOX   650    80% DISCOUNT   130
+99,Crackling Fountain,KIDS SPECIAL COLLECTIONS,1_BOX,1750.0,80% DISCOUNT,350,,99    Crackling Fountain         கிரா லி              ப             ட                   1 BOX   1750   80% DISCOUNT   350
+100,Shin Chan,KIDS SPECIAL COLLECTIONS,1_BOX,650.0,80% DISCOUNT,130,,100   Shin Chan                  ஷி        ேஷ                                           1 BOX   650    80% DISCOUNT   130
+101,Fire Egg,KIDS SPECIAL COLLECTIONS,1_BOX,850.0,80% DISCOUNT,170,,101   Fire Egg                   பய        எ                                            1 BOX   850    80% DISCOUNT   170
+102,Star Light,KIDS SPECIAL COLLECTIONS,1_BOX,600.0,80% DISCOUNT,120,,102   Star Light                      டா       ைல                                       1 BOX   600    80% DISCOUNT   120
+103,Moon Light,KIDS SPECIAL COLLECTIONS,1_BOX,500.0,80% DISCOUNT,100,,103   Moon Light                           ைல                                           1 BOX   500    80% DISCOUNT   100
+104,Cylinder Bomp(2 Pcs),KIDS SPECIAL COLLECTIONS,1_BOX,1500.0,80% DISCOUNT,300,,104   Cylinder Bomp(2 Pcs)       சிலி          ட     பா                                 1 BOX   1500   80% DISCOUNT   300
+105,Hi Tech Pencil,PENCIL CRACKERS,1_BOX,1000.0,80% DISCOUNT,200,,105   Hi Tech Pencil             ஹ         ெட       ெப       சி                         1 BOX   1000   80% DISCOUNT   200
+106,Candy Crush(5 Pcs),PENCIL CRACKERS,1_BOX,650.0,80% DISCOUNT,130,,106   Candy Crush(5 Pcs)         ேக             ர         (5 Pcs)                       1 BOX   650    80% DISCOUNT   130
+107,Pop Corn Pencil(5pcs),PENCIL CRACKERS,1_BOX,1200.0,80% DISCOUNT,240,,107   Pop Corn Pencil(5pcs)      பா கா             ெப        சி     (5 Pcs)             1 BOX   1200   80% DISCOUNT   240
+108,Water Falls Pencil(5pcs),PENCIL CRACKERS,1_BOX,1100.0,80% DISCOUNT,220,,108   Water Falls Pencil(5pcs)   வா ட          பா            ெப       சி      (5 Pcs)   1 BOX   1100   80% DISCOUNT   220
+109,Green Laser(3pcs),PENCIL CRACKERS,1_BOX,800.0,80% DISCOUNT,160,,109   Green Laser(3pcs)          கி        ேலச        (3 Pcs)                           1 BOX   800    80% DISCOUNT   160
+110,Sea Laser(3pcs),PENCIL CRACKERS,1_BOX,800.0,80% DISCOUNT,160,,110   Sea Laser(3pcs)                 ேலச          (3 Pcs)                              1 BOX   800    80% DISCOUNT   160
+111,Star Rain(2pcs),PENCIL CRACKERS,1_BOX,1050.0,80% DISCOUNT,210,,111   Star Rain(2pcs)                 டா    ெரய            (2 Pcs)                      1 BOX   1050   80% DISCOUNT   210
+112,Smoke Stick,PENCIL CRACKERS,1_BOX,350.0,80% DISCOUNT,70,,112   Smoke Stick                     ேமா                                               1 BOX   350    80% DISCOUNT   70
+113,Monkey Star(5 Pcs),2026 NEW ARRIVALS,1_BOX,950.0,80% DISCOUNT,190,,113   Monkey Star(5 Pcs)         மண                டா        (5 Pcs)                    1 BOX   950    80% DISCOUNT   190
+114,Kinder Joy,2026 NEW ARRIVALS,1_BOX,800.0,80% DISCOUNT,160,,114   Kinder Joy                 கி        ட       ஜா                                   1 BOX   800    80% DISCOUNT   160
+115,Hand Whistle(5pcs),2026 NEW ARRIVALS,1_BOX,1300.0,80% DISCOUNT,260,,115   Hand Whistle(5pcs)         ேஹ                வ சி           (5 Pcs)               1 BOX   1300   80% DISCOUNT   260
+116,Trisul (2pcs),2026 NEW ARRIVALS,1_BOX,1400.0,80% DISCOUNT,280,,116   Trisul (2pcs)              தி             (2 Pcs)                                 1 BOX   1400   80% DISCOUNT   280
+117,Vel (2 Pcs),2026 NEW ARRIVALS,1_BOX,1300.0,80% DISCOUNT,260,,117   Vel (2 Pcs)                ேவ         (2 Pcs)                                     1 BOX   1300   80% DISCOUNT   260
+118,Kulﬁ,2026 NEW ARRIVALS,1_BOX,700.0,80% DISCOUNT,140,,118   Kulﬁ                             ப                                                1 BOX   700    80% DISCOUNT   140
+119,Mayajal(5pcs),2026 NEW ARRIVALS,1_BOX,1050.0,80% DISCOUNT,210,,119   Mayajal(5pcs)                          மாயாஜா            (5 Pcs)                                1 BOX   1050   80% DISCOUNT   210
+120,X Mas(3pcs),2026 NEW ARRIVALS,1_BOX,800.0,80% DISCOUNT,160,,120   X Mas(3pcs)                            எ        ம        (3 Pcs)                                1 BOX   800    80% DISCOUNT   160
+211,Ayyans Ninja Chakkar,2026 NEW ARRIVALS,1_BOX,800.0,80% DISCOUNT,160,"PDF appears to print serial 211 in the 2026 arrivals section; likely numbering irregularity, not auto-corrected.",211   Ayyans Ninja Chakkar                   அ ய          நி    ஜா ச க                                1 BOX   800    80% DISCOUNT   160
+122,Ayyans Cocktail Spinner,2026 NEW ARRIVALS,1_BOX,400.0,80% DISCOUNT,80,,122   Ayyans Cocktail Spinner                அ ய          கா ைட                  ப       ன            1 BOX   400    80% DISCOUNT    80
+123,Ayyans Lemon Tree,2026 NEW ARRIVALS,1_BOX,800.0,80% DISCOUNT,160,,123   Ayyans Lemon Tree                      அ ய          ெலம                                         1 BOX   800    80% DISCOUNT   160
+124,15 Cm Crackling Comets(10 P,2026 NEW ARRIVALS,1_BOX,1050.0,80% DISCOUNT,210,,124   15 Cm Crackling Comets(10 Pcs) 15CM கிரா லி                     காம               (10 Pcs)      1 BOX   1050   80% DISCOUNT   210
+125,30 Cm Crackling Comets(5 Pc,2026 NEW ARRIVALS,1_BOX,1050.0,80% DISCOUNT,210,,125   30 Cm Crackling Comets(5 Pcs)          30CM கிரா லி             காம             (5 Pcs)         1 BOX   1050   80% DISCOUNT   210
+126,50cm Grandy Mix 5 In 1 Spar,2026 NEW ARRIVALS,1_BOX,1300.0,80% DISCOUNT,260,,126   50cm Grandy Mix 5 In 1 Sparklers 50CM கிரா                     மி        5 in 1 க ப             1 BOX   1300   80% DISCOUNT   260
+127,Water Melon,2026 NEW ARRIVALS,1_BOX,1100.0,80% DISCOUNT,220,,127   Water Melon                            வா ட          ெமேலா                                      1 BOX   1100 80% DISCOUNT      220
+128,Narakasura,2026 NEW ARRIVALS,1_BOX,1100.0,80% DISCOUNT,220,,128   Narakasura                             நரகா ரா                                                  1 BOX   1100 80% DISCOUNT      220
+129,I Cone (2 Pcs),2026 NEW ARRIVALS,1_BOX,1100.0,80% DISCOUNT,220,,129   I Cone (2 Pcs)                         ஐ ேகா             (2 Pcs)                                1 BOX   1100 80% DISCOUNT      220
+130,Mini Fancy,COLOURFUL FANCY SINGLE SHOTS,1_BOX,250.0,80% DISCOUNT,50,,130   Mini Fancy                             மின ேப ஸி                                                1 BOX    250   80% DISCOUNT    50
+131,Colour Collection(5 Pcs),COLOURFUL FANCY SINGLE SHOTS,1_BOX,1100.0,80% DISCOUNT,220,,131   Colour Collection(5 Pcs)               கல கெல ச             (5 Pcs)                             1 BOX   1100   80% DISCOUNT   220
+132,"1 3/4"" Fancy (3 Pcs)",COLOURFUL FANCY SINGLE SHOTS,1_BOX,1000.0,80% DISCOUNT,200,,"132   1 3/4"" Fancy (3 Pcs)                   1 3/4"" ேப ஸி (3 Pcs)                                     1 BOX   1000   80% DISCOUNT   200"
+133,Aerial Out Preimium(3pcs),COLOURFUL FANCY SINGLE SHOTS,1_BOX,1600.0,80% DISCOUNT,320,,133   Aerial Out Preimium(3pcs)              ஏ ய      அ        ப மிய          (3 Pcs)                 1 BOX   1600   80% DISCOUNT   320
+134,"2"" Night Fancy (premium)",COLOURFUL FANCY SINGLE SHOTS,1_BOX,600.0,80% DISCOUNT,120,,"134   2"" Night Fancy (premium)               2"" ைந    ேப ஸி ப மிய                                     1 BOX    600   80% DISCOUNT   120"
+135,"2"" Fancy(triple Ball)",COLOURFUL FANCY SINGLE SHOTS,1_BOX,1200.0,80% DISCOUNT,240,,"135   2"" Fancy(triple Ball)                  2"" ேப ஸி (          ப        பா )                        1 BOX   1200   80% DISCOUNT   240"
+136,"Ayyan Special 2"" Pink",COLOURFUL FANCY SINGLE SHOTS,1_BOX,1350.0,80% DISCOUNT,270,,"136   Ayyan Special 2"" Pink                  அ ய           ெபஷ        2"" ப                            1 BOX   1350   80% DISCOUNT   270"
+137,"Ayyan Special 2"" Blue",COLOURFUL FANCY SINGLE SHOTS,1_BOX,1350.0,80% DISCOUNT,270,,"137   Ayyan Special 2"" Blue                  அ ய           ெபஷ        2""                              1 BOX   1350   80% DISCOUNT   270"
+138,"2 1/2"" Special Shot(2 Pcs)",COLOURFUL FANCY SINGLE SHOTS,1_BOX,2200.0,80% DISCOUNT,440,,"138   2 1/2"" Special Shot(2 Pcs)             2 1/2""   ெபஷ        ஷா         (2 Pcs)                   1 BOX   2200   80% DISCOUNT   440"
+139,"2 1/2"" Special Shot(3 Pcs)",COLOURFUL FANCY SINGLE SHOTS,1_BOX,3200.0,80% DISCOUNT,640,,"139   2 1/2"" Special Shot(3 Pcs)             2 1/2""   ெபஷ        ஷா         (3 Pcs)                   1 BOX   3200   80% DISCOUNT   640"
+140,"3 1/2"" Night Fancy",COLOURFUL FANCY SINGLE SHOTS,1_BOX,1500.0,80% DISCOUNT,300,,"140   3 1/2"" Night Fancy                     3 1/2"" ைந     ேப ஸி                                      1 BOX   1500   80% DISCOUNT   300"
+141,"3 1/2"" Night Fancy (Premium",COLOURFUL FANCY SINGLE SHOTS,1_BOX,1750.0,80% DISCOUNT,350,,"141   3 1/2"" Night Fancy (Premium)           3 1/2"" ைந     ேப ஸி (ப மிய )                             1 BOX   1750   80% DISCOUNT   350"
+142,"3 1/2"" Night Fancy (Double",COLOURFUL FANCY SINGLE SHOTS,1_BOX,1900.0,80% DISCOUNT,380,,"142   3 1/2"" Night Fancy (Double Ball)       3 1/2"" ைந     ேப ஸி (ட              பா )                 1 BOX   1900   80% DISCOUNT   380"
+143,"3 1/2"" Night Fancy (2 Pcs)",COLOURFUL FANCY SINGLE SHOTS,1_BOX,3250.0,80% DISCOUNT,650,,"143   3 1/2"" Night Fancy (2 Pcs)             3 1/2"" ைந     ேப ஸி (2 Pcs)                              1 BOX   3250   80% DISCOUNT   650"
+144,"3 1/2"" Special Fancy Bingo",COLOURFUL FANCY SINGLE SHOTS,1_BOX,2200.0,80% DISCOUNT,440,,"144   3 1/2"" Special Fancy Bingo Boom        3 1/2""   ெபஷ        ேப ஸி ப             ேகா              1 BOX   2200   80% DISCOUNT   440"
+145,"3 1/2"" Special Fancy Queen",COLOURFUL FANCY SINGLE SHOTS,1_BOX,2200.0,80% DISCOUNT,440,,"145   3 1/2"" Special Fancy Queen Shower      3 1/2""   ெபஷ        ேப ஸி           ய         ஷவர        1 BOX   2200   80% DISCOUNT   440"
+146,"3 1/2"" Special Fancy Cool R",COLOURFUL FANCY SINGLE SHOTS,1_BOX,2200.0,80% DISCOUNT,440,,"146   3 1/2"" Special Fancy Cool Rain         3 1/2""   ெபஷ        ேப ஸி                ெரய             1 BOX   2200   80% DISCOUNT   440"
+147,"3 1/2"" Special Fancy Blue P",COLOURFUL FANCY SINGLE SHOTS,1_BOX,2200.0,80% DISCOUNT,440,,"147   3 1/2"" Special Fancy Blue Pearl        3 1/2""   ெபஷ        ேப ஸி                ேப              1 BOX   2200   80% DISCOUNT   440"
+148,"3 1/2"" Special Fancy Violet",COLOURFUL FANCY SINGLE SHOTS,1_BOX,2200.0,80% DISCOUNT,440,,"148   3 1/2"" Special Fancy Violet            3 1/2""   ெபஷ        ேப ஸி வயெல                           1 BOX   2200   80% DISCOUNT   440"
+149,"3 1/2"" Fancy Nayagara With",COLOURFUL FANCY SINGLE SHOTS,1_BOX,1900.0,80% DISCOUNT,380,,"149   3 1/2"" Fancy Nayagara With Colour      3 1/2"" ேப ஸி நயாகரா வ                  கல                1 BOX   1900   80% DISCOUNT   380"
+150,"4"" Mega Fancy Tin",COLOURFUL FANCY SINGLE SHOTS,1_BOX,2200.0,80% DISCOUNT,440,,"150   4"" Mega Fancy Tin                      4"" ெமகா ேப ஸி                                            1 BOX   2200   80% DISCOUNT   440"
+151,"4"" Night Fancy (Double Ball",COLOURFUL FANCY SINGLE SHOTS,1_BOX,2400.0,80% DISCOUNT,480,,"151   4"" Night Fancy (Double Ball)           4"" ைந    ேப ஸி (ட               பா )                     1 BOX   2400   80% DISCOUNT   480"
+152,"4"" Night Fancy Hd Serious (",COLOURFUL FANCY SINGLE SHOTS,1_BOX,4500.0,80% DISCOUNT,900,,"152   4"" Night Fancy Hd Serious (2 Pcs)      4"" ைந    ேப ஸி ஹ                சீ ய       (2 Pcs)       1 BOX   4500   80% DISCOUNT   900"
+153,"5"" Night Fancy Train Seriou",COLOURFUL FANCY SINGLE SHOTS,1_BOX,5500.0,80% DISCOUNT,1100,,"153   5"" Night Fancy Train Serious(2 Pcs)    5"" ைந    ேப ஸி           ெரய      சீ ய         (2 Pcs)   1 BOX   5500   80% DISCOUNT   1100"
+154,"6"" Night Fancy Flight Serio",COLOURFUL FANCY SINGLE SHOTS,1_BOX,6500.0,80% DISCOUNT,1300,,"154   6"" Night Fancy Flight Serious(2 Pcs)   6"" ைந    ேப ஸி ப ைள              சீ ய       (2 Pcs)      1 BOX   6500   80% DISCOUNT   1300"
+155,7 Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,650.0,80% DISCOUNT,130,,155   7 Shot                                 7 ஷா                                                     1 BOX    650   80% DISCOUNT   130
+156,12 Shot crackling,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,900.0,80% DISCOUNT,180,,156   12 Shot crackling                      12 ஷா         கிரா ள                                     1 BOX    900   80% DISCOUNT   180
+157,12 Multi colour Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,1100.0,80% DISCOUNT,220,,157   12 Multi colour Shot                   12 ம          கல         ஷா                              1 BOX   1100   80% DISCOUNT   220
+158,12 Step Crackling,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,2250.0,80% DISCOUNT,450,,158   12 Step Crackling                      12       ெட       கிரா ள                                 1 BOX   2250   80% DISCOUNT   450
+159,15 Multi colour Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,1600.0,80% DISCOUNT,320,,159   15 Multi colour Shot                   15 ம          கல         ஷா                              1 BOX   1600   80% DISCOUNT   320
+160,25 Shot crackling,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,1400.0,80% DISCOUNT,280,,160   25 Shot crackling                      25 ஷா         கிரா ள                                     1 BOX   1400   80% DISCOUNT   280
+161,30 Multi colour Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,2250.0,80% DISCOUNT,450,,161   30 Multi colour Shot                   30 ம          கல         ஷா                              1 BOX   2250   80% DISCOUNT   450
+162,30 Multi colour Shot Specia,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,2500.0,80% DISCOUNT,500,,162   30 Multi colour Shot Special 30 ம                    கல         ஷா                ெபஷ           1 BOX   2500   80% DISCOUNT   500
+163,60 Multi colour Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,4500.0,80% DISCOUNT,900,,163   60 Multi colour Shot                   60 ம          கல         ஷா                              1 BOX   4500   80% DISCOUNT   900
+164,60 Multi Colour Shot Specia,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,5000.0,80% DISCOUNT,1000,,164   60 Multi Colour Shot Special   30 ம      கல       ஷா              ெபஷ        1 BOX   5000 80% DISCOUNT     1000
+165,120 Multi Colour Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,9000.0,80% DISCOUNT,1800,,165   120 Multi Colour Shot          120 ம        கல    ஷா                         1 BOX   9000 80% DISCOUNT     1800
+166,120 Multi Colour Shot Speci,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,10000.0,80% DISCOUNT,2000,,166   120 Multi Colour Shot Special 120 ம         கல    ஷா              ெபஷ        1 BOX 10000 80% DISCOUNT      2000
+167,240 Multi Colour Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,18000.0,80% DISCOUNT,3600,,167   240 Multi Colour Shot          240 ம         கல       ஷா                     1 BOX 18000 80% DISCOUNT      3600
+168,240 Multi Colour Shot Speci,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,20000.0,80% DISCOUNT,4000,,168   240 Multi Colour Shot Special 240 ம          கல       ஷா           ெபஷ       1 BOX 20000 80% DISCOUNT      4000
+169,"2"" Set Out 20 Shot",COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,11000.0,80% DISCOUNT,2200,,"169   2"" Set Out 20 Shot             2"" ெச     அ        20 ஷா                      1 BOX 11000 80% DISCOUNT      2200"
+170,"2"" Set Out 30 Shot",COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,16500.0,80% DISCOUNT,3300,,"170   2"" Set Out 30 Shot             2"" ெச     அ        30 ஷா                      1 BOX 16500 80% DISCOUNT      3300"
+171,Peacock 30 Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,2750.0,80% DISCOUNT,550,,171   Peacock 30 Shot                பகா     30 ஷா                                 1 BOX   2750 80% DISCOUNT      550
+172,Flash 30 Shot,COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,3000.0,80% DISCOUNT,600,,172   Flash 30 Shot                  ப ளா      30 ஷா                               1 BOX   3000 80% DISCOUNT      600
+173,Hand Shooter (288 Shots),COLOURFUL FANCY MULTICOLOUR SHOTS,1_BOX,15000.0,80% DISCOUNT,3000,,173   Hand Shooter (288 Shots)       ஹா        ஷூ ட             (288 ஷா        )   1 BOX 15000 80% DISCOUNT      3000
+174,10x5 Holy Celebration,CELEBRATION FANCY PLATINUM SHOT,1_BOX,12500.0,80% DISCOUNT,2500,,174   10x5 Holy Celebration          10X5 ேஹாலி ெசலிப ேரச                          1 BOX 12500 80% DISCOUNT      2500
+175,10x5 Dragon Mines,CELEBRATION FANCY PLATINUM SHOT,1_BOX,13500.0,80% DISCOUNT,2700,,175   10x5 Dragon Mines              10X5    ராக        ைம                         1 BOX 13500 80% DISCOUNT      2700
+176,10x10 Multi Shot,CELEBRATION FANCY PLATINUM SHOT,1_BOX,17500.0,80% DISCOUNT,3500,,176   10x10 Multi Shot               10X10 ம           ஷா                          1 BOX 17500 80% DISCOUNT      3500
+177,Jumpo Dlx Mismash,PREMIUM MATCH BOX,1_BOX,500.0,80% DISCOUNT,100,,177   Jumpo Dlx Mismash              ஜ ேபா        ல         மி          மா         1 BOX   500    80% DISCOUNT   100
+178,Royal Super Dlx Duke,PREMIUM MATCH BOX,1_BOX,750.0,80% DISCOUNT,150,,178   Royal Super Dlx Duke           ராய           ப    ல                          1 BOX   750    80% DISCOUNT   150
+179,Jumpo Dlx Fantasy,PREMIUM MATCH BOX,1_BOX,1200.0,80% DISCOUNT,240,,179   Jumpo Dlx Fantasy              ஜ ேபா        ல         ேப          டஸி        1 BOX   1200   80% DISCOUNT   240
+180,Roll Cap,PREMIUM MATCH BOX,1_BOX,400.0,80% DISCOUNT,80,,180   Roll Cap                       ேரா     ேக                                    1 BOX   400    80% DISCOUNT    80
+181,7 cm Electric Sparklers,SPARKLERS,1_BOX,60.0,80% DISCOUNT,12,,181   7 cm Electric Sparklers        7 ெசம எல                    க      ப          1 BOX    60    80% DISCOUNT    12
+182,7 cm Colour Sparklers,SPARKLERS,1_BOX,70.0,80% DISCOUNT,14,,182   7 cm Colour Sparklers          7 ெசம கல           க   ப                      1 BOX    70    80% DISCOUNT    14
+183,7 cm Green Sparklers,SPARKLERS,1_BOX,80.0,80% DISCOUNT,16,,183   7 cm Green Sparklers           7 ெசம ப ைச க               ப                  1 BOX    80    80% DISCOUNT    16
+184,7 cm Red Sparklers,SPARKLERS,1_BOX,90.0,80% DISCOUNT,18,,184   7 cm Red Sparklers             7 ெசம சிவ              க    ப                 1 BOX    90    80% DISCOUNT    18
+185,10 cm Electric Sparklers,SPARKLERS,1_BOX,100.0,80% DISCOUNT,20,,185   10 cm Electric Sparklers       10 ெசம எல                      க    ப         1 BOX   100    80% DISCOUNT    20
+186,10 cm Colour Sparklers,SPARKLERS,1_BOX,110.0,80% DISCOUNT,22,,186   10 cm Colour Sparklers         10 ெசம கல          க       ப                  1 BOX    110   80% DISCOUNT    22
+187,10 cm Green Sparklers,SPARKLERS,1_BOX,130.0,80% DISCOUNT,26,,187   10 cm Green Sparklers          10 ெசம ப ைச க                  ப              1 BOX   130    80% DISCOUNT    26
+188,10 cm Red Sparklers,SPARKLERS,1_BOX,140.0,80% DISCOUNT,28,,188   10 cm Red Sparklers            10 ெசம சிவ             க       ப              1 BOX   140    80% DISCOUNT    28
+189,15 cm Electric Sparklers,SPARKLERS,1_BOX,210.0,80% DISCOUNT,42,,189   15 cm Electric Sparklers       15 ெசம எல                      க    ப         1 BOX   210    80% DISCOUNT    42
+190,15 cm Colour Sparklers,SPARKLERS,1_BOX,220.0,80% DISCOUNT,44,,190   15 cm Colour Sparklers         15 ெசம கல          க       ப                  1 BOX   220    80% DISCOUNT    44
+191,15 cm Green Sparklers,SPARKLERS,1_BOX,240.0,80% DISCOUNT,48,,191   15 cm Green Sparklers          15 ெசம ப ைச க                  ப              1 BOX   240    80% DISCOUNT    48
+192,15 cm Red Sparklers,SPARKLERS,1_BOX,260.0,80% DISCOUNT,52,,192   15 cm Red Sparklers            15 ெசம சிவ             க       ப              1 BOX   260    80% DISCOUNT    52
+193,30 cm Electric Sparklers,SPARKLERS,1_BOX,210.0,80% DISCOUNT,42,,193   30 cm Electric Sparklers       30 ெசம எல                      க    ப         1 BOX   210    80% DISCOUNT    42
+194,30 cm Colour Sparklers,SPARKLERS,1_BOX,220.0,80% DISCOUNT,44,,194   30 cm Colour Sparklers         30 ெசம கல          க       ப                  1 BOX   220    80% DISCOUNT    44
+195,30 cm Green Sparklers,SPARKLERS,1_BOX,240.0,80% DISCOUNT,48,,195   30 cm Green Sparklers          30 ெசம ப ைச க                  ப              1 BOX   240    80% DISCOUNT    48
+196,30 cm Red Sparklers,SPARKLERS,1_BOX,260.0,80% DISCOUNT,52,,196   30 cm Red Sparklers            30 ெசம சிவ             க       ப              1 BOX   260    80% DISCOUNT    52
+197,50 cm Electric Sparklers,SPARKLERS,1_BOX,1050.0,80% DISCOUNT,210,,197   50 cm Electric Sparklers       50 ெசம எல                      க    ப         1 BOX   1050   80% DISCOUNT   210
+198,50 cm Colour Sparklers,SPARKLERS,1_BOX,1150.0,80% DISCOUNT,230,,198   50 cm Colour Sparklers         50 ெசம கல          க       ப                  1 BOX   1150   80% DISCOUNT   230
+199,21 Item Gift Box,GIFT BOXES ( NO DISCOUNT) NET RATE,1_BOX,,NO DISCOUNT,350,,199   21 Item Gift Box               21 ஐ ட        கி       பா                     1 BOX          NO DISCOUNT    350
+200,25 Item Gift Box,GIFT BOXES ( NO DISCOUNT) NET RATE,1_BOX,,NO DISCOUNT,450,,200   25 Item Gift Box               25 ஐ ட        கி       பா                     1 BOX          NO DISCOUNT    450
+201,30 Item Gift Box,GIFT BOXES ( NO DISCOUNT) NET RATE,1_BOX,,NO DISCOUNT,600,,201   30 Item Gift Box               30 ஐ ட        கி       பா                     1 BOX          NO DISCOUNT    600
+202,35 Item Gift Box,GIFT BOXES ( NO DISCOUNT) NET RATE,1_BOX,,NO DISCOUNT,700,,202   35 Item Gift Box               35 ஐ ட        கி       பா                     1 BOX          NO DISCOUNT    700
+203,40 Item Gift Box,GIFT BOXES ( NO DISCOUNT) NET RATE,1_BOX,,NO DISCOUNT,800,,203   40 Item Gift Box               40 ஐ ட        கி       பா                     1 BOX          NO DISCOUNT    800
+204,45 Item Gift Box,GIFT BOXES ( NO DISCOUNT) NET RATE,1_BOX,,NO DISCOUNT,950,,204   45 Item Gift Box               45 ஐ ட        கி       பா                     1 BOX          NO DISCOUNT    950
+205,50 Item Gift Box,GIFT BOXES ( NO DISCOUNT) NET RATE,1_BOX,,NO DISCOUNT,1100,,205   50 Item Gift Box               50 ஐ ட        கி       பா                     1 BOX          NO DISCOUNT    1100
+206,60 Item Gift Box,GIFT BOXES ( NO DISCOUNT) NET RATE,1_BOX,,NO DISCOUNT,1400,,206   60 Item Gift Box               60 ஐ ட        கி       பா                     1 BOX          NO DISCOUNT    1400

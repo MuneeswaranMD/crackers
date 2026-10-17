@@ -67,9 +67,11 @@ export function generateThermalReceiptHtml(sale: Sale, shop: Shop, isDuplicate =
     <body>
       <div class="text-center">
         ${isDuplicate ? '<div class="badge font-bold">*** DUPLICATE RECEIPT ***</div><br/>' : ''}
-        <div style="font-size: 15px; font-weight: 800; text-transform: uppercase;">${shop.name}</div>
+        <div style="font-size: 16px; font-weight: 900; text-transform: uppercase;">${shop.name}</div>
+        ${shop.tradeName ? `<div style="font-size: 11px; font-weight: bold; color: #333;">(${shop.tradeName})</div>` : ''}
+        ${shop.addressLine2 ? `<div style="font-size: 10px; font-style: italic;">${shop.addressLine2}</div>` : ''}
         <div style="font-size: 11px;">${shop.addressLine1}, ${shop.city}</div>
-        <div style="font-size: 11px;">Phone: ${shop.phone}</div>
+        <div style="font-size: 11px; font-weight: bold;">Phone: ${shop.phone}</div>
         ${shop.gstin ? `<div style="font-size: 11px; font-weight: bold;">GSTIN: ${shop.gstin}</div>` : ''}
         <div style="font-size: 10px;">PESO Lic: ${shop.licenseNumber}</div>
         <div class="badge">GREEN CRACKERS CERTIFIED (CSIR-NEERI)</div>
@@ -317,8 +319,8 @@ export function generateA4InvoiceHtml(sale: Sale, shop: Shop): string {
         <svg class="watermark" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="100" cy="100" r="90" stroke="#00b4a7" stroke-width="8"/>
           <circle cx="100" cy="100" r="75" stroke="#f59e0b" stroke-width="4"/>
-          <text x="100" y="95" text-anchor="middle" font-size="34" font-weight="900" fill="#00b4a7" font-family="Arial">SKT</text>
-          <text x="100" y="125" text-anchor="middle" font-size="14" font-weight="bold" fill="#f59e0b" font-family="Arial">SIVAKASI</text>
+          <text x="100" y="95" text-anchor="middle" font-size="26" font-weight="900" fill="#00b4a7" font-family="Arial">AGANA</text>
+          <text x="100" y="125" text-anchor="middle" font-size="12" font-weight="bold" fill="#f59e0b" font-family="Arial">FIREWORKS</text>
         </svg>
 
         <!-- Top Header Banner -->
@@ -343,13 +345,15 @@ export function generateA4InvoiceHtml(sale: Sale, shop: Shop): string {
           <tr>
             <!-- Left: Company Details -->
             <td style="width: 50%; vertical-align: top; padding: 10px 14px; border-right: 1.5px solid #000;">
-              <div style="font-size: 18px; font-weight: bold; color: #000; line-height: 1.2;">
+              <div style="font-size: 20px; font-weight: 900; color: #000; line-height: 1.1;">
                 ${shop.name}
               </div>
-              <div style="font-size: 13px; color: #000; margin-top: 2px;">
-                ${shop.city}
+              ${shop.tradeName ? `<div style="font-size: 13px; font-weight: bold; color: #333; margin-top: 2px;">(${shop.tradeName})</div>` : ''}
+              ${shop.addressLine2 ? `<div style="font-size: 11px; font-weight: 600; color: #444; margin-top: 2px;">${shop.addressLine2}</div>` : ''}
+              <div style="font-size: 12px; color: #000; margin-top: 2px;">
+                ${shop.addressLine1}, ${shop.city}
               </div>
-              <div style="font-size: 12px; color: #000; margin-top: 4px;">
+              <div style="font-size: 12px; font-weight: bold; color: #000; margin-top: 4px;">
                 Phone : ${shop.phone}
               </div>
               ${
