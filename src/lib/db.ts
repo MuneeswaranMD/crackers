@@ -542,21 +542,21 @@ export const db = {
 
   // Stock Movements & Adjustments
   getStockMovements: (): StockMovement[] => storage.get<StockMovement[]>(STORAGE_KEYS.STOCK_MOVEMENTS, []),
-  recordStockAdjustment: (
+  recordStockAdjustment: async (
     productId: string,
     adjustedQty: number, // new total stock
     reason: string
-  ): void => {
+  ): Promise<{ success: boolean; movementId?: string; balanceAfter?: number; error?: string }> => {
     const products = db.getProducts();
     const prod = products.find((p) => p.id === productId);
-    if (!prod) return;
+    if (!prod) return { success: false, error: 'Product not found' };
 
     const diff = adjustedQty - prod.currentStock;
     prod.currentStock = adjustedQty;
     storage.set(STORAGE_KEYS.PRODUCTS, products);
 
     const movements = db.getStockMovements();
-    movements.unshift({
+    const localMovement: StockMovement = {
       id: `adj-${Date.now()}`,
       shopId: prod.shopId,
       productId: prod.id,
@@ -567,9 +567,35 @@ export const db = {
       referenceType: 'MANUAL_ADJUSTMENT',
       remarks: reason,
       createdAt: new Date().toISOString(),
-    });
+    };
+    movements.unshift(localMovement);
     storage.set(STORAGE_KEYS.STOCK_MOVEMENTS, movements);
     db.logAudit(`Stock Adjusted for ${prod.name} to ${adjustedQty} (${reason})`, 'Product', prod.id);
+
+    // Sync with Supabase API
+    if (typeof window !== 'undefined') {
+      try {
+        const res = await fetch('/api/stock-adjustments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productId: prod.id,
+            sku: prod.sku,
+            productName: prod.name,
+            adjustedQty,
+            reason,
+          }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          return { success: true, movementId: data.movementId, balanceAfter: adjustedQty };
+        }
+      } catch (e) {
+        console.warn('[Supabase Sync Stock Adjustment Warning]:', e);
+      }
+    }
+
+    return { success: true, movementId: localMovement.id, balanceAfter: adjustedQty };
   },
 
   // Returns & Credit Notes

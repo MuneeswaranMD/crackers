@@ -40,6 +40,18 @@ export default function InventoryPage() {
     } catch (err) {
       console.warn('Failed to fetch inventory from Supabase:', err);
     }
+
+    try {
+      const movRes = await fetch('/api/stock-adjustments');
+      if (movRes.ok) {
+        const movData = await movRes.json();
+        if (movData.success && Array.isArray(movData.data) && movData.data.length > 0) {
+          setMovements(movData.data);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch stock movements from Supabase:', err);
+    }
   };
 
   useEffect(() => {

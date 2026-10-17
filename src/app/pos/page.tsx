@@ -124,10 +124,13 @@ export default function POSPage() {
     }
   };
 
+  // Load initial data once on mount
   useEffect(() => {
     loadInitialData();
+  }, []);
 
-    // POS Global Keyboard Shortcuts
+  // POS Global Keyboard Shortcuts
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'F2') {
         e.preventDefault();

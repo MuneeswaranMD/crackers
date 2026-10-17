@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { Sale, ExternalOrder, Customer, Product, Shop, Category } from '@/types';
+import { Sale, ExternalOrder, Customer, Product, Shop, Category, StockMovement } from '@/types';
 
 let pool: Pool | null = null;
 
@@ -743,6 +743,125 @@ export async function getShopFromSupabase(): Promise<Shop> {
       invoiceFooterNote: r.invoice_footer_note || '',
       isActive: r.is_active,
     };
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Record a physical stock adjustment directly in Supabase
+ */
+export async function recordStockAdjustmentInSupabase(params: {
+  productId?: string;
+  sku?: string;
+  productName?: string;
+  adjustedQty: number;
+  reason: string;
+}): Promise<{ success: boolean; movementId?: string; balanceAfter?: number; error?: string }> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const isUuid = params.productId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.productId);
+    
+    // Find the product in Supabase
+    let prodRes;
+    if (isUuid) {
+      prodRes = await client.query(
+        `SELECT id, name, sku, current_stock FROM products WHERE shop_id = $1 AND id = $2 LIMIT 1`,
+        [SHOP_UUID, params.productId]
+      );
+    } else {
+      prodRes = await client.query(
+        `SELECT id, name, sku, current_stock FROM products WHERE shop_id = $1 AND (sku = $2 OR name = $3) LIMIT 1`,
+        [SHOP_UUID, params.sku || '', params.productName || '']
+      );
+    }
+
+    if (!prodRes || prodRes.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return { success: false, error: 'Product not found in Supabase database' };
+    }
+
+    const prod = prodRes.rows[0];
+    const prevStock = parseInt(prod.current_stock, 10) || 0;
+    const diff = params.adjustedQty - prevStock;
+
+    // 1. Update products table
+    await client.query(
+      `UPDATE products SET current_stock = $1, updated_at = NOW() WHERE id = $2`,
+      [params.adjustedQty, prod.id]
+    );
+
+    // 2. Upsert stock_balances
+    await client.query(
+      `INSERT INTO stock_balances (shop_id, product_id, quantity, last_counted_at, updated_at)
+       VALUES ($1, $2, $3, NOW(), NOW())
+       ON CONFLICT (shop_id, product_id) DO UPDATE SET
+         quantity = EXCLUDED.quantity,
+         last_counted_at = NOW(),
+         updated_at = NOW()`,
+      [SHOP_UUID, prod.id, params.adjustedQty]
+    );
+
+    // 3. Record stock_movements ledger
+    const movRes = await client.query(
+      `INSERT INTO stock_movements (
+        shop_id, product_id, movement_type, quantity, balance_after,
+        reference_type, remarks
+      ) VALUES (
+        $1, $2, 'STOCK_ADJUSTMENT', $3, $4,
+        'MANUAL_ADJUSTMENT', $5
+      ) RETURNING id`,
+      [SHOP_UUID, prod.id, diff, params.adjustedQty, params.reason]
+    );
+
+    await client.query('COMMIT');
+    return {
+      success: true,
+      movementId: movRes.rows[0]?.id,
+      balanceAfter: params.adjustedQty,
+    };
+  } catch (err: any) {
+    await client.query('ROLLBACK').catch(() => {});
+    console.error('Error in recordStockAdjustmentInSupabase:', err);
+    return { success: false, error: err.message };
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Fetch stock movements from Supabase
+ */
+export async function getStockMovementsFromSupabase(limit = 100): Promise<StockMovement[]> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      `SELECT sm.*, p.name as product_name
+       FROM stock_movements sm
+       LEFT JOIN products p ON sm.product_id = p.id
+       WHERE sm.shop_id = $1
+       ORDER BY sm.created_at DESC
+       LIMIT $2`,
+      [SHOP_UUID, limit]
+    );
+
+    return res.rows.map((r) => ({
+      id: r.id,
+      shopId: r.shop_id,
+      productId: r.product_id,
+      productName: r.product_name || 'Fireworks Item',
+      movementType: r.movement_type,
+      quantity: parseInt(r.quantity, 10) || 0,
+      balanceAfter: parseInt(r.balance_after, 10) || 0,
+      referenceType: r.reference_type || 'MANUAL_ADJUSTMENT',
+      referenceId: r.reference_id,
+      remarks: r.remarks || '',
+      createdAt: r.created_at ? new Date(r.created_at).toISOString() : new Date().toISOString(),
+    }));
   } finally {
     client.release();
   }
