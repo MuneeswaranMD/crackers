@@ -21,6 +21,7 @@ import {
   WebhookEvent,
   IntegrationSyncLog,
   OrderInvoiceLink,
+  ProductAlias,
 } from '@/types';
 import { roundTo2, calculateCartItem, calculateInvoiceTotals } from './calculations';
 
@@ -47,6 +48,7 @@ const STORAGE_KEYS = {
   PRODUCT_MAPPINGS: 'crackers_pos_product_mappings',
   WEBHOOK_EVENTS: 'crackers_pos_webhook_events',
   SYNC_LOGS: 'crackers_pos_sync_logs',
+  PRODUCT_ALIASES: 'crackers_pos_product_aliases',
 };
 
 import { AGANA_SHOP, AGANA_CATEGORIES, AGANA_PRODUCTS } from './aganaCatalog';
@@ -224,6 +226,53 @@ class StorageManager {
 
 const storage = new StorageManager();
 
+export function getInitialProductAliases(products: Product[]): ProductAlias[] {
+  const aliases: ProductAlias[] = [];
+  const addAlias = (alias: string, lang: 'en' | 'ta' | 'tanglish' | 'all', keywords: string[]) => {
+    const prod = products.find((p) => {
+      const text = `${p.name} ${p.tamilName || ''} ${p.categoryName || ''}`.toLowerCase();
+      return keywords.some((kw) => text.includes(kw.toLowerCase()));
+    });
+    if (prod) {
+      aliases.push({
+        id: `alias-${aliases.length + 1}`,
+        shopId: prod.shopId,
+        productId: prod.id,
+        productName: prod.name,
+        alias,
+        language: lang,
+        createdAt: new Date().toISOString(),
+      });
+    }
+  };
+
+  addAlias('red bijili', 'all', ['red bijili']);
+  addAlias('bijili', 'all', ['red bijili', 'bijili crackers']);
+  addAlias('poochatti', 'tanglish', ['flower pots', 'flower pot']);
+  addAlias('பூச்சட்டி', 'ta', ['flower pot', 'புஸ்வாணம்']);
+  addAlias('flower pots', 'en', ['flower pots', 'flower pot']);
+  addAlias('flower pot', 'en', ['flower pots', 'flower pot']);
+  addAlias('saravedi', 'tanglish', ['garland', 'wala']);
+  addAlias('சரவெடி', 'ta', ['garland', 'wala', 'சரவெடி']);
+  addAlias('garlands', 'en', ['garland', 'wala']);
+  addAlias('sparklers', 'en', ['sparkler', 'sparklers']);
+  addAlias('mathappu', 'tanglish', ['sparkler', 'மத்தாப்பு']);
+  addAlias('மத்தாப்பு', 'ta', ['sparkler', 'மத்தாப்பு']);
+  addAlias('kambi mathappu', 'tanglish', ['sparkler', 'மத்தாப்பு']);
+  addAlias('rockets', 'en', ['rocket']);
+  addAlias('rocket', 'en', ['rocket']);
+  addAlias('ராக்கெட்', 'ta', ['rocket', 'ராக்கெட்']);
+  addAlias('chakkars', 'en', ['ground chakkar', 'chakkar']);
+  addAlias('chakkaram', 'tanglish', ['ground chakkar', 'chakkar']);
+  addAlias('சக்கரம்', 'ta', ['ground chakkar', 'சக்கரம்']);
+  addAlias('sound bomb', 'en', ['mega sound bomb', 'sound bomb', 'atom bomb']);
+  addAlias('bomb', 'all', ['mega sound bomb', 'sound bomb', 'bomb']);
+  addAlias('வெடி', 'ta', ['bomb', 'வெடி']);
+  addAlias('pencil', 'all', ['pencil']);
+
+  return aliases;
+}
+
 export const db = {
   // Initialization
   initDefaults: () => {
@@ -282,6 +331,12 @@ export const db = {
     }
     if (!storage.get<IntegrationSyncLog[] | null>(STORAGE_KEYS.SYNC_LOGS, null)) {
       storage.set(STORAGE_KEYS.SYNC_LOGS, []);
+    }
+    if (!storage.get<ProductAlias[] | null>(STORAGE_KEYS.PRODUCT_ALIASES, null)) {
+      storage.set(
+        STORAGE_KEYS.PRODUCT_ALIASES,
+        getInitialProductAliases(storage.get<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS))
+      );
     }
   },
 
@@ -357,6 +412,49 @@ export const db = {
     const list = db.getProducts().filter((p) => p.id !== id);
     storage.set(STORAGE_KEYS.PRODUCTS, list);
     db.logAudit(`Product Deleted`, 'Product', id);
+  },
+
+  // Product Aliases for Voice Recognition & Smart Matching
+  getProductAliases: (): ProductAlias[] =>
+    storage.get<ProductAlias[]>(
+      STORAGE_KEYS.PRODUCT_ALIASES,
+      getInitialProductAliases(storage.get<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS))
+    ),
+  saveProductAlias: (alias: ProductAlias): void => {
+    const list = db.getProductAliases();
+    const cleanAlias = alias.alias.trim().toLowerCase();
+    const idx = list.findIndex(
+      (a) => a.id === alias.id || (a.alias.toLowerCase() === cleanAlias && a.language === alias.language)
+    );
+    const updatedItem: ProductAlias = {
+      ...alias,
+      alias: cleanAlias,
+      id: alias.id || `alias-${Date.now()}`,
+    };
+    if (idx >= 0) list[idx] = updatedItem;
+    else list.push(updatedItem);
+    storage.set(STORAGE_KEYS.PRODUCT_ALIASES, list);
+    db.logAudit(`Product Alias Saved: ${updatedItem.alias}`, 'ProductAlias', updatedItem.id);
+
+    // Persist directly to Supabase if online
+    if (typeof window !== 'undefined') {
+      fetch('/api/product-aliases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedItem),
+      }).catch((e) => console.warn('[Supabase Sync Alias Warning]:', e));
+    }
+  },
+  deleteProductAlias: (id: string): void => {
+    const list = db.getProductAliases().filter((a) => a.id !== id);
+    storage.set(STORAGE_KEYS.PRODUCT_ALIASES, list);
+    db.logAudit(`Product Alias Deleted`, 'ProductAlias', id);
+
+    if (typeof window !== 'undefined') {
+      fetch(`/api/product-aliases?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      }).catch((e) => console.warn('[Supabase Sync Delete Alias Warning]:', e));
+    }
   },
 
   // Customers

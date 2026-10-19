@@ -83,8 +83,36 @@ export default function AuditLogsPage() {
         </div>
       </div>
 
-      {/* Logs Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
+      {/* Mobile Logs View */}
+      <div className="md:hidden space-y-3">
+        {filtered.length === 0 ? (
+          <div className="bg-white rounded-xl border border-slate-200 p-8 text-center text-slate-400 text-xs">
+            No audit records found.
+          </div>
+        ) : (
+          filtered.map((log) => (
+            <div
+              key={log.id}
+              className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-2 text-xs"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="font-extrabold text-slate-900">{log.user}</span>
+                <span className="px-2 py-0.5 rounded font-bold text-[10px] bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
+                  {log.entityName}
+                </span>
+              </div>
+              <div className="text-slate-800 font-medium">{log.action}</div>
+              <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+                <span>{new Date(log.createdAt).toLocaleString('en-IN')}</span>
+                {log.entityId && <span className="font-mono">ID: {log.entityId}</span>}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Logs Table */}
+      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">

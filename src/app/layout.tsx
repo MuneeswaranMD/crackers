@@ -10,12 +10,9 @@ export const metadata: Metadata = {
   title: 'AGANA FIREWORKS - Sri Kalieswari Traders (Thayilpatti, Sivakasi)',
   description: 'Agana Fireworks (Sri Kalieswari Traders) - Sivakasi Crackers & Fireworks Retail Billing POS Terminal (Catalog 2026)',
   icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/logo.png', type: 'image/png' },
-    ],
-    shortcut: '/favicon.ico',
-    apple: '/logo.png',
+    icon: [{ url: '/icon.png', type: 'image/jpeg' }],
+    shortcut: '/icon.png',
+    apple: '/icon.png',
   },
 };
 

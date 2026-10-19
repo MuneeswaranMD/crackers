@@ -464,8 +464,130 @@ export default function OnlineOrdersPage() {
             </div>
           </div>
 
-          {/* Orders Table */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
+          {/* Mobile Orders View */}
+          <div className="md:hidden space-y-3">
+            {filteredOrders.length === 0 ? (
+              <div className="bg-white rounded-xl border border-slate-200 p-8 text-center text-slate-400 text-xs">
+                No online orders found matching current criteria.
+              </div>
+            ) : (
+              filteredOrders.map((ord) => {
+                const isInvoiced = ord.syncStatus === 'INVOICED';
+                const needsMapping = ord.syncStatus === 'MAPPING_PENDING';
+
+                return (
+                  <div
+                    key={ord.id}
+                    className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-3 text-xs"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-extrabold text-slate-900 text-sm">#{ord.orderNumber}</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-bold">
+                            WC
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-slate-400 mt-0.5">
+                          {new Date(ord.externalCreatedAt).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                          })}{' '}
+                          •{' '}
+                          {new Date(ord.externalCreatedAt).toLocaleTimeString('en-IN', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-1">
+                        <span
+                          className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                            ord.status === 'completed'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : ord.status === 'processing'
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                              : ord.status === 'cancelled'
+                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                              : 'bg-slate-100 text-slate-700 border border-slate-200'
+                          }`}
+                        >
+                          {ord.status}
+                        </span>
+                        <span
+                          className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
+                            ord.isPaid
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-amber-50 text-amber-700 border border-amber-200'
+                          }`}
+                        >
+                          {ord.isPaid ? 'PAID' : 'PENDING'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 space-y-1">
+                      <div className="font-bold text-slate-900">{ord.customerName}</div>
+                      <div className="text-[11px] text-slate-500">
+                        {ord.shippingAddress?.city || ord.billingAddress?.city || 'Tamil Nadu'} • {ord.customerPhone || 'No Phone'}
+                      </div>
+                      <div className="text-[10px] text-slate-400 truncate">
+                        {ord.items?.length || 0} product(s): {ord.items?.map((i) => `${i.quantity}x ${i.name}`).join(', ')}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <div>
+                        <span className="text-[10px] text-slate-400 block font-semibold">Total Amount</span>
+                        <span className="text-base font-black text-slate-950">₹{ord.totalAmount.toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => setSelectedOrder(ord)}
+                          className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg border border-slate-200"
+                          title="View Order"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+
+                        {isInvoiced ? (
+                          <Link
+                            href="/sales"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Invoiced</span>
+                          </Link>
+                        ) : needsMapping ? (
+                          <button
+                            onClick={() => setActiveTab('MAPPINGS')}
+                            className="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-bold flex items-center gap-1"
+                          >
+                            <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+                            <span>Map SKUs</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleGenerateInvoice(ord)}
+                            className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold shadow-sm flex items-center gap-1"
+                          >
+                            <Flame className="w-3.5 h-3.5" />
+                            <span>Invoice</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Desktop Orders Table */}
+          <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
@@ -615,7 +737,84 @@ export default function OnlineOrdersPage() {
             </p>
           </div>
 
-          <div className="overflow-x-auto border border-slate-200 rounded-xl">
+          {/* Mobile Mappings View */}
+          <div className="md:hidden space-y-3">
+            {Array.from(
+              new Set(
+                orders.flatMap((o) => o.items || []).map((i) => i.externalProductId)
+              )
+            ).map((extProdId) => {
+              const sampleItem = orders
+                .flatMap((o) => o.items || [])
+                .find((i) => i.externalProductId === extProdId)!;
+              const mapping = mappings.find((m) => m.externalProductId === extProdId);
+              const localProd = mapping?.localProductId
+                ? products.find((p) => p.id === mapping.localProductId)
+                : sampleItem.localProduct;
+
+              const isMapped = Boolean(localProd);
+
+              return (
+                <div
+                  key={extProdId}
+                  className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-3 text-xs"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-bold text-slate-900">{sampleItem.name}</div>
+                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                        WooCommerce ID: {extProdId} • SKU: {sampleItem.sku || 'N/A'}
+                      </div>
+                    </div>
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${
+                        isMapped
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200'
+                      }`}
+                    >
+                      {isMapped ? 'MAPPED' : 'ACTION REQUIRED'}
+                    </span>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                    <span className="text-[10px] text-slate-400 font-semibold block mb-1">Associated Local Product</span>
+                    {localProd ? (
+                      <div>
+                        <div className="font-bold text-slate-900">{localProd.name}</div>
+                        <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                          SKU: {localProd.sku} • Stock: <span className="font-bold text-slate-900">{localProd.currentStock} {localProd.uom}</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-rose-600 font-semibold italic text-[11px]">
+                        Unmapped — Manual Assignment Required
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="pt-1 flex justify-end">
+                    <button
+                      onClick={() => {
+                        setMappingModal({
+                          externalProductId: extProdId,
+                          externalName: sampleItem.name,
+                          externalSku: sampleItem.sku,
+                        });
+                        setSelectedLocalProdId(localProd?.id || products[0]?.id || '');
+                      }}
+                      className="w-full py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold transition text-center"
+                    >
+                      {isMapped ? 'Change Mapping' : 'Assign Product'}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Mappings Table */}
+          <div className="hidden md:block overflow-x-auto border border-slate-200 rounded-xl">
             <table className="w-full text-left">
               <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
                 <tr>
@@ -1021,7 +1220,7 @@ export default function OnlineOrdersPage() {
               {/* Line Items */}
               <div>
                 <h4 className="font-bold text-slate-900 text-xs mb-2">Order Line Items</h4>
-                <div className="border border-slate-200 rounded-xl overflow-hidden">
+                <div className="border border-slate-200 rounded-xl overflow-x-auto">
                   <table className="w-full text-left">
                     <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
                       <tr>

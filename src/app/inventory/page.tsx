@@ -220,8 +220,82 @@ export default function InventoryPage() {
 
       {/* Balances Tab */}
       {activeTab === 'balances' ? (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+        <>
+          {/* Mobile Inventory Balances Card View (md:hidden) */}
+          <div className="md:hidden space-y-3">
+            {filteredProducts.map((p) => {
+              const isLow = p.currentStock <= p.minStockAlert;
+              const isOut = p.currentStock <= 0;
+              return (
+                <div
+                  key={p.id}
+                  className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2.5"
+                >
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={p.imageUrl || getProductImageUrl(p)}
+                      alt={p.name}
+                      className="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0 bg-slate-50"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-1">
+                        <div className="font-bold text-slate-900 text-sm line-clamp-1">{p.name}</div>
+                        <span
+                          className={`px-2 py-0.5 rounded font-bold text-[10px] shrink-0 ${
+                            isOut
+                              ? 'bg-rose-100 text-rose-700'
+                              : isLow
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-emerald-50 text-emerald-700'
+                          }`}
+                        >
+                          {isOut ? 'Out of Stock' : isLow ? 'Low Stock' : 'In Stock'}
+                        </span>
+                      </div>
+                      {p.tamilName && (
+                        <div className="text-[11px] text-slate-500 line-clamp-1">{p.tamilName}</div>
+                      )}
+                      <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                        {p.sku} • {p.packSize} • {p.brand}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 border-t border-slate-100 pt-2 text-xs">
+                    <div>
+                      <div className="text-[10px] text-slate-400">Available Stock</div>
+                      <div className="font-black text-slate-900 text-sm">
+                        {p.currentStock} {p.uom}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-slate-400">Selling Price</div>
+                      <div className="font-bold text-slate-800">₹{p.sellingPrice.toFixed(2)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-slate-400">Cost Price</div>
+                      <div className="font-medium text-slate-600">₹{p.purchasePrice.toFixed(2)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-slate-400">Total Cost Valuation</div>
+                      <div className="font-black text-amber-700">
+                        ₹{(p.purchasePrice * p.currentStock).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {filteredProducts.length === 0 && (
+              <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
+                No inventory items found matching your search.
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Inventory Balances Table (hidden md:block) */}
+          <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
                 <tr>
@@ -283,59 +357,105 @@ export default function InventoryPage() {
               </tbody>
             </table>
           </div>
-        </div>
+          </div>
+        </>
       ) : (
         /* Stock Ledger Tab */
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
-                <tr>
-                  <th className="px-4 py-3">Timestamp</th>
-                  <th className="px-4 py-3">Product Name</th>
-                  <th className="px-4 py-3">Movement Type</th>
-                  <th className="px-4 py-3 text-right">Qty Change</th>
-                  <th className="px-4 py-3 text-right">Balance After</th>
-                  <th className="px-4 py-3">Reference / Remarks</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredMovements.map((m) => (
-                  <tr key={m.id} className="hover:bg-slate-50 transition">
-                    <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
-                      {new Date(m.createdAt).toLocaleString('en-IN')}
-                    </td>
-                    <td className="px-4 py-3 font-bold text-slate-800">{m.productName}</td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded font-mono text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                        {m.movementType}
-                      </span>
-                    </td>
-                    <td
-                      className={`px-4 py-3 text-right font-black ${
+        <>
+          {/* Mobile Inventory Movements Card View (md:hidden) */}
+          <div className="md:hidden space-y-3">
+            {filteredMovements.map((m) => (
+              <div
+                key={m.id}
+                className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2 text-xs"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900">{m.productName}</span>
+                  <span className="px-2 py-0.5 rounded font-mono text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                    {m.movementType}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-[11px] text-slate-500 border-y border-slate-100 py-1.5">
+                  <span>{new Date(m.createdAt).toLocaleString('en-IN')}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">Qty:</span>
+                    <span
+                      className={`font-black ${
                         m.quantity > 0 ? 'text-emerald-600' : 'text-rose-600'
                       }`}
                     >
                       {m.quantity > 0 ? `+${m.quantity}` : m.quantity}
-                    </td>
-                    <td className="px-4 py-3 text-right font-bold text-slate-900">
-                      {m.balanceAfter}
-                    </td>
-                    <td className="px-4 py-3 text-slate-600">{m.remarks || 'N/A'}</td>
-                  </tr>
-                ))}
-                {filteredMovements.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="py-12 text-center text-slate-400">
-                      No stock movement ledger transactions recorded yet.
-                    </td>
-                  </tr>
+                    </span>
+                    <span className="text-slate-400">| Bal:</span>
+                    <span className="font-bold text-slate-900">{m.balanceAfter}</span>
+                  </div>
+                </div>
+                {m.remarks && (
+                  <div className="text-[11px] text-slate-600">
+                    <span className="font-semibold text-slate-500">Remarks:</span> {m.remarks}
+                  </div>
                 )}
-              </tbody>
-            </table>
+              </div>
+            ))}
+            {filteredMovements.length === 0 && (
+              <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
+                No stock movement ledger transactions recorded yet.
+              </div>
+            )}
           </div>
-        </div>
-      )}
+
+          {/* Desktop Stock Ledger Table (hidden md:block) */}
+          <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
+                  <tr>
+                    <th className="px-4 py-3">Timestamp</th>
+                    <th className="px-4 py-3">Product Name</th>
+                    <th className="px-4 py-3">Movement Type</th>
+                    <th className="px-4 py-3 text-right">Qty Change</th>
+                    <th className="px-4 py-3 text-right">Balance After</th>
+                    <th className="px-4 py-3">Reference / Remarks</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredMovements.map((m) => (
+                    <tr key={m.id} className="hover:bg-slate-50 transition">
+                      <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
+                        {new Date(m.createdAt).toLocaleString('en-IN')}
+                      </td>
+                      <td className="px-4 py-3 font-bold text-slate-800">{m.productName}</td>
+                      <td className="px-4 py-3">
+                        <span className="px-2 py-0.5 rounded font-mono text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                          {m.movementType}
+                        </span>
+                      </td>
+                      <td
+                        className={`px-4 py-3 text-right font-black ${
+                          m.quantity > 0 ? 'text-emerald-600' : 'text-rose-600'
+                        }`}
+                      >
+                        {m.quantity > 0 ? `+${m.quantity}` : m.quantity}
+                      </td>
+                      <td className="px-4 py-3 text-right font-bold text-slate-900">
+                        {m.balanceAfter}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">{m.remarks || 'N/A'}</td>
+                    </tr>
+                  ))}
+                  {filteredMovements.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="py-12 text-center text-slate-400">
+                        No stock movement ledger transactions recorded yet.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}  
     </div>
   );
 }

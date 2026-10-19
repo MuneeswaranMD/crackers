@@ -31,11 +31,26 @@ import {
   Zap,
   Sliders,
   ChevronRight,
+  ChevronLeft,
   Check,
   Loader2,
+  Mic,
+  Undo2,
 } from 'lucide-react';
 import { db, getProductImageUrl } from '@/lib/db';
-import { Product, Category, Customer, CartItem, Sale, BillingMode, PaymentMethod, InvoiceType } from '@/types';
+import {
+  Product,
+  Category,
+  Customer,
+  CartItem,
+  Sale,
+  BillingMode,
+  PaymentMethod,
+  InvoiceType,
+  ProductAlias,
+  VoiceMatchResult,
+} from '@/types';
+import VoiceBillingModal from '@/components/pos/VoiceBillingModal';
 import {
   calculateLineItem,
   calculateCartItem,
@@ -83,7 +98,7 @@ const POSProductCard = React.memo(function POSProductCard({
       }`}
     >
       {/* Product Packaging Image */}
-      <div className="relative mb-2 w-full h-28 sm:h-32 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80">
+      <div className="relative mb-2 w-full h-24 sm:h-32 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80">
         <img
           src={productImg}
           alt={prod.name}
@@ -231,6 +246,14 @@ export default function POSPage() {
   const [newCustomerEmail, setNewCustomerEmail] = useState('');
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
 
+  // Voice Billing State
+  const [showVoiceModal, setShowVoiceModal] = useState(false);
+  const [productAliases, setProductAliases] = useState<ProductAlias[]>([]);
+  const [previousCartSnapshot, setPreviousCartSnapshot] = useState<CartItem[] | null>(null);
+  const [lastVoiceActionLabel, setLastVoiceActionLabel] = useState<string | null>(null);
+  const [voiceFeedbackBanner, setVoiceFeedbackBanner] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [mobileActiveTab, setMobileActiveTab] = useState<'CATALOG' | 'CART'>('CATALOG');
+
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const loadInitialData = async () => {
@@ -239,14 +262,16 @@ export default function POSPage() {
     setCategories(db.getCategories());
     setCustomers(db.getCustomers());
     setHeldBills(db.getHeldBills());
+    setProductAliases(db.getProductAliases());
     const settings = db.getSettings();
     setBillingMode(settings.defaultBillingMode);
 
     try {
-      const [prodsRes, catsRes, custsRes] = await Promise.all([
+      const [prodsRes, catsRes, custsRes, aliasesRes] = await Promise.all([
         fetch('/api/products'),
         fetch('/api/categories'),
         fetch('/api/customers'),
+        fetch('/api/product-aliases'),
       ]);
       if (prodsRes.ok) {
         const pData = await prodsRes.json();
@@ -264,6 +289,12 @@ export default function POSPage() {
         const cuData = await custsRes.json();
         if (cuData.success && Array.isArray(cuData.data) && cuData.data.length > 0) {
           setCustomers(cuData.data);
+        }
+      }
+      if (aliasesRes.ok) {
+        const aData = await aliasesRes.json();
+        if (aData.success && Array.isArray(aData.data) && aData.data.length > 0) {
+          setProductAliases(aData.data);
         }
       }
     } catch (err) {
@@ -286,6 +317,9 @@ export default function POSPage() {
       } else if (e.key === 'F3') {
         e.preventDefault();
         setShowCustomerModal((prev) => !prev);
+      } else if (e.key === 'F4') {
+        e.preventDefault();
+        setShowVoiceModal((prev) => !prev);
       } else if (e.key === 'F6') {
         e.preventDefault();
         handleHoldBill();
@@ -305,6 +339,7 @@ export default function POSPage() {
         setShowCustomerModal(false);
         setShowHeldModal(false);
         setShowSuccessModal(false);
+        setShowVoiceModal(false);
         setErrorBanner(null);
       }
     };
@@ -448,6 +483,131 @@ export default function POSPage() {
     setTenderedCash('');
     setBillDiscountPct(0);
     setErrorBanner(null);
+  };
+
+  // Voice-Enabled Billing Handlers (Supports Single and Multi-Product Commands)
+  const handleApplyVoiceCommand = (result: VoiceMatchResult | VoiceMatchResult[]) => {
+    setErrorBanner(null);
+    const results = Array.isArray(result) ? result : [result];
+    if (results.length === 0) return;
+
+    if (results.some((r) => r.status === 'UNDO_REQUEST')) {
+      handleUndoLastVoiceAction();
+      return;
+    }
+
+    const validMatches = results.filter((r) => r.status === 'EXACT_MATCH' && r.matchedProduct);
+    if (validMatches.length === 0) {
+      const firstErr = results.find((r) => r.errorMessage)?.errorMessage;
+      setErrorBanner(firstErr || 'No matching products could be confirmed.');
+      return;
+    }
+
+    const settings = db.getSettings();
+
+    // Snapshot cart once for the entire multi-product batch undo
+    setPreviousCartSnapshot([...cart]);
+
+    const appliedLabels: string[] = [];
+    let updatedCart = [...cart];
+
+    for (const res of validMatches) {
+      const prod = res.matchedProduct!;
+      const action = res.command.action;
+      const requestedQty = res.command.quantity || 1;
+
+      if (action === 'ADD') {
+        const existingIdx = updatedCart.findIndex((item) => item.product.id === prod.id);
+        if (existingIdx >= 0) {
+          const newQty = updatedCart[existingIdx].quantity + requestedQty;
+          if (!settings.allowNegativeStock && newQty > prod.currentStock) {
+            setErrorBanner(`Stock limit reached for "${prod.name}" (${prod.currentStock} in stock).`);
+            continue;
+          }
+          updatedCart[existingIdx] = {
+            ...updatedCart[existingIdx],
+            quantity: newQty,
+          };
+        } else {
+          if (!settings.allowNegativeStock && (prod.currentStock <= 0 || requestedQty > prod.currentStock)) {
+            setErrorBanner(`Only ${prod.currentStock} units available for "${prod.name}".`);
+            continue;
+          }
+          const newItem = calculateCartItem(prod, requestedQty, prod.sellingPrice, 0, billingMode, 18);
+          updatedCart.push(newItem);
+        }
+        appliedLabels.push(`${requestedQty}x ${prod.name}`);
+      } else if (action === 'UPDATE') {
+        const targetIdx =
+          res.command.productNameQuery === 'CURRENT_ITEM'
+            ? updatedCart.length - 1
+            : updatedCart.findIndex((item) => item.product.id === prod.id);
+
+        if (targetIdx < 0 || targetIdx >= updatedCart.length) {
+          setErrorBanner(`"${prod.name}" is not currently in the cart to update.`);
+          continue;
+        }
+
+        if (!settings.allowNegativeStock && requestedQty > prod.currentStock) {
+          setErrorBanner(`Only ${prod.currentStock} units available for "${prod.name}".`);
+          continue;
+        }
+
+        updatedCart[targetIdx] = {
+          ...updatedCart[targetIdx],
+          quantity: requestedQty,
+        };
+        appliedLabels.push(`Updated ${prod.name} -> ${requestedQty}`);
+      } else if (action === 'REMOVE') {
+        const targetIdx =
+          res.command.productNameQuery === 'CURRENT_ITEM'
+            ? updatedCart.length - 1
+            : updatedCart.findIndex((item) => item.product.id === prod.id);
+
+        if (targetIdx < 0 || targetIdx >= updatedCart.length) {
+          setErrorBanner(`"${prod.name}" is not in the cart to remove.`);
+          continue;
+        }
+
+        const existingQty = updatedCart[targetIdx].quantity;
+        if (res.command.isQuantityExplicit && existingQty > requestedQty) {
+          updatedCart[targetIdx] = {
+            ...updatedCart[targetIdx],
+            quantity: existingQty - requestedQty,
+          };
+          appliedLabels.push(`Reduced ${requestedQty}x ${prod.name}`);
+        } else {
+          updatedCart = updatedCart.filter((_, i) => i !== targetIdx);
+          appliedLabels.push(`Removed ${prod.name}`);
+        }
+      }
+    }
+
+    setCart(updatedCart);
+
+    if (appliedLabels.length > 0) {
+      const summaryLabel =
+        appliedLabels.length === 1
+          ? `Added ${appliedLabels[0]}`
+          : `Added ${appliedLabels.length} items (${appliedLabels.join(', ')})`;
+      setLastVoiceActionLabel(summaryLabel);
+      setVoiceFeedbackBanner({ message: `Voice applied: ${summaryLabel}`, type: 'success' });
+    }
+  };
+
+  const handleUndoLastVoiceAction = () => {
+    if (!previousCartSnapshot) {
+      setErrorBanner('No recent voice operation to undo.');
+      return;
+    }
+    const label = lastVoiceActionLabel;
+    setCart(previousCartSnapshot);
+    setPreviousCartSnapshot(null);
+    setLastVoiceActionLabel(null);
+    setVoiceFeedbackBanner({
+      message: `Undone voice action: ${label || 'Cart reverted'}`,
+      type: 'info',
+    });
   };
 
   // Hold and Recall Bills
@@ -614,6 +774,7 @@ export default function POSPage() {
       setSelectedCustomer(null);
       setTenderedCash('');
       setBillDiscountPct(0);
+      setMobileActiveTab('CATALOG');
     } catch (err: any) {
       setErrorBanner(err.message || 'Error occurred while checking out.');
     } finally {
@@ -682,50 +843,97 @@ export default function POSPage() {
   )}&am=${invoiceTotals.grandTotal}&cu=INR&tn=${encodeURIComponent('Crackers Bill')}`;
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-8rem)] min-h-[620px] gap-3 select-none font-sans">
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-8rem)] min-h-0 lg:min-h-[620px] gap-3 select-none font-sans pb-24 lg:pb-0 relative">
+      {/* Mobile Top Navigation Switcher: Fireworks Catalog vs Cart */}
+      <div className="lg:hidden flex items-center bg-white p-1 rounded-2xl border border-[#E5E7EB] shadow-xs shrink-0">
+        <button
+          type="button"
+          onClick={() => setMobileActiveTab('CATALOG')}
+          className={`flex-1 py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition ${
+            mobileActiveTab === 'CATALOG'
+              ? 'bg-[#111318] text-white shadow-sm'
+              : 'text-slate-600 hover:text-slate-900 bg-transparent'
+          }`}
+        >
+          <Flame className="w-4 h-4 text-amber-400" />
+          <span>Fireworks ({products.length})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileActiveTab('CART')}
+          className={`flex-1 py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition relative ${
+            mobileActiveTab === 'CART'
+              ? 'bg-[#111318] text-white shadow-sm'
+              : 'text-slate-600 hover:text-slate-900 bg-transparent'
+          }`}
+        >
+          <ShoppingBag className="w-4 h-4 text-amber-400" />
+          <span>Cart ({cart.reduce((s, i) => s + i.quantity, 0)})</span>
+          {cart.length > 0 && (
+            <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-[#F59E0B] text-slate-950 font-black">
+              {formatINR(invoiceTotals.grandTotal)}
+            </span>
+          )}
+        </button>
+      </div>
+
       {/* 1. CENTRAL PRODUCT SELECTION AREA (Left & Center) */}
-      <div className="flex-1 flex flex-col bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden">
+      <div className={`flex-1 ${mobileActiveTab === 'CATALOG' ? 'flex' : 'hidden lg:flex'} flex-col bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden min-h-[500px] lg:min-h-0`}>
         {/* Top Search & Barcode Scan Workspace */}
-        <div className="p-2.5 bg-white border-b border-[#E5E7EB] flex flex-col sm:flex-row items-center gap-2">
-          {/* Search Input */}
-          <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 absolute left-3 top-3 text-[#6B7280]" />
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleBarcodeSubmit}
-              placeholder="Search Crackers by Name, தமிழ் பெயர், Brand, SKU or Scan Barcode (F2)..."
-              className="w-full bg-[#F5F6F8] border border-[#E5E7EB] text-[#1F2937] pl-9 pr-9 py-2 rounded-xl text-xs sm:text-sm placeholder-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:bg-white font-medium transition"
-              autoFocus
-            />
-            {searchQuery !== deferredSearchQuery ? (
-              <Loader2 className="w-4 h-4 absolute right-3 top-2.5 text-amber-500 animate-spin" />
-            ) : searchQuery ? (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            ) : null}
+        <div className="p-2 sm:p-2.5 bg-white border-b border-[#E5E7EB] flex flex-col sm:flex-row items-center gap-2">
+          {/* Search Input & Voice Mic Button */}
+          <div className="relative flex-1 w-full flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-3 top-3 text-[#6B7280]" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleBarcodeSubmit}
+                placeholder="Search Crackers by Name, தமிழ் பெயர், Brand, SKU or Scan Barcode (F2)..."
+                className="w-full bg-[#F5F6F8] border border-[#E5E7EB] text-[#1F2937] pl-9 pr-9 py-2 rounded-xl text-xs sm:text-sm placeholder-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:bg-white font-medium transition"
+                autoFocus
+              />
+              {searchQuery !== deferredSearchQuery ? (
+                <Loader2 className="w-4 h-4 absolute right-3 top-2.5 text-amber-500 animate-spin" />
+              ) : searchQuery ? (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              ) : null}
+            </div>
+
+            {/* Voice-Enabled Billing Mic Button */}
+            <button
+              type="button"
+              id="pos-voice-billing-btn"
+              onClick={() => setShowVoiceModal(true)}
+              className="px-2.5 sm:px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-sm hover:shadow transition border border-amber-400 shrink-0 select-none cursor-pointer"
+              title="Voice-Enabled Billing (F4) - Add fireworks by voice in English, Tamil, or Tanglish"
+            >
+              <Mic className="w-4 h-4 text-slate-950 animate-pulse shrink-0" />
+              <span className="inline text-xs font-bold">Voice POS</span>
+            </button>
           </div>
 
           {/* Barcode scanner readiness indicator & Recall Held Bills */}
-          <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between">
+          <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-end">
             <div
-              className="text-xs px-3 py-2 rounded-xl bg-slate-50 text-[#1F2937] font-mono flex items-center gap-1.5 border border-[#E5E7EB]"
+              className="text-xs px-2.5 py-1.5 sm:py-2 rounded-xl bg-slate-50 text-[#1F2937] font-mono flex items-center gap-1.5 border border-[#E5E7EB]"
               title="Barcode scanner auto-adds on Enter"
             >
               <Barcode className="w-4 h-4 text-amber-600" />
-              <span className="hidden xl:inline text-[11px] font-bold">Scanner Ready</span>
+              <span className="text-[10px] sm:text-[11px] font-bold">Scanner Ready</span>
             </div>
 
             {heldBills.length > 0 && (
               <button
                 onClick={() => setShowHeldModal(true)}
-                className="px-3 py-2 rounded-xl bg-[#F59E0B] hover:bg-amber-400 text-[#111318] text-xs font-black flex items-center gap-1.5 shadow-sm transition"
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-[#F59E0B] hover:bg-amber-400 text-[#111318] text-xs font-black flex items-center gap-1.5 shadow-sm transition"
               >
                 <PlayCircle className="w-4 h-4" />
                 <span>Resume ({heldBills.length})</span>
@@ -733,6 +941,35 @@ export default function POSPage() {
             )}
           </div>
         </div>
+
+        {/* Voice Billing Feedback Banner with Undo */}
+        {voiceFeedbackBanner && (
+          <div className="mx-2.5 my-1.5 p-2 bg-amber-50/90 border border-amber-300 rounded-xl text-xs flex items-center justify-between text-amber-950 animate-in fade-in">
+            <span className="font-bold flex items-center gap-1.5">
+              <Mic className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>{voiceFeedbackBanner.message}</span>
+            </span>
+            <div className="flex items-center gap-2">
+              {previousCartSnapshot && (
+                <button
+                  type="button"
+                  onClick={handleUndoLastVoiceAction}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-amber-300 hover:bg-amber-100 text-amber-900 font-black text-[11px] flex items-center gap-1 shadow-xs transition"
+                >
+                  <Undo2 className="w-3.5 h-3.5 text-amber-600" />
+                  Undo
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setVoiceFeedbackBanner(null)}
+                className="text-amber-700 hover:text-amber-900 p-0.5"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Category Filter Chips (DashPOS Style) */}
         <div className="px-3 py-2 bg-white border-b border-[#E5E7EB] flex items-center gap-1.5 overflow-x-auto text-xs font-bold scrollbar-none">
@@ -806,7 +1043,7 @@ export default function POSPage() {
         </div>
 
         {/* Product Cards Grid */}
-        <div className="flex-1 overflow-y-auto p-3 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 bg-[#F5F6F8] content-start auto-rows-max items-start">
+        <div className="flex-1 overflow-y-auto p-2 sm:p-3 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-3 bg-[#F5F6F8] content-start auto-rows-max items-start">
           {visibleProducts.map((prod) => (
             <POSProductCard
               key={prod.id}
@@ -842,7 +1079,22 @@ export default function POSPage() {
       </div>
 
       {/* 2. RIGHT-SIDE BILLING CART & CHECKOUT PANEL (#FFFFFF, border #E5E7EB) */}
-      <div className="w-full lg:w-[360px] xl:w-[380px] flex flex-col bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden flex-shrink-0">
+      <div className={`w-full lg:w-[360px] xl:w-[380px] ${mobileActiveTab === 'CART' ? 'flex' : 'hidden lg:flex'} flex-col bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden flex-shrink-0 min-h-[500px] lg:min-h-0`}>
+        {/* Mobile Header: Back to Catalog Button */}
+        <div className="lg:hidden p-2.5 bg-slate-50 border-b border-[#E5E7EB] flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setMobileActiveTab('CATALOG')}
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-1.5 border border-slate-200 shadow-xs active:scale-95 transition"
+          >
+            <ChevronLeft className="w-4 h-4 text-amber-600" />
+            <span>← Back to Fireworks</span>
+          </button>
+          <span className="text-xs font-bold text-slate-600">
+            {cart.reduce((s, i) => s + i.quantity, 0)} items in Cart
+          </span>
+        </div>
+
         {/* Cart Top Bar: Current Sale Header */}
         <div className="p-3.5 bg-white border-b border-[#E5E7EB] flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -938,22 +1190,22 @@ export default function POSPage() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => updateQuantity(index, item.quantity - 1)}
-                  className="w-6 h-6 rounded-lg bg-[#F5F6F8] hover:bg-slate-200 text-[#1F2937] flex items-center justify-center font-bold"
+                  className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg bg-[#F5F6F8] hover:bg-slate-200 active:bg-slate-300 text-[#1F2937] flex items-center justify-center font-bold"
                 >
-                  <Minus className="w-3 h-3" />
+                  <Minus className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
                 </button>
                 <input
                   type="number"
                   min="1"
                   value={item.quantity}
                   onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1)}
-                  className="w-10 text-center font-bold text-[#1F2937] border border-[#E5E7EB] rounded-lg py-0.5 focus:outline-none focus:ring-1 focus:ring-[#F59E0B]"
+                  className="w-10 text-center font-bold text-[#1F2937] border border-[#E5E7EB] rounded-lg py-1 sm:py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#F59E0B]"
                 />
                 <button
                   onClick={() => updateQuantity(index, item.quantity + 1)}
-                  className="w-6 h-6 rounded-lg bg-[#F5F6F8] hover:bg-slate-200 text-[#1F2937] flex items-center justify-center font-bold"
+                  className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg bg-[#F5F6F8] hover:bg-slate-200 active:bg-slate-300 text-[#1F2937] flex items-center justify-center font-bold"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
                 </button>
               </div>
 
@@ -1414,6 +1666,49 @@ export default function POSPage() {
           </div>
         </div>
       )}
+
+      {/* Mobile Floating Sticky Cart Summary Bar */}
+      {cart.length > 0 && mobileActiveTab === 'CATALOG' && (
+        <div className="lg:hidden fixed bottom-3 left-3 right-3 z-40 animate-in slide-in-from-bottom-3 duration-200">
+          <button
+            type="button"
+            onClick={() => setMobileActiveTab('CART')}
+            className="w-full bg-[#111318] text-white p-3 rounded-2xl shadow-2xl border border-amber-500/40 flex items-center justify-between active:scale-[0.99] transition"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-[#F59E0B] text-slate-950 flex items-center justify-center font-black text-xs shadow-sm">
+                {cart.reduce((s, i) => s + i.quantity, 0)}
+              </div>
+              <div className="text-left">
+                <div className="text-[11px] text-slate-400 font-medium">
+                  {cart.length} item{cart.length > 1 ? 's' : ''} in cart
+                </div>
+                <div className="text-sm font-black text-amber-400 leading-tight">
+                  {formatINR(invoiceTotals.grandTotal)}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 bg-[#F59E0B] hover:bg-amber-400 text-slate-950 px-3.5 py-2 rounded-xl font-black text-xs shadow">
+              <span>View Cart & Pay</span>
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </button>
+        </div>
+      )}
+
+      {/* Voice-Enabled Billing Modal */}
+      <VoiceBillingModal
+        isOpen={showVoiceModal}
+        onClose={() => setShowVoiceModal(false)}
+        products={products}
+        aliases={productAliases}
+        cart={cart}
+        billingMode={billingMode}
+        onApplyVoiceCommand={handleApplyVoiceCommand}
+        onUndoLastVoiceAction={handleUndoLastVoiceAction}
+        canUndo={Boolean(previousCartSnapshot)}
+        lastVoiceActionLabel={lastVoiceActionLabel}
+      />
     </div>
   );
 }

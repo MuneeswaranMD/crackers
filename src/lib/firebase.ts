@@ -1,4 +1,4 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
+import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -26,6 +26,17 @@ export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
+// Creating a staff account with the primary auth instance would sign out the
+// administrator. A named secondary app keeps the administrator session alive.
+let staffAdminApp: FirebaseApp | null = null;
+const getStaffAdminAuth = () => {
+  if (!staffAdminApp) {
+    staffAdminApp = getApps().find((candidate) => candidate.name === 'staff-account-creator')
+      || initializeApp(firebaseConfig, 'staff-account-creator');
+  }
+  return getAuth(staffAdminApp);
+};
+
 export interface FirebaseStaffUser {
   uid: string;
   email: string | null;
@@ -45,6 +56,16 @@ export const firebaseAuthService = {
     if (cred.user) {
       await updateProfile(cred.user, { displayName: name });
     }
+    return cred.user;
+  },
+
+  createManagedAccount: async (email: string, pass: string, name: string) => {
+    const staffAuth = getStaffAdminAuth();
+    const cred = await createUserWithEmailAndPassword(staffAuth, email, pass);
+    if (cred.user) {
+      await updateProfile(cred.user, { displayName: name });
+    }
+    await signOut(staffAuth);
     return cred.user;
   },
 

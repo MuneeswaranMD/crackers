@@ -95,8 +95,38 @@ export default function ExpensesPage() {
         <span className="text-slate-500 font-medium">{expenses.length} Expense Entries</span>
       </div>
 
-      {/* Expenses Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
+      {/* Mobile Expenses Card View (md:hidden) */}
+      <div className="md:hidden space-y-3">
+        {expenses.map((exp) => (
+          <div
+            key={exp.id}
+            className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2 text-xs"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-slate-900">{exp.category.replace(/_/g, ' ')}</span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                {exp.paymentMode}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-[11px] text-slate-500 border-y border-slate-100 py-1.5">
+              <span>Paid to: <strong className="text-slate-800">{exp.paidTo || 'N/A'}</strong></span>
+              <span>{exp.expenseDate}</span>
+            </div>
+            <div className="flex justify-between items-center pt-0.5">
+              <span className="text-[11px] text-slate-500 truncate max-w-[200px]">{exp.remarks || '-'}</span>
+              <span className="font-black text-rose-600 text-sm">{formatINR(exp.amount)}</span>
+            </div>
+          </div>
+        ))}
+        {expenses.length === 0 && (
+          <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
+            No operating expenses recorded yet.
+          </div>
+        )}
+      </div>
+
+      {/* Expenses Table: Desktop View (hidden md:block) */}
+      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">

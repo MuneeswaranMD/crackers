@@ -142,36 +142,8 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex border-b border-slate-200 text-xs font-bold bg-slate-50">
-          <button
-            type="button"
-            onClick={() => {
-              setTab('LOGIN');
-              setErrorMsg(null);
-            }}
-            className={`flex-1 py-3 text-center border-b-2 transition ${
-              tab === 'LOGIN'
-                ? 'border-amber-500 text-slate-950 bg-white font-extrabold'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Staff Sign In
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setTab('REGISTER');
-              setErrorMsg(null);
-            }}
-            className={`flex-1 py-3 text-center border-b-2 transition ${
-              tab === 'REGISTER'
-                ? 'border-amber-500 text-slate-950 bg-white font-extrabold'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Register Staff Account
-          </button>
+        <div className="border-b border-slate-200 text-xs font-bold bg-slate-50 px-6 py-3 text-slate-600">
+          Staff sign in · Accounts are created by the Super Admin or Store Administrator
         </div>
 
         {/* Form Body */}

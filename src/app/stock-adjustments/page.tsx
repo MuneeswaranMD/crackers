@@ -341,7 +341,81 @@ export default function StockAdjustmentsPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-slate-200">
+        {/* Mobile Ledger Cards View */}
+        <div className="md:hidden space-y-3">
+          {filteredMovements.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 text-xs border border-slate-200 rounded-xl bg-slate-50">
+              No matching stock movement records found.
+            </div>
+          ) : (
+            filteredMovements.slice(0, 30).map((m) => (
+              <div
+                key={m.id}
+                className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2 text-xs"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-extrabold text-slate-900 text-sm">{m.productName}</div>
+                    <div className="text-[10px] text-slate-400 mt-0.5">
+                      {new Date(m.createdAt).toLocaleString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </div>
+                  </div>
+                  <span
+                    className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${
+                      m.movementType === 'STOCK_ADJUSTMENT'
+                        ? 'bg-amber-100 text-amber-800'
+                        : m.movementType === 'SALE_DEDUCTION'
+                        ? 'bg-blue-100 text-blue-800'
+                        : m.movementType === 'PURCHASE_RECEIPT'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : m.movementType === 'DAMAGE_WRITE_OFF'
+                        ? 'bg-rose-100 text-rose-800'
+                        : 'bg-slate-100 text-slate-700'
+                    }`}
+                  >
+                    {m.movementType}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block font-semibold">Adjustment Qty</span>
+                    <span
+                      className={`text-base font-black ${
+                        m.quantity > 0
+                          ? 'text-emerald-600'
+                          : m.quantity < 0
+                          ? 'text-rose-600'
+                          : 'text-slate-500'
+                      }`}
+                    >
+                      {m.quantity > 0 ? `+${m.quantity}` : m.quantity}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 block font-semibold">Balance After</span>
+                    <span className="text-base font-black text-slate-900">{m.balanceAfter}</span>
+                  </div>
+                </div>
+
+                {m.remarks && (
+                  <div className="text-[11px] text-slate-600 italic bg-amber-50/50 p-2 rounded border border-amber-100/50">
+                    {m.remarks}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto rounded-xl border border-slate-200">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
               <tr>

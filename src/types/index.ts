@@ -439,3 +439,48 @@ export interface OrderInvoiceLink {
   createdBy?: string;
   createdAt: string;
 }
+
+export interface ProductAlias {
+  id: string;
+  shopId: string;
+  productId: string;
+  productName?: string;
+  alias: string;
+  language: 'en' | 'ta' | 'tanglish' | 'all';
+  createdAt?: string;
+}
+
+export type VoiceActionType = 'ADD' | 'REMOVE' | 'UPDATE' | 'UNDO' | 'QUERY';
+
+export interface ParsedVoiceCommand {
+  rawTranscript: string;
+  action: VoiceActionType;
+  productNameQuery: string;
+  quantity: number;
+  unit?: string; // 'PKT' | 'BOX' | 'PCS' | 'CASE'
+  confidence: number;
+  customerName?: string;
+  detectedLanguage?: 'en' | 'ta' | 'tanglish';
+  isQuantityExplicit?: boolean;
+}
+
+export interface ProductMatchCandidate {
+  product: Product;
+  score: number; // 0 to 1
+  matchedBy: 'EXACT_NAME' | 'EXACT_TAMIL' | 'EXACT_SKU' | 'EXACT_BARCODE' | 'EXACT_ALIAS' | 'FUZZY_NAME' | 'FUZZY_ALIAS' | 'PARTIAL';
+  matchedTerm: string;
+}
+
+export interface VoiceMatchResult {
+  id?: string;
+  command: ParsedVoiceCommand;
+  status: 'EXACT_MATCH' | 'AMBIGUOUS' | 'NO_MATCH' | 'UNDO_REQUEST' | 'INVALID_COMMAND';
+  matchedProduct?: Product;
+  candidates?: ProductMatchCandidate[];
+  suggestedProducts?: Product[];
+  calculatedLineTotal?: number;
+  taxableValue?: number;
+  totalTax?: number;
+  errorMessage?: string;
+  selected?: boolean;
+}

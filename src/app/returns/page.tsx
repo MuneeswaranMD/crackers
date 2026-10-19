@@ -186,7 +186,7 @@ export default function ReturnsPage() {
             </button>
           </div>
 
-          <div className="border border-slate-200 rounded-lg overflow-hidden">
+          <div className="border border-slate-200 rounded-lg overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                 <tr>
@@ -278,8 +278,46 @@ export default function ReturnsPage() {
         </div>
       )}
 
-      {/* Credit Notes Ledger */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
+      {/* Mobile Credit Notes Card View (md:hidden) */}
+      <div className="md:hidden space-y-3">
+        <div className="px-1 font-bold text-slate-800 text-xs">
+          Posted Credit Notes History ({returns.length})
+        </div>
+        {returns.map((ret) => (
+          <div
+            key={ret.id}
+            className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2 text-xs"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-mono font-bold text-slate-900">{ret.creditNoteNumber}</span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                {ret.refundMethod}
+              </span>
+            </div>
+            <div className="flex justify-between items-start border-y border-slate-100 py-1.5">
+              <div>
+                <div className="font-semibold text-slate-800">{ret.customerName || 'Retail Customer'}</div>
+                <div className="text-[11px] text-slate-500 font-mono">Inv: {ret.invoiceNumber}</div>
+              </div>
+              <div className="text-[11px] text-slate-400">
+                {new Date(ret.createdAt).toLocaleDateString('en-IN')}
+              </div>
+            </div>
+            <div className="flex justify-between items-center pt-0.5">
+              <div className="text-[11px] text-slate-600 truncate max-w-[200px]">{ret.reason}</div>
+              <div className="font-black text-rose-700 text-sm">{formatINR(ret.totalRefund)}</div>
+            </div>
+          </div>
+        ))}
+        {returns.length === 0 && (
+          <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
+            No credit notes or returns issued yet.
+          </div>
+        )}
+      </div>
+
+      {/* Credit Notes Ledger: Desktop View (hidden md:block) */}
+      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
         <div className="px-5 py-3 border-b border-slate-100 font-bold text-slate-800">
           Posted Credit Notes History ({returns.length})
         </div>

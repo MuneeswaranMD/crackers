@@ -484,8 +484,89 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Products Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      {/* Mobile Products Card View (md:hidden) */}
+      <div className="md:hidden space-y-3">
+        {paginatedProducts.map((p) => {
+          const isLow = p.currentStock <= p.minStockAlert;
+          const isOut = p.currentStock <= 0;
+          return (
+            <div
+              key={p.id}
+              className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2.5 transition"
+            >
+              <div className="flex items-start gap-3">
+                <img
+                  src={p.imageUrl || getProductImageUrl(p)}
+                  alt={p.name}
+                  className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0 bg-slate-50"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-1">
+                    <h3 className="font-bold text-slate-900 text-sm leading-tight line-clamp-2">
+                      {p.name}
+                    </h3>
+                    <span
+                      className={`px-2 py-0.5 rounded font-bold text-[10px] shrink-0 ${
+                        isOut
+                          ? 'bg-rose-100 text-rose-700'
+                          : isLow
+                          ? 'bg-amber-100 text-amber-800'
+                          : 'bg-emerald-50 text-emerald-700'
+                      }`}
+                    >
+                      {p.currentStock} {p.uom}
+                    </span>
+                  </div>
+                  {p.tamilName && (
+                    <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{p.tamilName}</div>
+                  )}
+                  <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                    {p.sku} • {p.categoryName || 'General'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Price Breakdown & Actions */}
+              <div className="flex items-center justify-between border-t border-slate-100 pt-2 text-xs">
+                <div>
+                  <div className="text-[10px] text-slate-400">
+                    MRP: <span className="line-through">₹{p.mrp.toFixed(2)}</span> • {p.packSize}
+                  </div>
+                  <div className="text-base font-black text-slate-900">
+                    ₹{p.sellingPrice.toFixed(2)}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => openEditModal(p)}
+                    className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 transition"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProduct(p.id, p.name)}
+                    className="p-1.5 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition"
+                    title="Delete Product"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        {filteredProducts.length === 0 && (
+          <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
+            No products found matching your search criteria.
+          </div>
+        )}
+      </div>
+
+      {/* Products Table: Desktop View (hidden md:block) */}
+      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">

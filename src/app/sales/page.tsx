@@ -28,7 +28,10 @@ export default function SalesPage() {
   const [sales, setSales] = useState<Sale[]>([]);
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
-  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>('all');
+  type DatePreset = 'all' | 'today' | 'yesterday' | 'week' | 'month' | 'custom';
+  const [datePreset, setDatePreset] = useState<DatePreset>('all');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [shop, setShop] = useState<Shop>(db.getShop());
 
@@ -47,6 +50,41 @@ export default function SalesPage() {
       .catch((err) => console.warn('Failed to load sales from Supabase:', err));
   }, []);
 
+  const handlePresetChange = (preset: DatePreset) => {
+    setDatePreset(preset);
+    const now = new Date();
+    const toYMD = (d: Date) => {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    if (preset === 'today') {
+      const todayStr = toYMD(now);
+      setStartDate(todayStr);
+      setEndDate(todayStr);
+    } else if (preset === 'yesterday') {
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yestStr = toYMD(yesterday);
+      setStartDate(yestStr);
+      setEndDate(yestStr);
+    } else if (preset === 'week') {
+      const past7 = new Date(now);
+      past7.setDate(past7.getDate() - 7);
+      setStartDate(toYMD(past7));
+      setEndDate(toYMD(now));
+    } else if (preset === 'month') {
+      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+      setStartDate(toYMD(firstDay));
+      setEndDate(toYMD(now));
+    } else if (preset === 'all') {
+      setStartDate('');
+      setEndDate('');
+    }
+  };
+
   const filteredSales = useMemo(() => {
     const q = deferredSearch.toLowerCase().trim();
     return sales.filter((s) => {
@@ -58,17 +96,36 @@ export default function SalesPage() {
 
       if (!matchesSearch) return false;
 
-      if (dateFilter === 'today') {
-        return new Date(s.createdAt).toDateString() === new Date().toDateString();
+      const saleDate = new Date(s.createdAt);
+
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        if (saleDate < start) return false;
       }
-      if (dateFilter === 'week') {
-        const past = new Date();
-        past.setDate(past.getDate() - 7);
-        return new Date(s.createdAt) >= past;
+
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        if (saleDate > end) return false;
       }
+
       return true;
     });
-  }, [sales, deferredSearch, dateFilter]);
+  }, [sales, deferredSearch, startDate, endDate]);
+
+  const salesSummary = useMemo(() => {
+    return filteredSales.reduce(
+      (acc, s) => {
+        acc.totalInvoices += 1;
+        acc.totalRevenue += s.grandTotal || 0;
+        acc.totalTaxable += s.taxableValue || 0;
+        acc.totalTax += s.totalTax || 0;
+        return acc;
+      },
+      { totalInvoices: 0, totalRevenue: 0, totalTaxable: 0, totalTax: 0 }
+    );
+  }, [filteredSales]);
 
   const exportSalesCSV = () => {
     const headers = [
@@ -160,39 +217,201 @@ export default function SalesPage() {
           ) : null}
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-semibold self-stretch sm:self-auto justify-end">
-          <span className="text-slate-400">Date Filter:</span>
-          <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
-            <button
-              onClick={() => setDateFilter('all')}
-              className={`px-2.5 py-1 rounded transition ${
-                dateFilter === 'all' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setDateFilter('today')}
-              className={`px-2.5 py-1 rounded transition ${
-                dateFilter === 'today' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Today
-            </button>
-            <button
-              onClick={() => setDateFilter('week')}
-              className={`px-2.5 py-1 rounded transition ${
-                dateFilter === 'week' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              7 Days
-            </button>
+        {/* Date Filter Panel */}
+        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold self-stretch sm:self-auto justify-end">
+          <div className="flex flex-wrap items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+            {(
+              [
+                { id: 'all', label: 'All' },
+                { id: 'today', label: 'Today' },
+                { id: 'yesterday', label: 'Yesterday' },
+                { id: 'week', label: '7 Days' },
+                { id: 'month', label: 'This Month' },
+                { id: 'custom', label: 'Custom' },
+              ] as const
+            ).map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => handlePresetChange(p.id)}
+                className={`px-2.5 py-1 rounded transition text-xs ${
+                  datePreset === p.id
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Date Picker Inputs (Always accessible or when custom selected) */}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg">
+            <Calendar className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+                setDatePreset('custom');
+              }}
+              className="bg-transparent text-xs font-mono font-medium text-slate-800 outline-none w-28"
+              title="Start Date"
+            />
+            <span className="text-slate-400 font-bold">to</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => {
+                setEndDate(e.target.value);
+                setDatePreset('custom');
+              }}
+              className="bg-transparent text-xs font-mono font-medium text-slate-800 outline-none w-28"
+              title="End Date"
+            />
+            {(startDate || endDate) && (
+              <button
+                type="button"
+                onClick={() => handlePresetChange('all')}
+                className="text-slate-400 hover:text-slate-600 ml-1"
+                title="Clear date filter"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Sales Invoices Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      {/* Filtered Sales Summary Bar */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 text-xs">
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+          <div className="text-[11px] text-slate-500 font-semibold">Total Invoices</div>
+          <div className="text-lg font-black text-slate-900 mt-0.5">
+            {salesSummary.totalInvoices}
+          </div>
+        </div>
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+          <div className="text-[11px] text-slate-500 font-semibold">Total Revenue</div>
+          <div className="text-lg font-black text-amber-700 mt-0.5">
+            {formatINR(salesSummary.totalRevenue)}
+          </div>
+        </div>
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+          <div className="text-[11px] text-slate-500 font-semibold">Taxable Amount</div>
+          <div className="text-lg font-black text-slate-800 mt-0.5">
+            {formatINR(salesSummary.totalTaxable)}
+          </div>
+        </div>
+        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+          <div className="text-[11px] text-slate-500 font-semibold">18% GST Collected</div>
+          <div className="text-lg font-black text-emerald-700 mt-0.5">
+            {formatINR(salesSummary.totalTax)}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Responsive Sales Invoices: Cards View for Mobile (< md) */}
+      <div className="md:hidden space-y-3">
+        {filteredSales.map((sale) => (
+          <div
+            key={sale.id}
+            className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2.5 transition active:border-amber-400"
+          >
+            {/* Top: Invoice No & Badges */}
+            <div className="flex items-center justify-between">
+              <div className="font-mono font-black text-slate-900 text-sm">
+                {sale.invoiceNumber}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    sale.billingMode === 'GST'
+                      ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                      : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  {sale.billingMode}
+                </span>
+                <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold text-[10px]">
+                  {sale.paymentMethod}
+                </span>
+              </div>
+            </div>
+
+            {/* Customer & Timestamp */}
+            <div className="flex justify-between items-start text-xs border-y border-slate-100 py-2">
+              <div>
+                <div className="font-bold text-slate-800">
+                  {sale.customerName || 'Cash Retail Customer'}
+                </div>
+                {sale.customerPhone && (
+                  <div className="text-slate-400 text-[11px] font-mono">{sale.customerPhone}</div>
+                )}
+              </div>
+              <div className="text-right text-[11px] text-slate-500">
+                {new Date(sale.createdAt).toLocaleString('en-IN', {
+                  dateStyle: 'medium',
+                  timeStyle: 'short',
+                })}
+              </div>
+            </div>
+
+            {/* Totals Breakdown & Action Buttons */}
+            <div className="flex items-center justify-between text-xs pt-1">
+              <div>
+                <span className="text-[11px] text-slate-500">
+                  Taxable: {formatINR(sale.taxableValue)} • Tax: {formatINR(sale.totalTax)}
+                </span>
+                <div className="text-base font-black text-slate-900 leading-tight mt-0.5">
+                  {formatINR(sale.grandTotal)}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setSelectedSale(sale)}
+                  className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                  title="View Details"
+                >
+                  <Eye className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => {
+                    const html = generateThermalReceiptHtml(sale, shop, true);
+                    printHtmlViaIframe(html);
+                  }}
+                  className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 shadow-sm transition active:scale-95"
+                  title="Reprint 80mm Receipt"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>80mm</span>
+                </button>
+                <button
+                  onClick={() => {
+                    const html = generateA4InvoiceHtml(sale, shop);
+                    printHtmlViaIframe(html);
+                  }}
+                  className="p-2 rounded-lg bg-slate-100 hover:bg-blue-50 text-blue-600 transition"
+                  title="Reprint A4 PDF"
+                >
+                  <FileText className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {filteredSales.length === 0 && (
+          <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
+            No sales invoices found matching your filters.
+          </div>
+        )}
+      </div>
+
+      {/* Sales Invoices Table: Desktop/Tablet View (hidden md:block) */}
+      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
@@ -338,7 +557,7 @@ export default function SalesPage() {
               </div>
 
               {/* Items Table */}
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
+              <div className="border border-slate-200 rounded-lg overflow-x-auto">
                 <table className="w-full text-left">
                   <thead className="bg-slate-100 text-slate-600 font-semibold">
                     <tr>

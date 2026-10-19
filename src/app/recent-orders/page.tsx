@@ -197,8 +197,128 @@ export default function RecentOrdersPage() {
         </div>
       </div>
 
-      {/* Orders Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
+      {/* Mobile Orders Card View (md:hidden) */}
+      <div className="md:hidden space-y-3">
+        {filteredOrders.length === 0 ? (
+          <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
+            No recent orders found matching your search.
+          </div>
+        ) : (
+          filteredOrders.map((ord) => (
+            <div
+              key={ord.id}
+              className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2.5 transition active:border-amber-400"
+            >
+              {/* Header: Invoice No + Source Badge */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-mono font-black text-slate-900 text-sm">
+                    {ord.invoiceNumber}
+                  </div>
+                  {ord.externalOrderNumber && (
+                    <div className="text-[10px] text-amber-700 font-semibold">
+                      WC #{ord.externalOrderNumber}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {ord.type === 'POS' ? (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">
+                      POS COUNTER
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-200 flex items-center gap-1">
+                      <Globe className="w-3 h-3 text-amber-600" />
+                      <span>ONLINE</span>
+                    </span>
+                  )}
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      ord.paymentStatus === 'PAID'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        : 'bg-amber-50 text-amber-700 border border-amber-200'
+                    }`}
+                  >
+                    {ord.paymentStatus}
+                  </span>
+                </div>
+              </div>
+
+              {/* Customer & Timestamp */}
+              <div className="flex justify-between items-start text-xs border-y border-slate-100 py-2">
+                <div>
+                  <div className="font-bold text-slate-800">{ord.customerName}</div>
+                  <div className="text-[11px] text-slate-400 font-mono">
+                    {ord.customerPhone || 'Walk-in'}
+                  </div>
+                </div>
+                <div className="text-right text-[11px] text-slate-500">
+                  <div>{new Date(ord.createdAt).toLocaleDateString('en-IN')}</div>
+                  <div className="text-slate-400">
+                    {new Date(ord.createdAt).toLocaleTimeString('en-IN', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Amount, Items count & Actions */}
+              <div className="flex items-center justify-between text-xs pt-0.5">
+                <div>
+                  <span className="text-[11px] text-slate-500 font-semibold">
+                    {ord.itemsCount} Pcs • {ord.paymentMethod}
+                  </span>
+                  <div className="text-base font-black text-slate-900 leading-tight">
+                    ₹{ord.grandTotal.toFixed(2)}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  {ord.type === 'POS' && (
+                    <>
+                      <button
+                        onClick={() => setSelectedSale(ord.rawSale)}
+                        className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                        title="View Invoice"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handlePrintThermal(ord.rawSale)}
+                        className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 shadow-sm transition active:scale-95"
+                        title="Reprint 80mm Receipt"
+                      >
+                        <Printer className="w-3.5 h-3.5" />
+                        <span>80mm</span>
+                      </button>
+                      <button
+                        onClick={() => handlePrintA4(ord.rawSale)}
+                        className="p-2 rounded-lg bg-slate-100 hover:bg-blue-50 text-blue-600 transition"
+                        title="Reprint A4 PDF"
+                      >
+                        <FileText className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
+                  {ord.type === 'ONLINE' && (
+                    <Link
+                      href="/online-orders"
+                      className="px-3 py-1.5 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1 shadow-sm transition"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Manage</span>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Orders Table: Desktop/Tablet View (hidden md:block) */}
+      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">

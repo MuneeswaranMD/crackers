@@ -134,8 +134,51 @@ export default function PurchasesPage() {
         </button>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
+      {/* Mobile Purchases Card View (md:hidden) */}
+      <div className="md:hidden space-y-3">
+        {purchases.map((p) => (
+          <div
+            key={p.id}
+            className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2 text-xs"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-mono font-bold text-slate-900">{p.supplierInvoiceNo}</span>
+              <span
+                className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                  p.paidAmount >= p.grandTotal
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : 'bg-amber-50 text-amber-800'
+                }`}
+              >
+                {p.paidAmount >= p.grandTotal ? 'PAID' : `DUE: ₹${(p.grandTotal - p.paidAmount).toFixed(2)}`}
+              </span>
+            </div>
+            <div className="flex justify-between items-start border-y border-slate-100 py-1.5">
+              <div>
+                <div className="font-semibold text-slate-800">{p.supplierName}</div>
+                <div className="text-[11px] text-slate-400">
+                  {p.items.length} items ({p.items.reduce((s, i) => s + i.quantity, 0)} boxes)
+                </div>
+              </div>
+              <div className="text-[11px] text-slate-500">{p.invoiceDate}</div>
+            </div>
+            <div className="flex justify-between items-center pt-0.5">
+              <div className="text-[11px] text-slate-500">
+                Taxable: ₹{p.subtotal.toFixed(2)} • GST: ₹{p.taxAmount.toFixed(2)}
+              </div>
+              <div className="font-black text-slate-900 text-sm">{formatINR(p.grandTotal)}</div>
+            </div>
+          </div>
+        ))}
+        {purchases.length === 0 && (
+          <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
+            No purchase inward records entered yet.
+          </div>
+        )}
+      </div>
+
+      {/* Table: Desktop/Tablet View (hidden md:block) */}
+      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">

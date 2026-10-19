@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { Sale, ExternalOrder, Customer, Product, Shop, Category, StockMovement } from '@/types';
+import { Sale, ExternalOrder, Customer, Product, Shop, Category, StockMovement, ProductAlias } from '@/types';
 
 let pool: Pool | null = null;
 
@@ -869,6 +869,92 @@ export async function getStockMovementsFromSupabase(limit = 100): Promise<StockM
       remarks: r.remarks || '',
       createdAt: r.created_at ? new Date(r.created_at).toISOString() : new Date().toISOString(),
     }));
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Fetch all product aliases from Supabase
+ */
+export async function getProductAliasesFromSupabase(): Promise<ProductAlias[]> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      `SELECT pa.*, p.name as product_name
+       FROM product_aliases pa
+       LEFT JOIN products p ON pa.product_id = p.id
+       WHERE pa.shop_id = $1
+       ORDER BY pa.alias ASC`,
+      [SHOP_UUID]
+    );
+
+    return res.rows.map((r) => ({
+      id: r.id,
+      shopId: r.shop_id,
+      productId: r.product_id,
+      productName: r.product_name || '',
+      alias: r.alias,
+      language: r.language || 'all',
+      createdAt: r.created_at ? new Date(r.created_at).toISOString() : new Date().toISOString(),
+    }));
+  } catch (err: any) {
+    // If table doesn't exist yet in remote DB, fallback gracefully
+    console.warn('Notice: product_aliases table query returned:', err.message);
+    return [];
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Save or update a product alias in Supabase
+ */
+export async function saveProductAliasToSupabase(alias: {
+  productId: string;
+  alias: string;
+  language?: 'en' | 'ta' | 'tanglish' | 'all';
+}): Promise<{ success: boolean; id?: string; error?: string }> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    const cleanAlias = alias.alias.trim().toLowerCase();
+    const lang = alias.language || 'all';
+
+    const res = await client.query(
+      `INSERT INTO product_aliases (shop_id, product_id, alias, language)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (shop_id, alias, language) DO UPDATE SET
+         product_id = EXCLUDED.product_id
+       RETURNING id`,
+      [SHOP_UUID, alias.productId, cleanAlias, lang]
+    );
+
+    return { success: true, id: res.rows[0]?.id };
+  } catch (err: any) {
+    console.error('Error saving product alias to Supabase:', err);
+    return { success: false, error: err.message };
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Delete a product alias from Supabase
+ */
+export async function deleteProductAliasFromSupabase(aliasId: string): Promise<{ success: boolean; error?: string }> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    await client.query(
+      `DELETE FROM product_aliases WHERE id = $1 AND shop_id = $2`,
+      [aliasId, SHOP_UUID]
+    );
+    return { success: true };
+  } catch (err: any) {
+    console.error('Error deleting product alias from Supabase:', err);
+    return { success: false, error: err.message };
   } finally {
     client.release();
   }
