@@ -268,7 +268,7 @@ export function generateA4InvoiceHtml(sale: Sale, shop: Shop): string {
       <style>
         @page {
           size: A4 portrait;
-          margin: 10mm;
+          margin: 0;
         }
         * {
           box-sizing: border-box;
@@ -279,7 +279,7 @@ export function generateA4InvoiceHtml(sale: Sale, shop: Shop): string {
           font-family: Arial, Helvetica, sans-serif;
           color: #000;
           margin: 0;
-          padding: 0;
+          padding: 8mm 10mm 6mm 10mm;
           background: #fff;
           font-size: 11px;
         }
@@ -511,25 +511,14 @@ export function generateA4InvoiceHtml(sale: Sale, shop: Shop): string {
             </td>
           </tr>
         </table>
-
-        <!-- Invoice Box Footer with Website Link -->
-        <div style="border-top: 1.5px solid #000; padding: 6px 14px; background: #fafafa; font-size: 11px; color: #000; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <strong>Online Store:</strong>
-            <a href="https://www.sreekalieswaritraders.com" target="_blank" style="color: #000; font-weight: bold; text-decoration: underline; margin-left: 4px;">www.sreekalieswaritraders.com</a>
-          </div>
-          <div style="font-size: 10px; color: #555;">
-            Sivakasi Cracker Estimation · Subject to Sivakasi Jurisdiction
-          </div>
-        </div>
       </div>
 
-      <!-- Outer Print Page Footer with Website Link -->
-      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #333; max-width: 190mm; margin: 8px auto 0 auto; padding: 0 4px;">
-        <div>
-          Website: <a href="https://www.sreekalieswaritraders.com" target="_blank" style="color: #000; font-weight: bold; text-decoration: underline;">www.sreekalieswaritraders.com</a>
+      <!-- Footer Bottom Bar: www.sreekalieswaritraders.com & Page 1 of 1 -->
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #000; width: 100%; max-width: 190mm; margin: 6px auto 0 auto; padding: 0 2px;">
+        <div style="color: #000; font-weight: 500;">
+          <a href="https://www.sreekalieswaritraders.com" target="_blank" style="color: #000; text-decoration: underline;">www.sreekalieswaritraders.com</a>
         </div>
-        <div>
+        <div style="color: #333;">
           Page 1 of 1
         </div>
       </div>
@@ -556,6 +545,12 @@ export function printHtmlViaIframe(htmlContent: string): void {
   doc.open();
   doc.write(htmlContent);
   doc.close();
+
+  if (iframe.contentWindow) {
+    try {
+      iframe.contentWindow.document.title = 'www.sreekalieswaritraders.com';
+    } catch (_) {}
+  }
 
   iframe.contentWindow?.focus();
   setTimeout(() => {
