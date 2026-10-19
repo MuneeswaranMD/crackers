@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useDeferredValue } from 'react';
 import Link from 'next/link';
 import {
   Boxes,
@@ -13,6 +13,8 @@ import {
   SlidersHorizontal,
   RefreshCw,
   Package,
+  X,
+  Loader2,
 } from 'lucide-react';
 import { db, getProductImageUrl } from '@/lib/db';
 import { Product, StockMovement } from '@/types';
@@ -23,6 +25,7 @@ export default function InventoryPage() {
   const [movements, setMovements] = useState<StockMovement[]>([]);
   const [activeTab, setActiveTab] = useState<'balances' | 'ledger'>('balances');
   const [search, setSearch] = useState('');
+  const deferredSearch = useDeferredValue(search);
 
   const loadData = async () => {
     db.initDefaults();
@@ -58,24 +61,42 @@ export default function InventoryPage() {
     loadData();
   }, []);
 
-  const totalCostValuation = products.reduce((sum, p) => sum + p.purchasePrice * p.currentStock, 0);
-  const totalRetailValuation = products.reduce((sum, p) => sum + p.sellingPrice * p.currentStock, 0);
-  const totalUnits = products.reduce((sum, p) => sum + p.currentStock, 0);
-  const lowStockCount = products.filter((p) => p.currentStock <= p.minStockAlert).length;
+  const { totalCostValuation, totalRetailValuation, totalUnits, lowStockCount } = useMemo(() => {
+    let cost = 0;
+    let retail = 0;
+    let units = 0;
+    let low = 0;
+    for (const p of products) {
+      cost += p.purchasePrice * p.currentStock;
+      retail += p.sellingPrice * p.currentStock;
+      units += p.currentStock;
+      if (p.currentStock <= p.minStockAlert) low++;
+    }
+    return { totalCostValuation: cost, totalRetailValuation: retail, totalUnits: units, lowStockCount: low };
+  }, [products]);
 
-  const filteredProducts = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      (p.tamilName && p.tamilName.toLowerCase().includes(search.toLowerCase())) ||
-      p.sku.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredProducts = useMemo(() => {
+    const q = deferredSearch.toLowerCase().trim();
+    if (!q) return products;
+    return products.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.tamilName && p.tamilName.toLowerCase().includes(q)) ||
+        p.sku.toLowerCase().includes(q) ||
+        (p.brand && p.brand.toLowerCase().includes(q))
+    );
+  }, [products, deferredSearch]);
 
-  const filteredMovements = movements.filter(
-    (m) =>
-      m.productName.toLowerCase().includes(search.toLowerCase()) ||
-      (m.remarks && m.remarks.toLowerCase().includes(search.toLowerCase())) ||
-      m.movementType.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredMovements = useMemo(() => {
+    const q = deferredSearch.toLowerCase().trim();
+    if (!q) return movements;
+    return movements.filter(
+      (m) =>
+        m.productName.toLowerCase().includes(q) ||
+        (m.remarks && m.remarks.toLowerCase().includes(q)) ||
+        m.movementType.toLowerCase().includes(q)
+    );
+  }, [movements, deferredSearch]);
 
   const exportInventoryCSV = () => {
     const headers = ['SKU', 'Product Name', 'Category', 'Stock Available', 'UOM', 'Cost Price', 'Cost Valuation', 'Selling Price', 'Retail Valuation'];
@@ -182,8 +203,18 @@ export default function InventoryPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search items, SKU, or movements..."
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg font-medium focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full pl-9 pr-9 py-1.5 bg-slate-50 border border-slate-200 rounded-lg font-medium focus:outline-none focus:ring-1 focus:ring-amber-500"
           />
+          {search !== deferredSearch ? (
+            <Loader2 className="w-4 h-4 absolute right-3 top-2 text-amber-500 animate-spin" />
+          ) : search ? (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-2 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          ) : null}
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useDeferredValue } from 'react';
 import {
   Receipt,
   Search,
@@ -13,6 +13,7 @@ import {
   X,
   Calendar,
   CheckCircle2,
+  Loader2,
 } from 'lucide-react';
 import { db } from '@/lib/db';
 import { Sale, Shop } from '@/types';
@@ -26,6 +27,7 @@ import {
 export default function SalesPage() {
   const [sales, setSales] = useState<Sale[]>([]);
   const [search, setSearch] = useState('');
+  const deferredSearch = useDeferredValue(search);
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>('all');
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [shop, setShop] = useState<Shop>(db.getShop());
@@ -45,24 +47,28 @@ export default function SalesPage() {
       .catch((err) => console.warn('Failed to load sales from Supabase:', err));
   }, []);
 
-  const filteredSales = sales.filter((s) => {
-    const matchesSearch =
-      s.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
-      (s.customerName && s.customerName.toLowerCase().includes(search.toLowerCase())) ||
-      (s.customerPhone && s.customerPhone.includes(search));
+  const filteredSales = useMemo(() => {
+    const q = deferredSearch.toLowerCase().trim();
+    return sales.filter((s) => {
+      const matchesSearch =
+        !q ||
+        s.invoiceNumber.toLowerCase().includes(q) ||
+        (s.customerName && s.customerName.toLowerCase().includes(q)) ||
+        (s.customerPhone && s.customerPhone.includes(q));
 
-    if (!matchesSearch) return false;
+      if (!matchesSearch) return false;
 
-    if (dateFilter === 'today') {
-      return new Date(s.createdAt).toDateString() === new Date().toDateString();
-    }
-    if (dateFilter === 'week') {
-      const past = new Date();
-      past.setDate(past.getDate() - 7);
-      return new Date(s.createdAt) >= past;
-    }
-    return true;
-  });
+      if (dateFilter === 'today') {
+        return new Date(s.createdAt).toDateString() === new Date().toDateString();
+      }
+      if (dateFilter === 'week') {
+        const past = new Date();
+        past.setDate(past.getDate() - 7);
+        return new Date(s.createdAt) >= past;
+      }
+      return true;
+    });
+  }, [sales, deferredSearch, dateFilter]);
 
   const exportSalesCSV = () => {
     const headers = [
@@ -140,8 +146,18 @@ export default function SalesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by invoice no, customer name or phone..."
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full pl-9 pr-9 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:ring-1 focus:ring-amber-500"
           />
+          {search !== deferredSearch ? (
+            <Loader2 className="w-4 h-4 absolute right-3 top-2 text-amber-500 animate-spin" />
+          ) : search ? (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-2 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          ) : null}
         </div>
 
         <div className="flex items-center gap-2 text-xs font-semibold self-stretch sm:self-auto justify-end">

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useDeferredValue, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   Search,
@@ -32,6 +32,7 @@ import {
   Sliders,
   ChevronRight,
   Check,
+  Loader2,
 } from 'lucide-react';
 import { db, getProductImageUrl } from '@/lib/db';
 import { Product, Category, Customer, CartItem, Sale, BillingMode, PaymentMethod, InvoiceType } from '@/types';
@@ -47,6 +48,152 @@ import {
   generateA4InvoiceHtml,
   printHtmlViaIframe,
 } from '@/lib/print';
+
+function getCategoryColor(catName?: string) {
+  const name = catName?.toLowerCase() || '';
+  if (name.includes('sparkler') || name.includes('மத்தாப்பு')) return 'text-amber-600 bg-amber-50 border-amber-200';
+  if (name.includes('flower') || name.includes('புஸ்வாணம்')) return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+  if (name.includes('chakkar') || name.includes('சக்கரம்')) return 'text-blue-600 bg-blue-50 border-blue-200';
+  if (name.includes('rocket') || name.includes('ராக்கெட்')) return 'text-purple-600 bg-purple-50 border-purple-200';
+  if (name.includes('gift') || name.includes('பாக்ஸ்')) return 'text-rose-600 bg-rose-50 border-rose-200';
+  return 'text-slate-700 bg-slate-50 border-slate-200';
+}
+
+interface POSProductCardProps {
+  prod: Product;
+  inCartQty: number;
+  onAddToCart: (p: Product) => void;
+}
+
+const POSProductCard = React.memo(function POSProductCard({
+  prod,
+  inCartQty,
+  onAddToCart,
+}: POSProductCardProps) {
+  const isLowStock = prod.currentStock <= prod.minStockAlert;
+  const isOutOfStock = prod.currentStock <= 0;
+  const discountPct = prod.mrp > prod.sellingPrice ? Math.round(((prod.mrp - prod.sellingPrice) / prod.mrp) * 100) : 0;
+  const productImg = prod.imageUrl || getProductImageUrl(prod);
+
+  return (
+    <div
+      onClick={() => onAddToCart(prod)}
+      className={`flex flex-col h-auto rounded-2xl border bg-white p-2.5 transition-all duration-150 cursor-pointer select-none relative group hover:border-[#F59E0B] hover:shadow-lg shadow-sm border-[#E5E7EB] hover:-translate-y-0.5 ${
+        isOutOfStock ? 'opacity-60 bg-slate-50' : ''
+      }`}
+    >
+      {/* Product Packaging Image */}
+      <div className="relative mb-2 w-full h-28 sm:h-32 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80">
+        <img
+          src={productImg}
+          alt={prod.name}
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 pointer-events-none" />
+        <span
+          className={`absolute right-1.5 top-1.5 rounded-md px-1.5 py-0.5 text-[9px] font-bold shadow-sm backdrop-blur-md ${
+            isOutOfStock
+              ? 'bg-rose-500/90 text-white'
+              : 'bg-emerald-600/90 text-white'
+          }`}
+        >
+          {isOutOfStock ? 'Unavailable' : 'Available'}
+        </span>
+        <span className="absolute left-1.5 bottom-1.5 rounded-md bg-black/60 backdrop-blur-md px-1.5 py-0.5 text-[9px] font-mono font-medium text-amber-300">
+          {prod.brand}
+        </span>
+      </div>
+
+      {/* Top Badges: Category icon & Stock Pill */}
+      <div className="flex items-center justify-between gap-1 mb-1">
+        <span
+          className={`text-[10px] px-2 py-0.5 rounded-full font-bold border flex items-center gap-1 ${getCategoryColor(
+            prod.categoryName
+          )}`}
+        >
+          <Flame className="w-3 h-3 text-amber-500" />
+          <span className="truncate max-w-[85px]">{prod.categoryName || 'Firework'}</span>
+        </span>
+
+        <span
+          className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+            isOutOfStock
+              ? 'bg-rose-50 text-[#DC2626] border-rose-200'
+              : isLowStock
+              ? 'bg-amber-50 text-amber-800 border-amber-200'
+              : 'bg-emerald-50 text-[#16A34A] border-emerald-200'
+          }`}
+        >
+          {prod.currentStock} {prod.uom}
+        </span>
+      </div>
+
+      {/* Product Name, Tamil Title & SKU */}
+      <div className="my-1">
+        <div className="flex items-start justify-between gap-1">
+          <div className="font-bold text-[#1F2937] text-xs leading-snug group-hover:text-amber-700 line-clamp-2">
+            {prod.name}
+          </div>
+          <span className="font-mono text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+            #{prod.barcode || prod.sku.replace('AF-', '')}
+          </span>
+        </div>
+        {prod.tamilName && (
+          <div className="text-[11px] text-[#6B7280] font-medium line-clamp-1 mt-0.5">
+            {prod.tamilName}
+          </div>
+        )}
+        <div className="text-[10px] text-[#6B7280] mt-1 flex items-center justify-between">
+          <span>{prod.packSize}</span>
+          <span className="font-mono text-[9px] text-slate-400">SKU: {prod.sku}</span>
+        </div>
+      </div>
+
+      {/* Pricing, Tax badge & Add to Cart button */}
+      <div className="pt-2 border-t border-slate-100 mt-2 flex items-end justify-between">
+        <div>
+          <div className="flex items-center gap-1.5">
+            {prod.discountAllowed && prod.mrp > prod.sellingPrice ? (
+              <>
+                <span className="text-[10px] text-[#6B7280] line-through">
+                  ₹{prod.mrp.toFixed(0)}
+                </span>
+                {discountPct > 0 && (
+                  <span className="text-[9px] font-extrabold px-1 rounded bg-amber-100 text-amber-800">
+                    Save {discountPct}%
+                  </span>
+                )}
+              </>
+            ) : (
+              <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
+                NET RATE
+              </span>
+            )}
+          </div>
+          <div className="text-sm font-black text-[#1F2937]">
+            ₹{prod.sellingPrice.toFixed(2)}
+          </div>
+          <div className="text-[9px] text-[#6B7280]">18% GST incl.</div>
+        </div>
+
+        {inCartQty > 0 ? (
+          <span className="w-8 h-8 rounded-xl bg-[#F59E0B] text-[#111318] font-black text-xs flex items-center justify-center shadow-md">
+            {inCartQty}
+          </span>
+        ) : (
+          <button
+            type="button"
+            className="w-8 h-8 rounded-xl bg-[#F5F6F8] group-hover:bg-[#F59E0B] group-hover:text-[#111318] text-[#1F2937] flex items-center justify-center transition border border-[#E5E7EB]"
+            title="Add to Cart"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+});
 
 export default function POSPage() {
   const searchParams = useSearchParams();
@@ -193,6 +340,19 @@ export default function POSPage() {
     return calculateInvoiceTotals(calculatedLines, billDiscountPct, billingMode);
   }, [calculatedLines, billDiscountPct, billingMode]);
 
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const [displayLimit, setDisplayLimit] = useState(40);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Quick O(1) in-cart quantity map so card rendering never scans the cart array
+  const cartQuantities = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const item of cart) {
+      map[item.product.id] = item.quantity;
+    }
+    return map;
+  }, [cart]);
+
   // Split payment initialization helper
   useEffect(() => {
     if (paymentMethod === 'SPLIT') {
@@ -203,31 +363,33 @@ export default function POSPage() {
   }, [paymentMethod, invoiceTotals.grandTotal]);
 
   // Add Item to Cart (or increment if already in cart)
-  const addToCart = (product: Product) => {
+  const addToCart = useCallback((product: Product) => {
     setErrorBanner(null);
-    const existingIndex = cart.findIndex((item) => item.product.id === product.id);
+    setCart((prevCart) => {
+      const existingIndex = prevCart.findIndex((item) => item.product.id === product.id);
 
-    if (existingIndex >= 0) {
-      const updated = [...cart];
-      const newQty = updated[existingIndex].quantity + 1;
-      const settings = db.getSettings();
-      if (!settings.allowNegativeStock && newQty > product.currentStock) {
-        setErrorBanner(`Stock limit reached for "${product.name}" (${product.currentStock} in stock).`);
-        return;
+      if (existingIndex >= 0) {
+        const updated = [...prevCart];
+        const newQty = updated[existingIndex].quantity + 1;
+        const settings = db.getSettings();
+        if (!settings.allowNegativeStock && newQty > product.currentStock) {
+          setErrorBanner(`Stock limit reached for "${product.name}" (${product.currentStock} in stock).`);
+          return prevCart;
+        }
+        updated[existingIndex].quantity = newQty;
+        return updated;
+      } else {
+        if (product.currentStock <= 0 && !db.getSettings().allowNegativeStock) {
+          setErrorBanner(`"${product.name}" is out of stock.`);
+          return prevCart;
+        }
+        return [
+          ...prevCart,
+          calculateCartItem(product, 1, product.sellingPrice, 0, billingMode, 18),
+        ];
       }
-      updated[existingIndex].quantity = newQty;
-      setCart(updated);
-    } else {
-      if (product.currentStock <= 0 && !db.getSettings().allowNegativeStock) {
-        setErrorBanner(`"${product.name}" is out of stock.`);
-        return;
-      }
-      setCart([
-        ...cart,
-        calculateCartItem(product, 1, product.sellingPrice, 0, billingMode, 18),
-      ]);
-    }
-  };
+    });
+  }, [billingMode]);
 
   // Barcode / Serial No / Quick SKU enter key handler
   const handleBarcodeSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -459,9 +621,9 @@ export default function POSPage() {
     }
   };
 
-  // Filtered Products List
+  // Filtered Products List with deferred search query for zero input lag
   const filteredProducts = useMemo(() => {
-    const trimmed = searchQuery.trim().toLowerCase();
+    const trimmed = deferredSearchQuery.trim().toLowerCase();
     const numQuery = trimmed.replace(/^#|^af-0*|^s\.?no:?\s*/i, '');
 
     return products.filter((p) => {
@@ -485,33 +647,39 @@ export default function POSPage() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [products, selectedCategory, searchQuery, filterLowStockOnly, filterPopularOnly]);
+  }, [products, selectedCategory, deferredSearchQuery, filterLowStockOnly, filterPopularOnly]);
+
+  // Reset pagination window when filters change
+  useEffect(() => {
+    setDisplayLimit(40);
+  }, [selectedCategory, deferredSearchQuery, filterLowStockOnly, filterPopularOnly]);
+
+  const visibleProducts = useMemo(() => {
+    return filteredProducts.slice(0, displayLimit);
+  }, [filteredProducts, displayLimit]);
+
+  // Infinite scroll observer to render remaining products on scroll without initial DOM weight
+  useEffect(() => {
+    if (displayLimit >= filteredProducts.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setDisplayLimit((prev) => Math.min(prev + 40, filteredProducts.length));
+        }
+      },
+      { rootMargin: '250px' }
+    );
+    const target = loadMoreRef.current;
+    if (target) observer.observe(target);
+    return () => {
+      if (target) observer.unobserve(target);
+    };
+  }, [displayLimit, filteredProducts.length]);
 
   const shop = db.getShop();
   const upiQrString = `upi://pay?pa=${shop.upiId || 'kalieswaritraders@sbi'}&pn=${encodeURIComponent(
     shop.name
   )}&am=${invoiceTotals.grandTotal}&cu=INR&tn=${encodeURIComponent('Crackers Bill')}`;
-
-  // Helper for category badge color
-  const getCategoryColor = (catName?: string) => {
-    const name = catName?.toLowerCase() || '';
-    if (name.includes('sparkler') || name.includes('மத்தாப்பு')) return 'text-amber-600 bg-amber-50 border-amber-200';
-    if (name.includes('flower') || name.includes('புஸ்வாணம்')) return 'text-emerald-600 bg-emerald-50 border-emerald-200';
-    if (name.includes('chakkar') || name.includes('சக்கரம்')) return 'text-blue-600 bg-blue-50 border-blue-200';
-    if (name.includes('rocket') || name.includes('ராக்கெட்')) return 'text-purple-600 bg-purple-50 border-purple-200';
-    if (name.includes('gift') || name.includes('பாக்ஸ்')) return 'text-rose-600 bg-rose-50 border-rose-200';
-    return 'text-slate-700 bg-slate-50 border-slate-200';
-  };
-
-  const getProductEmoji = (product: Product) => {
-    const label = (product.name + ' ' + (product.categoryName || '')).toLowerCase();
-    if (label.includes('rocket')) return '🚀';
-    if (label.includes('flower') || label.includes('fountain')) return '🌼';
-    if (label.includes('chakkar')) return '🌀';
-    if (label.includes('sparkler')) return '✨';
-    if (label.includes('gift') || label.includes('box')) return '🎁';
-    return '🎆';
-  };
 
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-8rem)] min-h-[620px] gap-3 select-none font-sans">
@@ -532,14 +700,16 @@ export default function POSPage() {
               className="w-full bg-[#F5F6F8] border border-[#E5E7EB] text-[#1F2937] pl-9 pr-9 py-2 rounded-xl text-xs sm:text-sm placeholder-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:bg-white font-medium transition"
               autoFocus
             />
-            {searchQuery && (
+            {searchQuery !== deferredSearchQuery ? (
+              <Loader2 className="w-4 h-4 absolute right-3 top-2.5 text-amber-500 animate-spin" />
+            ) : searchQuery ? (
               <button
                 onClick={() => setSearchQuery('')}
                 className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
               >
                 <X className="w-4 h-4" />
               </button>
-            )}
+            ) : null}
           </div>
 
           {/* Barcode scanner readiness indicator & Recall Held Bills */}
@@ -637,133 +807,27 @@ export default function POSPage() {
 
         {/* Product Cards Grid */}
         <div className="flex-1 overflow-y-auto p-3 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 bg-[#F5F6F8] content-start auto-rows-max items-start">
-          {filteredProducts.map((prod) => {
-            const inCart = cart.find((i) => i.product.id === prod.id);
-            const isLowStock = prod.currentStock <= prod.minStockAlert;
-            const isOutOfStock = prod.currentStock <= 0;
-            const discountPct = prod.mrp > prod.sellingPrice ? Math.round(((prod.mrp - prod.sellingPrice) / prod.mrp) * 100) : 0;
-            const productImg = prod.imageUrl || getProductImageUrl(prod);
+          {visibleProducts.map((prod) => (
+            <POSProductCard
+              key={prod.id}
+              prod={prod}
+              inCartQty={cartQuantities[prod.id] || 0}
+              onAddToCart={addToCart}
+            />
+          ))}
 
-            return (
-              <div
-                key={prod.id}
-                onClick={() => addToCart(prod)}
-                className={`flex flex-col h-auto rounded-2xl border bg-white p-2.5 transition-all duration-150 cursor-pointer select-none relative group hover:border-[#F59E0B] hover:shadow-lg shadow-sm border-[#E5E7EB] hover:-translate-y-0.5 ${
-                  isOutOfStock ? 'opacity-60 bg-slate-50' : ''
-                }`}
+          {/* Infinite Scroll / Progressive Loading Sentinel */}
+          {displayLimit < filteredProducts.length && (
+            <div ref={loadMoreRef} className="col-span-full py-3 flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => setDisplayLimit((prev) => Math.min(prev + 40, filteredProducts.length))}
+                className="text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-4 py-1.5 rounded-xl transition shadow-sm"
               >
-                {/* Product Packaging Image */}
-                <div className="relative mb-2 w-full h-28 sm:h-32 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80">
-                  <img
-                    src={productImg}
-                    alt={prod.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 pointer-events-none" />
-                  <span
-                    className={`absolute right-1.5 top-1.5 rounded-md px-1.5 py-0.5 text-[9px] font-bold shadow-sm backdrop-blur-md ${
-                      isOutOfStock
-                        ? 'bg-rose-500/90 text-white'
-                        : 'bg-emerald-600/90 text-white'
-                    }`}
-                  >
-                    {isOutOfStock ? 'Unavailable' : 'Available'}
-                  </span>
-                  <span className="absolute left-1.5 bottom-1.5 rounded-md bg-black/60 backdrop-blur-md px-1.5 py-0.5 text-[9px] font-mono font-medium text-amber-300">
-                    {prod.brand}
-                  </span>
-                </div>
-
-                {/* Top Badges: Category icon & Stock Pill */}
-                <div className="flex items-center justify-between gap-1 mb-1">
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold border flex items-center gap-1 ${getCategoryColor(
-                      prod.categoryName
-                    )}`}
-                  >
-                    <Flame className="w-3 h-3 text-amber-500" />
-                    <span className="truncate max-w-[85px]">{prod.categoryName || 'Firework'}</span>
-                  </span>
-
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                      isOutOfStock
-                        ? 'bg-rose-50 text-[#DC2626] border-rose-200'
-                        : isLowStock
-                        ? 'bg-amber-50 text-amber-800 border-amber-200'
-                        : 'bg-emerald-50 text-[#16A34A] border-emerald-200'
-                    }`}
-                  >
-                    {prod.currentStock} {prod.uom}
-                  </span>
-                </div>
-
-                {/* Product Name, Tamil Title & SKU */}
-                <div className="my-1">
-                  <div className="flex items-start justify-between gap-1">
-                    <div className="font-bold text-[#1F2937] text-xs leading-snug group-hover:text-amber-700 line-clamp-2">
-                      {prod.name}
-                    </div>
-                    <span className="font-mono text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
-                      #{prod.barcode || prod.sku.replace('AF-', '')}
-                    </span>
-                  </div>
-                  {prod.tamilName && (
-                    <div className="text-[11px] text-[#6B7280] font-medium line-clamp-1 mt-0.5">
-                      {prod.tamilName}
-                    </div>
-                  )}
-                  <div className="text-[10px] text-[#6B7280] mt-1 flex items-center justify-between">
-                    <span>{prod.packSize}</span>
-                    <span className="font-mono text-[9px] text-slate-400">SKU: {prod.sku}</span>
-                  </div>
-                </div>
-
-                {/* Pricing, Tax badge & Add to Cart button */}
-                <div className="pt-2 border-t border-slate-100 mt-2 flex items-end justify-between">
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      {prod.discountAllowed && prod.mrp > prod.sellingPrice ? (
-                        <>
-                          <span className="text-[10px] text-[#6B7280] line-through">
-                            ₹{prod.mrp.toFixed(0)}
-                          </span>
-                          {discountPct > 0 && (
-                            <span className="text-[9px] font-extrabold px-1 rounded bg-amber-100 text-amber-800">
-                              Save {discountPct}%
-                            </span>
-                          )}
-                        </>
-                      ) : (
-                        <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
-                          NET RATE
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-sm font-black text-[#1F2937]">
-                      ₹{prod.sellingPrice.toFixed(2)}
-                    </div>
-                    <div className="text-[9px] text-[#6B7280]">18% GST incl.</div>
-                  </div>
-
-                  {inCart ? (
-                    <span className="w-8 h-8 rounded-xl bg-[#F59E0B] text-[#111318] font-black text-xs flex items-center justify-center shadow-md">
-                      {inCart.quantity}
-                    </span>
-                  ) : (
-                    <button
-                      type="button"
-                      className="w-8 h-8 rounded-xl bg-[#F5F6F8] group-hover:bg-[#F59E0B] group-hover:text-[#111318] text-[#1F2937] flex items-center justify-center transition border border-[#E5E7EB]"
-                      title="Add to Cart"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                Showing {visibleProducts.length} of {filteredProducts.length} items (Click or scroll for more)
+              </button>
+            </div>
+          )}
 
           {filteredProducts.length === 0 && (
             <div className="col-span-full py-16 text-center text-[#6B7280]">

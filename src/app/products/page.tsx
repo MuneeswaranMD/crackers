@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useDeferredValue } from 'react';
 import {
   Package,
   Plus,
@@ -15,6 +15,9 @@ import {
   X,
   Flame,
   Barcode,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
 } from 'lucide-react';
 import { db, getProductImageUrl } from '@/lib/db';
 import { Product, Category } from '@/types';
@@ -330,21 +333,41 @@ export default function ProductsPage() {
     document.body.removeChild(link);
   };
 
-  const filteredProducts = products.filter((p) => {
-    const matchesCat = selectedCat === 'ALL' || p.categoryId === selectedCat;
-    const matchesSearch =
-      !search ||
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      (p.tamilName && p.tamilName.toLowerCase().includes(search.toLowerCase())) ||
-      p.sku.toLowerCase().includes(search.toLowerCase()) ||
-      p.brand.toLowerCase().includes(search.toLowerCase());
+  const deferredSearch = useDeferredValue(search);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
-    let matchesStock = true;
-    if (stockFilter === 'low') matchesStock = p.currentStock <= p.minStockAlert && p.currentStock > 0;
-    if (stockFilter === 'out') matchesStock = p.currentStock <= 0;
+  const filteredProducts = useMemo(() => {
+    const q = deferredSearch.toLowerCase().trim();
+    return products.filter((p) => {
+      const matchesCat = selectedCat === 'ALL' || p.categoryId === selectedCat;
+      const matchesSearch =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        (p.tamilName && p.tamilName.toLowerCase().includes(q)) ||
+        p.sku.toLowerCase().includes(q) ||
+        (p.barcode && p.barcode.toLowerCase().includes(q)) ||
+        p.brand.toLowerCase().includes(q);
 
-    return matchesCat && matchesSearch && matchesStock;
-  });
+      let matchesStock = true;
+      if (stockFilter === 'low') matchesStock = p.currentStock <= p.minStockAlert && p.currentStock > 0;
+      if (stockFilter === 'out') matchesStock = p.currentStock <= 0;
+
+      return matchesCat && matchesSearch && matchesStock;
+    });
+  }, [products, selectedCat, deferredSearch, stockFilter]);
+
+  // Reset to page 1 whenever filters or search query change
+  useEffect(() => {
+    setPage(1);
+  }, [deferredSearch, selectedCat, stockFilter]);
+
+  const totalPages = Math.ceil(filteredProducts.length / (pageSize === -1 ? filteredProducts.length || 1 : pageSize)) || 1;
+  const paginatedProducts = useMemo(() => {
+    if (pageSize === -1) return filteredProducts;
+    const start = (page - 1) * pageSize;
+    return filteredProducts.slice(start, start + pageSize);
+  }, [filteredProducts, page, pageSize]);
 
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
@@ -402,8 +425,18 @@ export default function ProductsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, தமிழ், SKU, brand..."
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg font-medium focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full pl-9 pr-9 py-1.5 bg-slate-50 border border-slate-200 rounded-lg font-medium focus:outline-none focus:ring-1 focus:ring-amber-500"
           />
+          {search !== deferredSearch ? (
+            <Loader2 className="w-4 h-4 absolute right-3 top-2 text-amber-500 animate-spin" />
+          ) : search ? (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-2 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          ) : null}
         </div>
 
         <div className="flex flex-wrap items-center gap-2 self-stretch md:self-auto justify-end">
@@ -469,7 +502,7 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredProducts.map((p) => {
+              {paginatedProducts.map((p) => {
                 const isLow = p.currentStock <= p.minStockAlert;
                 const isOut = p.currentStock <= 0;
                 return (
@@ -557,6 +590,67 @@ export default function ProductsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Bar */}
+        {filteredProducts.length > 0 && (
+          <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+            <div className="flex items-center gap-3">
+              <span>
+                Showing{' '}
+                <strong className="text-slate-900">
+                  {pageSize === -1 ? 1 : Math.min((page - 1) * pageSize + 1, filteredProducts.length)}
+                </strong>{' '}
+                to{' '}
+                <strong className="text-slate-900">
+                  {pageSize === -1 ? filteredProducts.length : Math.min(page * pageSize, filteredProducts.length)}
+                </strong>{' '}
+                of <strong className="text-slate-900">{filteredProducts.length}</strong> products
+              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-400">Rows:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setPage(1);
+                  }}
+                  className="bg-white border border-slate-200 rounded px-2 py-0.5 font-bold text-slate-700 focus:outline-none"
+                >
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                  <option value={-1}>All</option>
+                </select>
+              </div>
+            </div>
+
+            {pageSize !== -1 && totalPages > 1 && (
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="p-1 rounded border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white text-slate-700 transition"
+                  title="Previous Page"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="px-2 font-bold text-slate-800">
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="p-1 rounded border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white text-slate-700 transition"
+                  title="Next Page"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Add / Edit Product Modal */}
