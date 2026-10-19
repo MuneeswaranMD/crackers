@@ -511,11 +511,27 @@ export function generateA4InvoiceHtml(sale: Sale, shop: Shop): string {
             </td>
           </tr>
         </table>
+
+        <!-- Invoice Box Footer with Website Link -->
+        <div style="border-top: 1.5px solid #000; padding: 6px 14px; background: #fafafa; font-size: 11px; color: #000; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong>Online Store:</strong>
+            <a href="https://www.sreekalieswaritraders.com" target="_blank" style="color: #000; font-weight: bold; text-decoration: underline; margin-left: 4px;">www.sreekalieswaritraders.com</a>
+          </div>
+          <div style="font-size: 10px; color: #555;">
+            Sivakasi Cracker Estimation · Subject to Sivakasi Jurisdiction
+          </div>
+        </div>
       </div>
 
-      <!-- Footer Page Number -->
-      <div style="text-align: center; font-size: 11px; color: #333; margin-top: 8px;">
-        Page 1 of 1
+      <!-- Outer Print Page Footer with Website Link -->
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #333; max-width: 190mm; margin: 8px auto 0 auto; padding: 0 4px;">
+        <div>
+          Website: <a href="https://www.sreekalieswaritraders.com" target="_blank" style="color: #000; font-weight: bold; text-decoration: underline;">www.sreekalieswaritraders.com</a>
+        </div>
+        <div>
+          Page 1 of 1
+        </div>
       </div>
     </body>
     </html>
