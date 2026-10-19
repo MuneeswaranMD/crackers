@@ -50,6 +50,7 @@ export default function ProductsPage() {
   const [currentStock, setCurrentStock] = useState('100');
   const [minStockAlert, setMinStockAlert] = useState('20');
   const [isGreenCracker, setIsGreenCracker] = useState(true);
+  const [sno, setSno] = useState('1');
 
   const loadData = async () => {
     db.initDefaults();
@@ -84,13 +85,15 @@ export default function ProductsPage() {
 
   const openAddModal = () => {
     setEditingProduct(null);
+    const nextSno = products.reduce((m, p) => Math.max(m, p.sno || 0), 0) + 1;
+    setSno(nextSno.toString());
     setName('');
     setTamilName('');
-    setSku(`CRK-${Date.now().toString().slice(-4)}`);
-    setBarcode(`890100${Math.floor(1000 + Math.random() * 9000)}`);
+    setSku(`AF-${String(nextSno).padStart(3, '0')}`);
+    setBarcode(String(nextSno));
     setCategoryId(categories[0]?.id || '');
-    setBrand('Standard Fireworks');
-    setPackSize('1 Box (10 Pcs)');
+    setBrand('Agana Fireworks');
+    setPackSize('1 Box');
     setUom('BOX');
     setPurchasePrice('50');
     setMrp('250');
@@ -104,6 +107,7 @@ export default function ProductsPage() {
 
   const openEditModal = (prod: Product) => {
     setEditingProduct(prod);
+    setSno(prod.sno ? prod.sno.toString() : '');
     setName(prod.name);
     setTamilName(prod.tamilName || '');
     setSku(prod.sku);
@@ -141,14 +145,17 @@ export default function ProductsPage() {
     }
 
     const cat = categories.find((c) => c.id === categoryId);
+    const parsedSno = parseInt(sno) || (products.reduce((m, p) => Math.max(m, p.sno || 0), 0) + 1);
 
     const productObj: Product = {
-      id: editingProduct ? editingProduct.id : `prod-${Date.now()}`,
-      shopId: 'shop-sivakasi-01',
+      id: editingProduct ? editingProduct.id : `22222222-ba01-0000-0000-${String(parsedSno).padStart(12, '0')}`,
+      sno: parsedSno,
+      slug: editingProduct?.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      shopId: '11111111-1111-1111-1111-111111111111',
       categoryId,
       categoryName: cat?.name || 'Assorted Fireworks',
       sku: sku.trim(),
-      barcode: barcode.trim(),
+      barcode: barcode.trim() || String(parsedSno),
       name: name.trim(),
       tamilName: tamilName.trim() || undefined,
       brand: brand.trim(),
@@ -158,7 +165,7 @@ export default function ProductsPage() {
       mrp: parseFloat(mrp) || 0,
       sellingPrice: parseFloat(sellingPrice) || 0,
       discountAllowed: true,
-      maxDiscountPct: 75,
+      maxDiscountPct: 80,
       currentStock: parseInt(currentStock) || 0,
       minStockAlert: parseInt(minStockAlert) || 10,
       isGreenCracker,
@@ -260,6 +267,7 @@ export default function ProductsPage() {
         const existing = products.find((p) => p.sku === sku || p.name.toLowerCase() === name.toLowerCase());
         const prodObj: Product = {
           id: existing ? existing.id : `prod-imp-${Date.now()}-${i}`,
+          sno: existing?.sno || (products.reduce((m, p) => Math.max(m, p.sno || 0), 0) + i + 1),
           shopId: '11111111-1111-1111-1111-111111111111',
           categoryId: existing?.categoryId || '',
           categoryName,
@@ -339,22 +347,27 @@ export default function ProductsPage() {
 
   const filteredProducts = useMemo(() => {
     const q = deferredSearch.toLowerCase().trim();
-    return products.filter((p) => {
-      const matchesCat = selectedCat === 'ALL' || p.categoryId === selectedCat;
-      const matchesSearch =
-        !q ||
-        p.name.toLowerCase().includes(q) ||
-        (p.tamilName && p.tamilName.toLowerCase().includes(q)) ||
-        p.sku.toLowerCase().includes(q) ||
-        (p.barcode && p.barcode.toLowerCase().includes(q)) ||
-        p.brand.toLowerCase().includes(q);
+    const numQ = q.replace(/^#|^af-0*|^s\.?no:?\s*/i, '');
+    return products
+      .filter((p) => {
+        const matchesCat = selectedCat === 'ALL' || p.categoryId === selectedCat;
+        const matchesSearch =
+          !q ||
+          (p.sno != null && String(p.sno) === numQ) ||
+          (p.sno != null && String(p.sno).startsWith(numQ)) ||
+          p.name.toLowerCase().includes(q) ||
+          (p.tamilName && p.tamilName.toLowerCase().includes(q)) ||
+          p.sku.toLowerCase().includes(q) ||
+          (p.barcode && p.barcode.toLowerCase().includes(q)) ||
+          p.brand.toLowerCase().includes(q);
 
-      let matchesStock = true;
-      if (stockFilter === 'low') matchesStock = p.currentStock <= p.minStockAlert && p.currentStock > 0;
-      if (stockFilter === 'out') matchesStock = p.currentStock <= 0;
+        let matchesStock = true;
+        if (stockFilter === 'low') matchesStock = p.currentStock <= p.minStockAlert && p.currentStock > 0;
+        if (stockFilter === 'out') matchesStock = p.currentStock <= 0;
 
-      return matchesCat && matchesSearch && matchesStock;
-    });
+        return matchesCat && matchesSearch && matchesStock;
+      })
+      .sort((a, b) => (a.sno || 0) - (b.sno || 0));
   }, [products, selectedCat, deferredSearch, stockFilter]);
 
   // Reset to page 1 whenever filters or search query change
@@ -502,9 +515,14 @@ export default function ProductsPage() {
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-1">
-                    <h3 className="font-bold text-slate-900 text-sm leading-tight line-clamp-2">
-                      {p.name}
-                    </h3>
+                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                      <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-mono font-black text-xs shrink-0">
+                        #{p.sno}
+                      </span>
+                      <h3 className="font-bold text-slate-900 text-sm leading-tight truncate">
+                        {p.name}
+                      </h3>
+                    </div>
                     <span
                       className={`px-2 py-0.5 rounded font-bold text-[10px] shrink-0 ${
                         isOut
@@ -571,6 +589,7 @@ export default function ProductsPage() {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
               <tr>
+                <th className="px-3 py-3 text-center w-14">S.No.</th>
                 <th className="px-4 py-3">Cracker Item</th>
                 <th className="px-4 py-3">SKU / Barcode</th>
                 <th className="px-4 py-3">Category</th>
@@ -588,6 +607,11 @@ export default function ProductsPage() {
                 const isOut = p.currentStock <= 0;
                 return (
                   <tr key={p.id} className="hover:bg-slate-50 transition">
+                    <td className="px-3 py-3 text-center">
+                      <span className="px-2 py-1 rounded bg-amber-100 text-amber-900 font-extrabold font-mono text-xs">
+                        #{p.sno}
+                      </span>
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <img
@@ -779,7 +803,26 @@ export default function ProductsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">
+                    Price List S.No. * (Primary Key: 1 to 206)
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={1}
+                    value={sno}
+                    onChange={(e) => {
+                      setSno(e.target.value);
+                      if (!editingProduct) {
+                        setSku(`AF-${String(e.target.value).padStart(3, '0')}`);
+                        setBarcode(e.target.value);
+                      }
+                    }}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono font-bold focus:outline-none focus:ring-1 focus:ring-amber-500 bg-amber-50/50"
+                  />
+                </div>
                 <div>
                   <label className="font-bold text-slate-700 block mb-1">SKU Code *</label>
                   <input

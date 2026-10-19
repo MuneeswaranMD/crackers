@@ -77,9 +77,11 @@ export default function InventoryPage() {
 
   const filteredProducts = useMemo(() => {
     const q = deferredSearch.toLowerCase().trim();
-    if (!q) return products;
-    return products.filter(
+    const sorted = [...products].sort((a, b) => (a.sno || 0) - (b.sno || 0));
+    if (!q) return sorted;
+    return sorted.filter(
       (p) =>
+        (p.sno !== undefined && (String(p.sno) === q || `#${p.sno}` === q || String(p.sno).includes(q))) ||
         p.name.toLowerCase().includes(q) ||
         (p.tamilName && p.tamilName.toLowerCase().includes(q)) ||
         p.sku.toLowerCase().includes(q) ||
@@ -239,7 +241,14 @@ export default function InventoryPage() {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-1">
-                        <div className="font-bold text-slate-900 text-sm line-clamp-1">{p.name}</div>
+                        <div className="font-bold text-slate-900 text-sm line-clamp-1 flex items-center gap-1.5">
+                          {p.sno !== undefined && (
+                            <span className="font-mono text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 shrink-0">
+                              #{p.sno}
+                            </span>
+                          )}
+                          <span>{p.name}</span>
+                        </div>
                         <span
                           className={`px-2 py-0.5 rounded font-bold text-[10px] shrink-0 ${
                             isOut
@@ -299,6 +308,7 @@ export default function InventoryPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
                 <tr>
+                  <th className="px-3 py-3 w-16 text-center">S.No.</th>
                   <th className="px-4 py-3">Cracker Item</th>
                   <th className="px-4 py-3">SKU</th>
                   <th className="px-4 py-3">Pack & Brand</th>
@@ -315,6 +325,11 @@ export default function InventoryPage() {
                   const isOut = p.currentStock <= 0;
                   return (
                     <tr key={p.id} className="hover:bg-slate-50 transition">
+                      <td className="px-3 py-3 text-center">
+                        <span className="font-mono font-bold text-xs bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded">
+                          #{p.sno || '-'}
+                        </span>
+                      </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <img

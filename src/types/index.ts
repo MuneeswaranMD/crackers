@@ -20,6 +20,7 @@ export interface Shop {
   licenseValidUpto?: string;
   phone: string;
   email?: string;
+  website?: string;
   addressLine1: string;
   addressLine2?: string;
   city: string;
@@ -48,6 +49,8 @@ export interface ShopSetting {
   thermalPrinterPaperWidth: '80mm' | '58mm';
   printDuplicateReceipt: boolean;
   autoRoundoffToRupee: boolean;
+  defaultPrintFormat: 'A4' | 'THERMAL';
+  enableThermal80mmReceipt: boolean;
 }
 
 export interface Category {
@@ -62,6 +65,8 @@ export interface Category {
 
 export interface Product {
   id: string;
+  sno?: number; // Unique S.No. from 2026 Price List (Primary Key: 1 to 206)
+  slug?: string; // Product URL-friendly slug
   shopId: string;
   categoryId?: string;
   categoryName?: string;

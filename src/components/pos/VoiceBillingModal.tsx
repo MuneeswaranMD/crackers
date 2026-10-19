@@ -25,7 +25,11 @@ import {
 import { Product, ProductAlias, CartItem, BillingMode, VoiceMatchResult } from '@/types';
 import { SpeechRecognitionService, SpeechLanguage } from '@/lib/voice/speechRecognitionService';
 import { parseMultiVoiceTranscript, parseVoiceTranscript } from '@/lib/voice/languageParser';
-import { matchProductForVoiceCommand, matchMultiVoiceCommands } from '@/lib/voice/productMatcher';
+import {
+  matchProductForVoiceCommand,
+  matchMultiVoiceCommands,
+  interpretVoiceBillingTranscript,
+} from '@/lib/voice/productMatcher';
 import { formatINR } from '@/lib/calculations';
 import { getProductImageUrl } from '@/lib/db';
 
@@ -66,6 +70,7 @@ export default function VoiceBillingModal({
 
   const speechServiceRef = useRef<SpeechRecognitionService | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastProcessedRef = useRef<{ text: string; time: number }>({ text: '', time: 0 });
 
   // Initialize Speech Service
   useEffect(() => {
@@ -84,6 +89,7 @@ export default function VoiceBillingModal({
       setMatchResults([]);
       setIsPermissionDenied(false);
       setIsEditingTranscript(false);
+      lastProcessedRef.current = { text: '', time: 0 };
 
       const timer = setTimeout(() => {
         handleStartListening();
@@ -111,7 +117,19 @@ export default function VoiceBillingModal({
         onFinal: (finalText) => {
           setTranscript(finalText);
           setInterimText('');
-          // Parse and match all products while listening
+
+          // Prevent processing duplicate events of identical text within 2 seconds
+          const clean = finalText.trim().toLowerCase();
+          if (
+            clean &&
+            clean === lastProcessedRef.current.text &&
+            Date.now() - lastProcessedRef.current.time < 2000
+          ) {
+            return;
+          }
+          lastProcessedRef.current = { text: clean, time: Date.now() };
+
+          // Parse and match all products by SNO or description
           processSpokenText(finalText);
         },
         onError: (err, isPerm) => {
@@ -141,10 +159,10 @@ export default function VoiceBillingModal({
     setErrorMessage(null);
 
     try {
-      // Supports compound multi-product sentences as well as single product utterances
-      const parsedCommands = parseMultiVoiceTranscript(rawText);
-      const results = matchMultiVoiceCommands(
-        parsedCommands,
+      // Primary: Interprets Tamil S.No. & Quantity pairs (e.g. "ஒன்னு பத்து", "ரெண்டு அஞ்சு")
+      // or falls back to multi-product descriptive keywords
+      const results = interpretVoiceBillingTranscript(
+        rawText,
         products,
         aliases,
         cart,
@@ -498,6 +516,34 @@ export default function VoiceBillingModal({
                               </div>
                             )}
 
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span
+                                className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase ${
+                                  item.command.action === 'ADD'
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : item.command.action === 'REMOVE'
+                                    ? 'bg-rose-100 text-rose-800'
+                                    : 'bg-blue-100 text-blue-800'
+                                }`}
+                              >
+                                {item.command.action}
+                              </span>
+                              {prod.sno && (
+                                <span className="text-[10px] font-mono font-black px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                                  S.No. #{prod.sno}
+                                </span>
+                              )}
+                              <span className="font-bold text-xs text-slate-900 truncate">
+                                {prod.name}
+                              </span>
+                            </div>
+
+                            {prod.tamilName && (
+                              <div className="text-[10px] text-slate-500 truncate mt-0.5">
+                                {prod.tamilName}
+                              </div>
+                            )}
+
                             <div className="text-[10px] text-slate-500 mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5">
                               <span className="font-bold text-slate-800">
                                 Qty: {item.command.quantity} {item.command.unit || prod.uom}
@@ -507,6 +553,12 @@ export default function VoiceBillingModal({
                                 Line Total: {formatINR(item.calculatedLineTotal || 0)}
                               </span>
                             </div>
+
+                            {item.errorMessage && (
+                              <div className="text-[10px] text-amber-700 font-semibold mt-1">
+                                ⚠ {item.errorMessage}
+                              </div>
+                            )}
                           </div>
 
                           {/* Right Controls: Stock status & Delete */}
@@ -545,7 +597,9 @@ export default function VoiceBillingModal({
                         <div className="flex items-center justify-between text-xs font-bold text-amber-950">
                           <span className="flex items-center gap-1.5">
                             <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-                            <span>Select matching product for &ldquo;{item.command.productNameQuery}&rdquo;:</span>
+                            <span>
+                              {item.errorMessage || `Select matching product for "${item.command.productNameQuery}":`}
+                            </span>
                           </span>
                           <button
                             type="button"
@@ -556,30 +610,37 @@ export default function VoiceBillingModal({
                           </button>
                         </div>
 
-                        <div className="space-y-1 max-h-36 overflow-y-auto">
-                          {item.candidates?.map((cand) => (
-                            <div
-                              key={cand.product.id}
-                              onClick={() => handleSelectCandidateForItem(idx, cand.product)}
-                              className="p-1.5 bg-white rounded-lg border border-slate-200 hover:border-amber-400 hover:bg-amber-50/40 cursor-pointer flex items-center justify-between text-xs transition"
-                            >
-                              <div className="truncate pr-2">
-                                <span className="font-bold text-slate-800">{cand.product.name}</span>
-                                <span className="text-[10px] text-slate-500 ml-1.5">
-                                  ({cand.product.tamilName || cand.product.sku})
-                                </span>
+                        {item.candidates && item.candidates.length > 0 && (
+                          <div className="space-y-1 max-h-36 overflow-y-auto">
+                            {item.candidates.map((cand) => (
+                              <div
+                                key={cand.product.id}
+                                onClick={() => handleSelectCandidateForItem(idx, cand.product)}
+                                className="p-1.5 bg-white rounded-lg border border-slate-200 hover:border-amber-400 hover:bg-amber-50/40 cursor-pointer flex items-center justify-between text-xs transition"
+                              >
+                                <div className="truncate pr-2">
+                                  {cand.product.sno && (
+                                    <span className="font-mono text-[9px] font-black px-1 py-0.5 rounded bg-amber-100 text-amber-900 mr-1.5">
+                                      #{cand.product.sno}
+                                    </span>
+                                  )}
+                                  <span className="font-bold text-slate-800">{cand.product.name}</span>
+                                  <span className="text-[10px] text-slate-500 ml-1.5">
+                                    ({cand.product.tamilName || cand.product.sku})
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className="font-bold text-slate-900">
+                                    {formatINR(cand.product.sellingPrice)}
+                                  </span>
+                                  <span className="px-2 py-0.5 rounded bg-amber-500 text-slate-950 text-[10px] font-bold">
+                                    Select
+                                  </span>
+                                </div>
                               </div>
-                              <div className="flex items-center gap-2 shrink-0">
-                                <span className="font-bold text-slate-900">
-                                  {formatINR(cand.product.sellingPrice)}
-                                </span>
-                                <span className="px-2 py-0.5 rounded bg-amber-500 text-slate-950 text-[10px] font-bold">
-                                  Select
-                                </span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     );
                   }
@@ -588,14 +649,14 @@ export default function VoiceBillingModal({
                     return (
                       <div
                         key={item.id || idx}
-                        className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs flex items-center justify-between"
+                        className="p-2.5 bg-rose-50/60 rounded-xl border border-rose-200 text-xs flex items-center justify-between"
                       >
                         <div>
-                          <div className="text-slate-700 font-medium">
-                            No exact match for <span className="font-bold">&ldquo;{item.command.productNameQuery}&rdquo;</span>
+                          <div className="text-rose-800 font-bold">
+                            {item.errorMessage || `No product found for "${item.command.productNameQuery}"`}
                           </div>
-                          <div className="text-[10px] text-slate-500">
-                            Try speaking the product name more clearly or search manually.
+                          <div className="text-[10px] text-rose-600 mt-0.5">
+                            Speak both S.No. and quantity clearly (e.g. &ldquo;ஒன்னு பத்து&rdquo;) or search manually.
                           </div>
                         </div>
                         <button
@@ -616,15 +677,36 @@ export default function VoiceBillingModal({
           )}
 
           {/* Spoken Examples Helper */}
-          <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
-            <div className="font-bold text-slate-700 flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Multi-Product Spoken Examples:
+          <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1.5">
+            <div className="font-bold text-slate-800 flex items-center justify-between">
+              <span className="flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Tamil S.No. &amp; Quantity Voice Billing (ஒன்னு பத்து):</span>
+              </span>
+              <span className="text-[10px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold border border-amber-200">
+                1 to {products.length || 206} Available
+              </span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[10px]">
-              <div>&bull; &ldquo;Add 10 packets red bijili and 5 boxes flower pot&rdquo;</div>
-              <div>&bull; &ldquo;Pattu packet saravedi, anju packet poochatti add pannu&rdquo;</div>
-              <div>&bull; &ldquo;10 bijili, 5 flower pot, 2 rockets, 20 sparklers&rdquo;</div>
-              <div>&bull; &ldquo;pattu saravedi appram anju poochatti&rdquo;</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[10px]">
+              <div className="p-1.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between">
+                <span>&bull; &ldquo;<strong>ஒன்னு பத்து</strong>&rdquo;</span>
+                <span className="font-mono text-amber-800 font-bold">→ S.No. 1, Qty 10</span>
+              </div>
+              <div className="p-1.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between">
+                <span>&bull; &ldquo;<strong>ரெண்டு அஞ்சு</strong>&rdquo;</span>
+                <span className="font-mono text-amber-800 font-bold">→ S.No. 2, Qty 5</span>
+              </div>
+              <div className="p-1.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between">
+                <span>&bull; &ldquo;<strong>மூணு இருபது</strong>&rdquo;</span>
+                <span className="font-mono text-amber-800 font-bold">→ S.No. 3, Qty 20</span>
+              </div>
+              <div className="p-1.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between">
+                <span>&bull; &ldquo;<strong>ஒன்னு பத்து ரெண்டு அஞ்சு</strong>&rdquo;</span>
+                <span className="font-mono text-amber-800 font-bold">→ Multi: S.No 1 (10) &amp; 2 (5)</span>
+              </div>
+            </div>
+            <div className="text-[9px] text-slate-400 italic">
+              Also supports English numbers (&ldquo;1 10 2 5&rdquo;), Tanglish (&ldquo;onnu pathu&rdquo;), and product names (&ldquo;10 red bijili&rdquo;).
             </div>
           </div>
         </div>

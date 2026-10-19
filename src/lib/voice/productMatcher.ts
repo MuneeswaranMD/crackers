@@ -12,6 +12,11 @@ import {
   ProductMatchCandidate,
 } from '@/types';
 import { calculateLineItem } from '@/lib/calculations';
+import {
+  parseSnoQuantityTranscript,
+  parseSpokenNumberWord,
+} from './tamilNumberParser';
+import { parseMultiVoiceTranscript } from './languageParser';
 
 /**
  * Standard string normalization: removes punctuation, lowers case, trims extra spaces
@@ -209,8 +214,24 @@ export function matchProductForVoiceCommand(
     }
   };
 
-  // 1. Direct SKU or Barcode exact match
+  // 1. Direct S.No., SKU or Barcode exact match
   for (const prod of products) {
+    if (prod.sno != null) {
+      const snoStr = String(prod.sno);
+      if (
+        query === snoStr ||
+        query === `#${snoStr}` ||
+        query === `sno ${snoStr}` ||
+        query === `s.no ${snoStr}` ||
+        query === `s.no. ${snoStr}` ||
+        query === `நம்பர் ${snoStr}` ||
+        query === `no ${snoStr}`
+      ) {
+        recordCandidate(prod, 1.0, 'EXACT_SKU', `S.No. #${prod.sno}`);
+        continue;
+      }
+    }
+
     const cleanSku = normalizeText(prod.sku).replace(/^af\s*/, '');
     const cleanBarcode = normalizeText(prod.barcode);
 
@@ -362,4 +383,187 @@ export function matchMultiVoiceCommands(
       selected: res.status === 'EXACT_MATCH' || res.status === 'AMBIGUOUS',
     };
   });
+}
+
+/**
+ * Primary Voice Billing Interpreter:
+ * Evaluates spoken Tamil / Tanglish / English utterances for SNO & Quantity pairs
+ * (e.g., "ஒன்னு பத்து", "ரெண்டு அஞ்சு", "மூணு இருபது", "ஒன்னு பத்து ரெண்டு அஞ்சு").
+ * Validates against active product catalogue, ensures stock limits, and calculates
+ * line totals using POS billing engine.
+ * Falls back to fuzzy product name matching if no numbers or SNO pairs were detected.
+ */
+export function interpretVoiceBillingTranscript(
+  rawTranscript: string,
+  products: Product[],
+  aliases: ProductAlias[] = [],
+  currentCart: CartItem[] = [],
+  billingMode: BillingMode = 'GST'
+): VoiceMatchResult[] {
+  const trimmed = rawTranscript.trim();
+  if (!trimmed) return [];
+
+  // Check for immediate undo
+  if (/^(undo|revert|thappu|ரத்து\s*செய்|முந்தையதை\s*நீக்கு)$/i.test(trimmed)) {
+    return [
+      {
+        id: `undo-${Date.now()}`,
+        command: {
+          rawTranscript: trimmed,
+          action: 'UNDO',
+          productNameQuery: '',
+          quantity: 0,
+          confidence: 1.0,
+        },
+        status: 'UNDO_REQUEST',
+        selected: true,
+      },
+    ];
+  }
+
+  // 1. Try SNO & Quantity pair parsing
+  const maxCatalogSno = products.reduce((m, p) => Math.max(m, p.sno || 0), 206);
+  const snoResult = parseSnoQuantityTranscript(trimmed, maxCatalogSno);
+
+  if (snoResult.pairs.length > 0) {
+    const results: VoiceMatchResult[] = [];
+
+    for (let i = 0; i < snoResult.pairs.length; i++) {
+      const pair = snoResult.pairs[i];
+      // Resolve product where sno matches (or barcode matches serial number)
+      const matched = products.find(
+        (p) =>
+          p.sno === pair.sno ||
+          Number(p.barcode) === pair.sno ||
+          p.sku.toLowerCase() === `af-${String(pair.sno).padStart(3, '0')}`
+      );
+
+      const uniqueId = `voice-sno-${Date.now()}-${i}-${pair.sno}`;
+
+      if (!matched) {
+        results.push({
+          id: uniqueId,
+          command: {
+            rawTranscript: `${pair.rawSnoText} ${pair.rawQtyText}`,
+            action: snoResult.action || 'ADD',
+            productNameQuery: `S.No. #${pair.sno}`,
+            quantity: pair.quantity,
+            unit: pair.unit,
+            confidence: pair.confidence,
+            detectedLanguage: snoResult.detectedLanguage,
+            isQuantityExplicit: true,
+          },
+          status: 'NO_MATCH',
+          errorMessage: `Product with S.No. #${pair.sno} was not found in catalogue (Range: 1 to ${maxCatalogSno}).`,
+          selected: false,
+        });
+        continue;
+      }
+
+      if (matched.isActive === false) {
+        results.push({
+          id: uniqueId,
+          command: {
+            rawTranscript: `${pair.rawSnoText} ${pair.rawQtyText}`,
+            action: snoResult.action || 'ADD',
+            productNameQuery: `[S.No. #${matched.sno}] ${matched.name}`,
+            quantity: pair.quantity,
+            unit: pair.unit || matched.uom,
+            confidence: pair.confidence,
+            detectedLanguage: snoResult.detectedLanguage,
+            isQuantityExplicit: true,
+          },
+          status: 'NO_MATCH',
+          matchedProduct: matched,
+          errorMessage: `Product [S.No. #${matched.sno}] "${matched.name}" is currently disabled/inactive.`,
+          selected: false,
+        });
+        continue;
+      }
+
+      const isOutOfStock = matched.currentStock <= 0;
+      const isExceedingStock = pair.quantity > matched.currentStock;
+
+      const line = calculateLineItem(
+        {
+          mrp: matched.mrp,
+          unitPrice: matched.sellingPrice,
+          quantity: pair.quantity,
+          discountPercentage: 0,
+          cgstRate: 9,
+          sgstRate: 9,
+        },
+        billingMode
+      );
+
+      results.push({
+        id: uniqueId,
+        command: {
+          rawTranscript: `${pair.rawSnoText} ${pair.rawQtyText}`,
+          action: snoResult.action || 'ADD',
+          productNameQuery: `[S.No. #${matched.sno}] ${matched.name}`,
+          quantity: pair.quantity,
+          unit: pair.unit || matched.uom,
+          confidence: pair.confidence,
+          detectedLanguage: snoResult.detectedLanguage,
+          isQuantityExplicit: true,
+        },
+        status: isOutOfStock ? 'NO_MATCH' : 'EXACT_MATCH',
+        matchedProduct: matched,
+        calculatedLineTotal: line.totalAmount,
+        taxableValue: line.taxableValue,
+        totalTax: line.totalTax,
+        errorMessage: isOutOfStock
+          ? `Product [S.No. #${matched.sno}] "${matched.name}" is out of stock (0 ${matched.uom}).`
+          : isExceedingStock
+            ? `Requested ${pair.quantity} ${matched.uom}, but only ${matched.currentStock} currently in stock.`
+            : undefined,
+        selected: !isOutOfStock,
+      });
+    }
+
+    // If there were unpaired numbers (e.g. "ஒன்னு பத்து இருபது" - 20 has no quantity)
+    if (snoResult.isIncomplete && snoResult.unpairedNumbers) {
+      results.push({
+        id: `voice-incomplete-${Date.now()}`,
+        command: {
+          rawTranscript: trimmed,
+          action: snoResult.action || 'ADD',
+          productNameQuery: `Incomplete S.No: ${snoResult.unpairedNumbers.join(', ')}`,
+          quantity: 0,
+          confidence: 0.5,
+          detectedLanguage: snoResult.detectedLanguage,
+        },
+        status: 'AMBIGUOUS',
+        errorMessage: snoResult.errorMessage || `Incomplete command: S.No. ${snoResult.unpairedNumbers.join(', ')} is missing a quantity.`,
+        selected: false,
+      });
+    }
+
+    return results;
+  }
+
+  // 2. If no SNO pairs detected, but there were incomplete standalone numbers
+  if (snoResult.isIncomplete && snoResult.unpairedNumbers && snoResult.unpairedNumbers.length > 0) {
+    return [
+      {
+        id: `voice-incomplete-${Date.now()}`,
+        command: {
+          rawTranscript: trimmed,
+          action: snoResult.action || 'ADD',
+          productNameQuery: `S.No: ${snoResult.unpairedNumbers.join(', ')}`,
+          quantity: 0,
+          confidence: 0.5,
+          detectedLanguage: snoResult.detectedLanguage,
+        },
+        status: 'AMBIGUOUS',
+        errorMessage: snoResult.errorMessage || `Incomplete command: S.No. ${snoResult.unpairedNumbers.join(', ')} is missing a quantity. Please speak both S.No. and quantity (e.g., "ஒன்னு பத்து").`,
+        selected: false,
+      },
+    ];
+  }
+
+  // 3. Fallback to product name / keyword fuzzy matching
+  const parsedCommands = parseMultiVoiceTranscript(trimmed);
+  return matchMultiVoiceCommands(parsedCommands, products, aliases, currentCart, billingMode);
 }

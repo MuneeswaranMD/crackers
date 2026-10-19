@@ -72,6 +72,7 @@ export function generateThermalReceiptHtml(sale: Sale, shop: Shop, isDuplicate =
         ${shop.addressLine2 ? `<div style="font-size: 10px; font-style: italic;">${shop.addressLine2}</div>` : ''}
         <div style="font-size: 11px;">${shop.addressLine1}, ${shop.city}</div>
         <div style="font-size: 11px; font-weight: bold;">Phone: ${shop.phone}</div>
+        <div style="font-size: 11px; font-weight: bold;">Web: www.sreekalieswaritraders.com</div>
         ${shop.gstin ? `<div style="font-size: 11px; font-weight: bold;">GSTIN: ${shop.gstin}</div>` : ''}
         <div style="font-size: 10px;">PESO Lic: ${shop.licenseNumber}</div>
         <div class="badge">GREEN CRACKERS CERTIFIED (CSIR-NEERI)</div>
@@ -356,6 +357,9 @@ export function generateA4InvoiceHtml(sale: Sale, shop: Shop): string {
               <div style="font-size: 12px; font-weight: bold; color: #000; margin-top: 4px;">
                 Phone : ${shop.phone}
               </div>
+              <div style="font-size: 12px; font-weight: bold; color: #000; margin-top: 2px;">
+                Website : <a href="https://www.sreekalieswaritraders.com" target="_blank" style="color: #000; text-decoration: underline;">www.sreekalieswaritraders.com</a>
+              </div>
               ${
                 shop.gstin
                   ? `<div style="font-size: 11px; color: #222; margin-top: 2px;">GSTIN : ${shop.gstin}</div>`
@@ -451,6 +455,7 @@ export function generateA4InvoiceHtml(sale: Sale, shop: Shop): string {
                 <div>Account No : ${shop.bankAccountNo || '30492817492'}</div>
                 <div>IFSC Code: ${shop.bankIfsc || 'SBIN0000921'}</div>
                 <div>UPI ID : ${shop.upiId || '9843749750'}</div>
+                <div style="margin-top: 4px; font-weight: bold; color: #000;">Website : <a href="https://www.sreekalieswaritraders.com" target="_blank" style="color: #000; text-decoration: none;">www.sreekalieswaritraders.com</a></div>
               </div>
             </td>
 

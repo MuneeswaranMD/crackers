@@ -49,6 +49,7 @@ import {
   InvoiceType,
   ProductAlias,
   VoiceMatchResult,
+  ShopSetting,
 } from '@/types';
 import VoiceBillingModal from '@/components/pos/VoiceBillingModal';
 import {
@@ -146,12 +147,12 @@ const POSProductCard = React.memo(function POSProductCard({
 
       {/* Product Name, Tamil Title & SKU */}
       <div className="my-1">
-        <div className="flex items-start justify-between gap-1">
+        <div className="flex items-start justify-between gap-1.5">
           <div className="font-bold text-[#1F2937] text-xs leading-snug group-hover:text-amber-700 line-clamp-2">
             {prod.name}
           </div>
-          <span className="font-mono text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
-            #{prod.barcode || prod.sku.replace('AF-', '')}
+          <span className="font-mono text-[10px] font-black px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 shrink-0">
+            S.No. #{prod.sno ?? prod.barcode ?? prod.sku.replace('AF-', '')}
           </span>
         </div>
         {prod.tamilName && (
@@ -245,6 +246,7 @@ export default function POSPage() {
   const [newCustomerState, setNewCustomerState] = useState('Tamil Nadu');
   const [newCustomerEmail, setNewCustomerEmail] = useState('');
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
+  const [settings, setSettings] = useState<ShopSetting>(() => db.getSettings());
 
   // Voice Billing State
   const [showVoiceModal, setShowVoiceModal] = useState(false);
@@ -263,8 +265,9 @@ export default function POSPage() {
     setCustomers(db.getCustomers());
     setHeldBills(db.getHeldBills());
     setProductAliases(db.getProductAliases());
-    const settings = db.getSettings();
-    setBillingMode(settings.defaultBillingMode);
+    const currentSettings = db.getSettings();
+    setSettings(currentSettings);
+    setBillingMode(currentSettings.defaultBillingMode);
 
     try {
       const [prodsRes, catsRes, custsRes, aliasesRes] = await Promise.all([
@@ -331,10 +334,15 @@ export default function POSPage() {
         setPaymentMethod((prev) => (prev === 'CASH' ? 'UPI' : prev === 'UPI' ? 'CARD' : 'CASH'));
       } else if (e.key === 'F9') {
         e.preventDefault();
-        handleFinalizeSale('THERMAL');
+        handleFinalizeSale('A4');
       } else if (e.key === 'F10') {
         e.preventDefault();
-        handleFinalizeSale('A4');
+        const curSettings = db.getSettings();
+        if (curSettings.enableThermal80mmReceipt) {
+          handleFinalizeSale('THERMAL');
+        } else {
+          handleFinalizeSale('A4');
+        }
       } else if (e.key === 'Escape') {
         setShowCustomerModal(false);
         setShowHeldModal(false);
@@ -434,6 +442,7 @@ export default function POSPage() {
       const numCode = code.replace(/^#|^af-0*|^s\.?no:?\s*/i, '');
       const matched = products.find(
         (p) =>
+          (p.sno != null && String(p.sno) === numCode) ||
           p.barcode.toLowerCase() === code ||
           p.barcode === numCode ||
           p.sku.toLowerCase() === code ||
@@ -653,7 +662,7 @@ export default function POSPage() {
   };
 
   // Transactional Finalize Sale
-  const handleFinalizeSale = (printFormat: 'THERMAL' | 'A4') => {
+  const handleFinalizeSale = (printFormat?: 'THERMAL' | 'A4') => {
     if (isSubmitting) return;
     setErrorBanner(null);
 
@@ -663,8 +672,12 @@ export default function POSPage() {
     }
 
     // Revalidate stock
-    const settings = db.getSettings();
-    if (!settings.allowNegativeStock) {
+    const currentSettings = db.getSettings();
+    let effectiveFormat: 'A4' | 'THERMAL' = printFormat || currentSettings.defaultPrintFormat || 'A4';
+    if (effectiveFormat === 'THERMAL' && !currentSettings.enableThermal80mmReceipt) {
+      effectiveFormat = 'A4';
+    }
+    if (!currentSettings.allowNegativeStock) {
       for (const item of cart) {
         const currentInDb = db.getProductById(item.product.id);
         if (currentInDb && item.quantity > currentInDb.currentStock) {
@@ -760,8 +773,8 @@ export default function POSPage() {
       setLastFinalizedSale(fullSale);
       setShowSuccessModal(true);
 
-      // Auto trigger print
-      if (printFormat === 'THERMAL') {
+      // Auto trigger print (A4 by default, 80mm only if explicitly requested and enabled)
+      if (effectiveFormat === 'THERMAL' && currentSettings.enableThermal80mmReceipt) {
         const html = generateThermalReceiptHtml(fullSale, shop);
         printHtmlViaIframe(html);
       } else {
@@ -787,27 +800,31 @@ export default function POSPage() {
     const trimmed = deferredSearchQuery.trim().toLowerCase();
     const numQuery = trimmed.replace(/^#|^af-0*|^s\.?no:?\s*/i, '');
 
-    return products.filter((p) => {
-      if (filterLowStockOnly && p.currentStock > p.minStockAlert) {
-        return false;
-      }
-      if (filterPopularOnly && p.currentStock <= 0) {
-        return false;
-      }
-      const matchesCategory = selectedCategory === 'ALL' || p.categoryId === selectedCategory;
-      const matchesSearch =
-        !trimmed ||
-        p.barcode === numQuery ||
-        p.barcode.toLowerCase().includes(trimmed) ||
-        p.sku.toLowerCase() === trimmed ||
-        p.sku.toLowerCase() === `af-${numQuery.padStart(3, '0')}` ||
-        p.sku.toLowerCase().includes(trimmed) ||
-        p.name.toLowerCase().includes(trimmed) ||
-        (p.tamilName && p.tamilName.toLowerCase().includes(trimmed)) ||
-        p.brand.toLowerCase().includes(trimmed);
+    return products
+      .filter((p) => {
+        if (filterLowStockOnly && p.currentStock > p.minStockAlert) {
+          return false;
+        }
+        if (filterPopularOnly && p.currentStock <= 0) {
+          return false;
+        }
+        const matchesCategory = selectedCategory === 'ALL' || p.categoryId === selectedCategory;
+        const matchesSearch =
+          !trimmed ||
+          (p.sno != null && String(p.sno) === numQuery) ||
+          (p.sno != null && String(p.sno).startsWith(numQuery)) ||
+          p.barcode === numQuery ||
+          p.barcode.toLowerCase().includes(trimmed) ||
+          p.sku.toLowerCase() === trimmed ||
+          p.sku.toLowerCase() === `af-${numQuery.padStart(3, '0')}` ||
+          p.sku.toLowerCase().includes(trimmed) ||
+          p.name.toLowerCase().includes(trimmed) ||
+          (p.tamilName && p.tamilName.toLowerCase().includes(trimmed)) ||
+          p.brand.toLowerCase().includes(trimmed);
 
-      return matchesCategory && matchesSearch;
-    });
+        return matchesCategory && matchesSearch;
+      })
+      .sort((a, b) => (a.sno || 0) - (b.sno || 0));
   }, [products, selectedCategory, deferredSearchQuery, filterLowStockOnly, filterPopularOnly]);
 
   // Reset pagination window when filters change
@@ -1173,7 +1190,12 @@ export default function POSPage() {
               className="py-2.5 px-2 hover:bg-slate-50 rounded-xl transition flex items-center justify-between gap-2 text-xs"
             >
               <div className="flex-1 min-w-0">
-                <div className="font-bold text-[#1F2937] truncate">{item.product.name}</div>
+                <div className="font-bold text-[#1F2937] truncate flex items-center gap-1.5">
+                  <span className="font-mono text-[9px] font-black px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 shrink-0">
+                    S.No. #{item.product.sno ?? item.product.barcode ?? '—'}
+                  </span>
+                  <span className="truncate">{item.product.name}</span>
+                </div>
                 <div className="text-[11px] text-[#6B7280] flex items-center gap-1.5 mt-0.5">
                   <span>₹{item.unitPrice.toFixed(2)}</span>
                   <span>•</span>
@@ -1421,25 +1443,28 @@ export default function POSPage() {
             <Trash2 className="w-4 h-4" />
           </button>
 
-          {/* Primary Action: Complete Sale Button */}
-          <button
-            onClick={() => handleFinalizeSale('THERMAL')}
-            disabled={cart.length === 0 || isSubmitting}
-            className="flex-1 py-2.5 rounded-xl bg-[#F59E0B] hover:bg-amber-400 disabled:opacity-40 text-[#111318] font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition"
-          >
-            <Printer className="w-4 h-4" />
-            <span>{isSubmitting ? 'Finalizing...' : 'Complete & Print (F9)'}</span>
-          </button>
-
-          {/* Secondary Print Option: A4 Invoice */}
+          {/* Primary Action: Complete & Print A4 Invoice Button (Default) */}
           <button
             onClick={() => handleFinalizeSale('A4')}
             disabled={cart.length === 0 || isSubmitting}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-amber-400 transition"
-            title="Print A4 Tax Invoice (F10)"
+            className="min-w-0 flex-1 py-2.5 px-2 rounded-xl bg-[#F59E0B] hover:bg-amber-400 disabled:opacity-40 text-[#111318] font-black text-[11px] sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap shadow-lg shadow-amber-500/20 transition"
           >
             <FileText className="w-4 h-4" />
+            <span className="sm:hidden">{isSubmitting ? 'Finalizing...' : 'Print A4 (F9)'}</span>
+            <span className="hidden sm:inline">{isSubmitting ? 'Finalizing...' : 'Complete & Print A4 Invoice (F9)'}</span>
           </button>
+
+          {/* Secondary Print Option: 80mm Receipt (only if enabled) */}
+          {settings.enableThermal80mmReceipt && (
+            <button
+              onClick={() => handleFinalizeSale('THERMAL')}
+              disabled={cart.length === 0 || isSubmitting}
+              className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-amber-400 transition"
+              title="Print 80mm Thermal Receipt (F10)"
+            >
+              <Printer className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -1633,27 +1658,38 @@ export default function POSPage() {
               </div>
             </div>
 
-            {/* Reprint Buttons */}
+            {/* Reprint Buttons - A4 Default */}
             <div className="grid grid-cols-2 gap-2 pt-2">
-              <button
-                onClick={() => {
-                  const html = generateThermalReceiptHtml(lastFinalizedSale, shop);
-                  printHtmlViaIframe(html);
-                }}
-                className="py-2.5 px-3 rounded-xl bg-[#111318] hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition"
-              >
-                <Printer className="w-4 h-4 text-amber-400" />
-                <span>Reprint 80mm</span>
-              </button>
               <button
                 onClick={() => {
                   const html = generateA4InvoiceHtml(lastFinalizedSale, shop);
                   printHtmlViaIframe(html);
                 }}
-                className="py-2.5 px-3 rounded-xl border border-[#E5E7EB] hover:bg-slate-100 text-[#1F2937] font-bold text-xs flex items-center justify-center gap-1.5 transition"
+                className="py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition shadow"
               >
-                <FileText className="w-4 h-4 text-slate-600" />
-                <span>Reprint A4 PDF</span>
+                <FileText className="w-4 h-4 text-slate-950" />
+                <span>Print A4 Invoice</span>
+              </button>
+              <button
+                disabled={!settings.enableThermal80mmReceipt}
+                onClick={() => {
+                  if (!settings.enableThermal80mmReceipt) return;
+                  const html = generateThermalReceiptHtml(lastFinalizedSale, shop);
+                  printHtmlViaIframe(html);
+                }}
+                className={`py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition ${
+                  settings.enableThermal80mmReceipt
+                    ? 'bg-[#111318] hover:bg-slate-800 text-white'
+                    : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
+                }`}
+                title={
+                  settings.enableThermal80mmReceipt
+                    ? 'Reprint 80mm Receipt'
+                    : '80mm receipt disabled in printer settings'
+                }
+              >
+                <Printer className="w-4 h-4 text-slate-400" />
+                <span>{settings.enableThermal80mmReceipt ? 'Reprint 80mm' : '80mm (Disabled)'}</span>
               </button>
             </div>
 

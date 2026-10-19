@@ -451,6 +451,7 @@ export async function getProductsFromSupabase(): Promise<Product[]> {
       categoryId: r.category_id,
       categoryName: r.category_name || 'Crackers',
       sku: r.sku,
+      sno: r.sno ? parseInt(r.sno, 10) : (/^\d+$/.test(r.barcode || '') ? parseInt(r.barcode, 10) : undefined),
       barcode: r.barcode || '',
       name: r.name,
       tamilName: r.tamil_name || '',

@@ -68,6 +68,8 @@ export const INITIAL_SETTINGS: ShopSetting = {
   thermalPrinterPaperWidth: '80mm',
   printDuplicateReceipt: false,
   autoRoundoffToRupee: true,
+  defaultPrintFormat: 'A4',
+  enableThermal80mmReceipt: false,
 };
 
 export const INITIAL_INTEGRATION: Integration = {
@@ -277,18 +279,32 @@ export const db = {
   // Initialization
   initDefaults: () => {
     const existingShop = storage.get<Shop | null>(STORAGE_KEYS.SHOP, null);
-    if (!existingShop || existingShop.name !== 'AGANA FIREWORKS') {
-      storage.set(STORAGE_KEYS.SHOP, INITIAL_SHOP);
+    if (!existingShop || existingShop.name !== 'AGANA FIREWORKS' || !existingShop.website) {
+      storage.set(STORAGE_KEYS.SHOP, { ...INITIAL_SHOP, website: 'www.sreekalieswaritraders.com' });
     }
-    if (!storage.get<ShopSetting | null>(STORAGE_KEYS.SETTINGS, null)) {
+    const existingSettings = storage.get<ShopSetting | null>(STORAGE_KEYS.SETTINGS, null);
+    if (!existingSettings) {
       storage.set(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
+    } else {
+      let changed = false;
+      if (!existingSettings.defaultPrintFormat) {
+        existingSettings.defaultPrintFormat = 'A4';
+        changed = true;
+      }
+      if (existingSettings.enableThermal80mmReceipt === undefined) {
+        existingSettings.enableThermal80mmReceipt = false;
+        changed = true;
+      }
+      if (changed) {
+        storage.set(STORAGE_KEYS.SETTINGS, existingSettings);
+      }
     }
     const existingCats = storage.get<Category[] | null>(STORAGE_KEYS.CATEGORIES, null);
     if (!existingCats || existingCats.length < 20) {
       storage.set(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
     }
     const existingProds = storage.get<Product[] | null>(STORAGE_KEYS.PRODUCTS, null);
-    if (!existingProds || existingProds.length < 50 || existingProds.some((p) => !p.sku.startsWith('AF-'))) {
+    if (!existingProds || existingProds.length < 206 || existingProds.some((p) => !p.sno || !p.sku?.startsWith('AF-'))) {
       storage.set(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
     }
     if (!storage.get<Customer[] | null>(STORAGE_KEYS.CUSTOMERS, null)) {
@@ -368,7 +384,15 @@ export const db = {
     };
   },
 
-  getSettings: (): ShopSetting => storage.get<ShopSetting>(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS),
+  getSettings: (): ShopSetting => {
+    const s = storage.get<ShopSetting>(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
+    return {
+      ...INITIAL_SETTINGS,
+      ...s,
+      defaultPrintFormat: s.defaultPrintFormat || 'A4',
+      enableThermal80mmReceipt: s.enableThermal80mmReceipt ?? false,
+    };
+  },
   updateSettings: (settings: ShopSetting): void => {
     storage.set(STORAGE_KEYS.SETTINGS, settings);
     db.logAudit('Billing Settings Updated', 'ShopSetting', settings.id);
@@ -388,30 +412,69 @@ export const db = {
     storage.set(STORAGE_KEYS.CATEGORIES, list);
   },
 
-  // Products
-  getProducts: (): Product[] => storage.get<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS),
-  getProductById: (id: string): Product | undefined => db.getProducts().find((p) => p.id === id),
+  // Products - Keyed by S.No. (1 to 206) from 2026 Price List
+  getProducts: (): Product[] => {
+    const list = storage.get<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
+    if (!list || list.length < 206 || list.some((p) => !p.sno)) {
+      storage.set(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
+      return INITIAL_PRODUCTS;
+    }
+    return list;
+  },
+  getProductById: (id: string): Product | undefined => {
+    return db.getProducts().find(
+      (p) => p.id === id || String(p.sno) === String(id) || p.sku === id || p.barcode === id
+    );
+  },
+  getProductBySno: (sno: number): Product | undefined => {
+    return db.getProducts().find((p) => p.sno === sno || Number(p.barcode) === sno);
+  },
   saveProduct: (product: Product): void => {
     const list = db.getProducts();
-    const idx = list.findIndex((p) => p.id === product.id);
-    if (idx >= 0) list[idx] = product;
-    else list.push(product);
+    // Primary key is sno from the price list (runs from 1 to 206 and is unique)
+    let idx = -1;
+    if (product.sno != null) {
+      idx = list.findIndex((p) => p.sno === product.sno);
+    }
+    if (idx === -1 && product.id) {
+      idx = list.findIndex((p) => p.id === product.id || String(p.sno) === String(product.id));
+    }
+    if (idx === -1 && product.sku) {
+      idx = list.findIndex((p) => p.sku === product.sku);
+    }
+
+    const targetSno = product.sno || (idx >= 0 ? list[idx].sno : (list.reduce((m, p) => Math.max(m, p.sno || 0), 0) + 1));
+    const normalizedProduct: Product = {
+      ...(idx >= 0 ? list[idx] : {}),
+      ...product,
+      sno: targetSno,
+      barcode: product.barcode || String(targetSno),
+      id: product.id || (idx >= 0 ? list[idx].id : `22222222-ba01-0000-0000-${String(targetSno).padStart(12, '0')}`),
+    };
+
+    if (idx >= 0) {
+      list[idx] = normalizedProduct;
+    } else {
+      list.push(normalizedProduct);
+    }
     storage.set(STORAGE_KEYS.PRODUCTS, list);
-    db.logAudit(`Product ${idx >= 0 ? 'Updated' : 'Created'}: ${product.name}`, 'Product', product.id);
+    db.logAudit(`Product ${idx >= 0 ? 'Updated' : 'Created'}: [S.No. ${normalizedProduct.sno}] ${normalizedProduct.name}`, 'Product', normalizedProduct.id);
 
     // Persist directly to Supabase
     if (typeof window !== 'undefined') {
       fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(product),
+        body: JSON.stringify(normalizedProduct),
       }).catch((e) => console.warn('[Supabase Sync Product Warning]:', e));
     }
   },
-  deleteProduct: (id: string): void => {
-    const list = db.getProducts().filter((p) => p.id !== id);
+  deleteProduct: (idOrSno: string | number): void => {
+    const list = db.getProducts().filter(
+      (p) => p.id !== String(idOrSno) && p.sno !== Number(idOrSno) && p.sku !== String(idOrSno)
+    );
     storage.set(STORAGE_KEYS.PRODUCTS, list);
-    db.logAudit(`Product Deleted`, 'Product', id);
+    db.logAudit(`Product Deleted`, 'Product', String(idOrSno));
   },
 
   // Product Aliases for Voice Recognition & Smart Matching

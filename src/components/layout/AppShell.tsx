@@ -97,7 +97,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     const unsubShop = db.onShopChange((updated) => setShop(updated));
 
     const settings = db.getSettings();
-    setPrinterStatus(`${settings.thermalPrinterPaperWidth || '80mm'} Ready`);
+    if (settings.defaultPrintFormat === 'A4') {
+      setPrinterStatus('A4 Invoice (Default)');
+    } else {
+      setPrinterStatus(`${settings.thermalPrinterPaperWidth || '80mm'} Ready`);
+    }
 
     // Calculate pending sync items
     const checkSync = () => {
@@ -218,7 +222,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     if (pathname === '/expenses') return 'Shop Expenses';
     if (pathname === '/reports') return 'Sales & Tax Reports';
     if (pathname === '/users') return 'Staff Users & Role Permissions';
-    if (pathname === '/printer-settings') return '80mm Thermal & A4 Printer Setup';
+    if (pathname === '/printer-settings') return 'A4 Invoice & Thermal Printer Settings';
     if (pathname === '/shop-settings') return 'Store Profile & Billing Config';
     if (pathname === '/sync') return 'Data Backup & Cloud Synchronization';
     return 'Fireworks POS';
@@ -674,11 +678,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
                 <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200">
                   <span className="font-semibold text-slate-700">F9</span>
-                  <span className="text-slate-500">Print 80mm Receipt</span>
+                  <span className="text-slate-500 font-bold text-amber-600">Print A4 Invoice (Default)</span>
                 </div>
                 <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200">
                   <span className="font-semibold text-slate-700">F10</span>
-                  <span className="text-slate-500">Print A4 Invoice</span>
+                  <span className="text-slate-500">Print 80mm Receipt (If Enabled)</span>
                 </div>
               </div>
               <div className="text-xs text-slate-500 pt-2 border-t border-slate-200">

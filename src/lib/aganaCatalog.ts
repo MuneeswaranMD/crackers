@@ -10,6 +10,7 @@ export const AGANA_SHOP: Shop = {
   licenseValidUpto: '2029-03-31',
   phone: '98437 49750, 63827 71327',
   email: 'sales@aganafireworks.com',
+  website: 'www.sreekalieswaritraders.com',
   addressLine1: 'Thayilpatti (Via)',
   addressLine2: 'Proprietors: P. Arjun & P. Deepak',
   city: 'Sivakasi',
@@ -244,7 +245,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 1,
+    "slug": "3-1-2-lakshmi-1"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000002",
@@ -267,7 +270,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 2,
+    "slug": "2-3-4-kuruvi-2"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000003",
@@ -290,7 +295,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 3,
+    "slug": "4-lakshmi-3"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000004",
@@ -313,7 +320,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 4,
+    "slug": "4-deluxe-lakshmi-4"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000005",
@@ -336,7 +345,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 5,
+    "slug": "4-gold-lakshmi-5"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000006",
@@ -359,7 +370,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 6,
+    "slug": "5-jallikattu-6"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000007",
@@ -382,7 +395,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 7,
+    "slug": "6-special-lion-king-7"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000008",
@@ -405,7 +420,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 8,
+    "slug": "28-chorsa-8"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000009",
@@ -428,7 +445,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 9,
+    "slug": "28-giant-9"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000000a",
@@ -451,7 +470,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 10,
+    "slug": "56-giant-10"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000000b",
@@ -474,7 +495,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 11,
+    "slug": "24-deluxe-11"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000000c",
@@ -497,7 +520,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 12,
+    "slug": "50-deluxe-12"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000000d",
@@ -520,7 +545,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 13,
+    "slug": "100-deluxe-13"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000000e",
@@ -543,7 +570,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 14,
+    "slug": "red-bijili-14"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000000f",
@@ -566,7 +595,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 15,
+    "slug": "stripped-bijili-15"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000010",
@@ -589,7 +620,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 16,
+    "slug": "special-bijili-16"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000011",
@@ -612,7 +645,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 17,
+    "slug": "1k-magic-17"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000012",
@@ -635,7 +670,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 18,
+    "slug": "2k-magic-18"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000013",
@@ -658,7 +695,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 19,
+    "slug": "5k-magic-19"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000014",
@@ -681,7 +720,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 20,
+    "slug": "10k-magic-20"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000015",
@@ -704,7 +745,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 21,
+    "slug": "0-1k-magic-21"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000016",
@@ -727,7 +770,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 22,
+    "slug": "0-2k-magic-22"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000017",
@@ -750,7 +795,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 23,
+    "slug": "0-3k-magic-23"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000018",
@@ -773,7 +820,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 24,
+    "slug": "0-6k-magic-24"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000019",
@@ -796,7 +845,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 25,
+    "slug": "1k-magic-25"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000001a",
@@ -819,7 +870,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 26,
+    "slug": "2k-magic-26"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000001b",
@@ -842,7 +895,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 27,
+    "slug": "5k-magic-27"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000001c",
@@ -865,7 +920,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 28,
+    "slug": "10k-magic-28"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000001d",
@@ -888,7 +945,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 29,
+    "slug": "hydro-bomb-29"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000001e",
@@ -911,7 +970,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 30,
+    "slug": "king-of-king-thunder-bomb-30"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000001f",
@@ -934,7 +995,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 31,
+    "slug": "classic-bomb-gemini-shikari-31"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000020",
@@ -957,7 +1020,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 32,
+    "slug": "agni-bomb-dinosaur-32"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000021",
@@ -980,7 +1045,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 33,
+    "slug": "digital-bomb-mega-dts-33"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000022",
@@ -1003,7 +1070,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 34,
+    "slug": "1-4-kg-paper-bomb-34"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000023",
@@ -1026,7 +1095,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 35,
+    "slug": "1-2-kg-paper-bomb-35"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000024",
@@ -1049,7 +1120,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 36,
+    "slug": "1kg-paper-bomb-36"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000025",
@@ -1072,7 +1145,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/bombs.jpg"
+    "imageUrl": "/images/products/bombs.jpg",
+    "sno": 37,
+    "slug": "red-dragon-10-pcs-37"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000026",
@@ -1095,7 +1170,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 38,
+    "slug": "baby-rocket-38"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000027",
@@ -1118,7 +1195,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 39,
+    "slug": "rocket-bomb-39"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000028",
@@ -1141,7 +1220,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 40,
+    "slug": "lunik-rocket-40"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000029",
@@ -1164,7 +1245,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 41,
+    "slug": "2-sound-rocket-41"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000002a",
@@ -1187,7 +1270,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 42,
+    "slug": "whistling-rocket-42"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000002b",
@@ -1210,7 +1295,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 43,
+    "slug": "1-1-2-twinkling-star-43"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000002c",
@@ -1233,7 +1320,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 44,
+    "slug": "4-twinkling-star-44"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000002d",
@@ -1256,7 +1345,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 45,
+    "slug": "flower-pot-small-45"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000002e",
@@ -1279,7 +1370,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 46,
+    "slug": "flower-pot-big-46"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000002f",
@@ -1302,7 +1395,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 47,
+    "slug": "flower-pot-special-47"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000030",
@@ -1325,7 +1420,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 48,
+    "slug": "flower-pot-super-deluxe-2-pcs-48"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000031",
@@ -1348,7 +1445,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 49,
+    "slug": "flower-pot-asoka-49"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000032",
@@ -1371,7 +1470,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 50,
+    "slug": "flower-pot-colour-koti-50"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000033",
@@ -1394,7 +1495,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 51,
+    "slug": "deluxe-colour-koti-10pcs-51"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000034",
@@ -1417,7 +1520,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 52,
+    "slug": "tri-colour-5-pcs-52"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000035",
@@ -1440,7 +1545,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 53,
+    "slug": "luck-value-5-pcs-53"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000036",
@@ -1463,7 +1570,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/flowerpots.jpg"
+    "imageUrl": "/images/products/flowerpots.jpg",
+    "sno": 54,
+    "slug": "mega-luck-deluxe-10-pcs-54"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000037",
@@ -1486,7 +1595,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/chakkars.jpg"
+    "imageUrl": "/images/products/chakkars.jpg",
+    "sno": 55,
+    "slug": "ground-chakkar-big-55"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000038",
@@ -1509,7 +1620,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/chakkars.jpg"
+    "imageUrl": "/images/products/chakkars.jpg",
+    "sno": 56,
+    "slug": "ground-chakkar-special-56"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000039",
@@ -1532,7 +1645,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/chakkars.jpg"
+    "imageUrl": "/images/products/chakkars.jpg",
+    "sno": 57,
+    "slug": "ground-chakkar-deluxe-57"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000003a",
@@ -1555,7 +1670,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/chakkars.jpg"
+    "imageUrl": "/images/products/chakkars.jpg",
+    "sno": 58,
+    "slug": "wire-chakkar-58"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000003b",
@@ -1578,7 +1695,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/chakkars.jpg"
+    "imageUrl": "/images/products/chakkars.jpg",
+    "sno": 59,
+    "slug": "super-deluxe-59"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000003c",
@@ -1601,7 +1720,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 60,
+    "slug": "peacock-feather-5-pcs-60"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000003d",
@@ -1624,7 +1745,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 61,
+    "slug": "mega-peacock-3-wings-61"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000003e",
@@ -1647,7 +1770,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 62,
+    "slug": "mega-peacock-5-wings-62"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000003f",
@@ -1670,7 +1795,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 63,
+    "slug": "pada-peacock-63"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000040",
@@ -1693,7 +1820,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 64,
+    "slug": "siren-pada-peacock-64"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000041",
@@ -1716,7 +1845,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 65,
+    "slug": "silver-moon-5-pcs-65"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000042",
@@ -1739,7 +1870,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 66,
+    "slug": "red-bloom-5-pcs-66"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000043",
@@ -1762,7 +1895,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 67,
+    "slug": "gold-coin-5-pcs-67"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000044",
@@ -1785,7 +1920,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 68,
+    "slug": "green-flash-5-pcs-68"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000045",
@@ -1808,7 +1945,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 69,
+    "slug": "little-fish-5-pcs-69"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000046",
@@ -1831,7 +1970,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 70,
+    "slug": "peacock-2-pcs-70"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000047",
@@ -1854,7 +1995,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 71,
+    "slug": "cock-fight-2pcs-71"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000048",
@@ -1877,7 +2020,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 72,
+    "slug": "pride-popcorn-2-pcs-72"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000049",
@@ -1900,7 +2045,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 73,
+    "slug": "ultra-voltage-2-pcs-73"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000004a",
@@ -1923,7 +2070,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 74,
+    "slug": "mojito-2-pcs-74"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000004b",
@@ -1946,7 +2095,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 75,
+    "slug": "lollipops-2-pcs-75"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000004c",
@@ -1969,7 +2120,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 76,
+    "slug": "siren-3-pcs-76"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000004d",
@@ -1992,7 +2145,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 77,
+    "slug": "colour-rain-5-pcs-77"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000004e",
@@ -2015,7 +2170,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 78,
+    "slug": "golden-rain-5pcs-78"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000004f",
@@ -2038,7 +2195,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 79,
+    "slug": "helicopter-5-pcs-79"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000050",
@@ -2061,7 +2220,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 80,
+    "slug": "bambara-10-pcs-80"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000051",
@@ -2084,7 +2245,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 81,
+    "slug": "photo-flash-5-pcs-81"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000052",
@@ -2107,7 +2270,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 82,
+    "slug": "kit-kat-82"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000053",
@@ -2130,7 +2295,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 83,
+    "slug": "smoke-3pcs-83"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000054",
@@ -2153,7 +2320,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 84,
+    "slug": "bat-ball-84"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000055",
@@ -2176,7 +2345,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 85,
+    "slug": "black-money-85"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000056",
@@ -2199,7 +2370,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 86,
+    "slug": "mini-water-queen-86"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000057",
@@ -2222,7 +2395,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 87,
+    "slug": "water-queen-87"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000058",
@@ -2245,7 +2420,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 88,
+    "slug": "6-tin-88"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000059",
@@ -2268,7 +2445,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 89,
+    "slug": "pinkie-pie-89"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000005a",
@@ -2291,7 +2470,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 90,
+    "slug": "blossom-90"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000005b",
@@ -2314,7 +2495,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 91,
+    "slug": "flora-5pcs-91"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000005c",
@@ -2337,7 +2520,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 92,
+    "slug": "butterfly-92"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000005d",
@@ -2360,7 +2545,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 93,
+    "slug": "warrior-squard-93"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000005e",
@@ -2383,7 +2570,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 94,
+    "slug": "play-bingo-94"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000005f",
@@ -2406,7 +2595,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 95,
+    "slug": "shooting-club-5pcs-95"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000060",
@@ -2429,7 +2620,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 96,
+    "slug": "rotating-sparklers-96"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000061",
@@ -2452,7 +2645,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 97,
+    "slug": "ring-o-ring-97"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000062",
@@ -2475,7 +2670,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 98,
+    "slug": "whistling-dixie-98"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000063",
@@ -2498,7 +2695,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 99,
+    "slug": "crackling-fountain-99"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000064",
@@ -2521,7 +2720,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 100,
+    "slug": "shin-chan-100"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000065",
@@ -2544,7 +2745,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 101,
+    "slug": "fire-egg-101"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000066",
@@ -2567,7 +2770,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 102,
+    "slug": "star-light-102"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000067",
@@ -2590,7 +2795,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 103,
+    "slug": "moon-light-103"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000068",
@@ -2613,7 +2820,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 104,
+    "slug": "cylinder-bomp-2-pcs-104"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000069",
@@ -2636,7 +2845,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 105,
+    "slug": "hi-tech-pencil-105"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000006a",
@@ -2659,7 +2870,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 106,
+    "slug": "candy-crush-5-pcs-106"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000006b",
@@ -2682,7 +2895,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 107,
+    "slug": "pop-corn-pencil-5pcs-107"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000006c",
@@ -2705,7 +2920,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 108,
+    "slug": "water-falls-pencil-5pcs-108"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000006d",
@@ -2728,7 +2945,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 109,
+    "slug": "green-laser-3pcs-109"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000006e",
@@ -2751,7 +2970,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 110,
+    "slug": "sea-laser-3pcs-110"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000006f",
@@ -2774,7 +2995,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 111,
+    "slug": "star-rain-2pcs-111"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000070",
@@ -2797,7 +3020,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 112,
+    "slug": "smoke-stick-112"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000071",
@@ -2820,7 +3045,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 113,
+    "slug": "monkey-star-5-pcs-113"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000072",
@@ -2843,7 +3070,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 114,
+    "slug": "kinder-joy-114"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000073",
@@ -2866,7 +3095,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 115,
+    "slug": "hand-whistle-5pcs-115"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000074",
@@ -2889,7 +3120,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 116,
+    "slug": "trisul-2pcs-116"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000075",
@@ -2912,7 +3145,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 117,
+    "slug": "vel-2-pcs-117"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000076",
@@ -2935,7 +3170,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 118,
+    "slug": "kulfi-118"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000077",
@@ -2958,7 +3195,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 119,
+    "slug": "mayajal-5pcs-119"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000078",
@@ -2981,7 +3220,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 120,
+    "slug": "x-mas-3pcs-120"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000079",
@@ -3004,7 +3245,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 121,
+    "slug": "ayyans-ninja-chakkar-121"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000007a",
@@ -3027,7 +3270,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 122,
+    "slug": "ayyans-cocktail-spinner-122"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000007b",
@@ -3050,7 +3295,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 123,
+    "slug": "ayyans-lemon-tree-123"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000007c",
@@ -3073,7 +3320,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 124,
+    "slug": "15-cm-crackling-comets-10-pcs-124"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000007d",
@@ -3096,7 +3345,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 125,
+    "slug": "30-cm-crackling-comets-5-pcs-125"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000007e",
@@ -3119,7 +3370,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 126,
+    "slug": "50cm-grandy-mix-5-in-1-sparklers-126"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000007f",
@@ -3142,7 +3395,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 127,
+    "slug": "water-melon-127"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000080",
@@ -3165,7 +3420,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 128,
+    "slug": "narakasura-128"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000081",
@@ -3188,7 +3445,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 129,
+    "slug": "i-cone-2-pcs-129"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000082",
@@ -3211,7 +3470,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 130,
+    "slug": "mini-fancy-130"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000083",
@@ -3234,7 +3495,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 131,
+    "slug": "colour-collection-5-pcs-131"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000084",
@@ -3257,7 +3520,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 132,
+    "slug": "1-3-4-fancy-3-pcs-132"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000085",
@@ -3280,7 +3545,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 133,
+    "slug": "aerial-out-preimium-3pcs-133"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000086",
@@ -3303,7 +3570,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 134,
+    "slug": "2-night-fancy-premium-134"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000087",
@@ -3326,7 +3595,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 135,
+    "slug": "2-fancy-triple-ball-135"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000088",
@@ -3349,7 +3620,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 136,
+    "slug": "ayyan-special-2-pink-136"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000089",
@@ -3372,7 +3645,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 137,
+    "slug": "ayyan-special-2-blue-137"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000008a",
@@ -3395,7 +3670,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 138,
+    "slug": "2-1-2-special-shot-2-pcs-138"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000008b",
@@ -3418,7 +3695,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 139,
+    "slug": "2-1-2-special-shot-3-pcs-139"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000008c",
@@ -3441,7 +3720,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 140,
+    "slug": "3-1-2-night-fancy-140"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000008d",
@@ -3464,7 +3745,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 141,
+    "slug": "3-1-2-night-fancy-premium-141"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000008e",
@@ -3487,7 +3770,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 142,
+    "slug": "3-1-2-night-fancy-double-ball-142"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000008f",
@@ -3510,7 +3795,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 143,
+    "slug": "3-1-2-night-fancy-2-pcs-143"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000090",
@@ -3533,7 +3820,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 144,
+    "slug": "3-1-2-special-fancy-bingo-boom-144"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000091",
@@ -3556,7 +3845,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 145,
+    "slug": "3-1-2-special-fancy-queen-shower-145"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000092",
@@ -3579,7 +3870,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 146,
+    "slug": "3-1-2-special-fancy-cool-rain-146"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000093",
@@ -3602,7 +3895,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 147,
+    "slug": "3-1-2-special-fancy-blue-pearl-147"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000094",
@@ -3625,7 +3920,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 148,
+    "slug": "3-1-2-special-fancy-violet-148"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000095",
@@ -3648,7 +3945,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 149,
+    "slug": "3-1-2-fancy-nayagara-with-colour-149"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000096",
@@ -3671,7 +3970,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 150,
+    "slug": "4-mega-fancy-tin-150"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000097",
@@ -3694,7 +3995,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 151,
+    "slug": "4-night-fancy-double-ball-151"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000098",
@@ -3717,7 +4020,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 152,
+    "slug": "4-night-fancy-hd-serious-2-pcs-152"
   },
   {
     "id": "22222222-ba01-0000-0000-000000000099",
@@ -3740,7 +4045,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 153,
+    "slug": "5-night-fancy-train-serious-2-pcs-153"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000009a",
@@ -3763,7 +4070,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 154,
+    "slug": "6-night-fancy-flight-serious-2-pcs-154"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000009b",
@@ -3786,7 +4095,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 155,
+    "slug": "7-shot-155"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000009c",
@@ -3809,7 +4120,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 156,
+    "slug": "12-shot-crackling-156"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000009d",
@@ -3832,7 +4145,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 157,
+    "slug": "12-multi-colour-shot-157"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000009e",
@@ -3855,7 +4170,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 158,
+    "slug": "12-step-crackling-158"
   },
   {
     "id": "22222222-ba01-0000-0000-00000000009f",
@@ -3878,7 +4195,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 159,
+    "slug": "15-multi-colour-shot-159"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a0",
@@ -3901,7 +4220,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 160,
+    "slug": "25-shot-crackling-160"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a1",
@@ -3924,7 +4245,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 161,
+    "slug": "30-multi-colour-shot-161"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a2",
@@ -3947,7 +4270,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 162,
+    "slug": "30-multi-colour-shot-special-162"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a3",
@@ -3970,7 +4295,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 163,
+    "slug": "60-multi-colour-shot-163"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a4",
@@ -3993,7 +4320,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 164,
+    "slug": "60-multi-colour-shot-special-164"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a5",
@@ -4016,7 +4345,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 165,
+    "slug": "120-multi-colour-shot-165"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a6",
@@ -4039,7 +4370,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 166,
+    "slug": "120-multi-colour-shot-special-166"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a7",
@@ -4062,7 +4395,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 167,
+    "slug": "240-multi-colour-shot-167"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a8",
@@ -4085,7 +4420,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 168,
+    "slug": "240-multi-colour-shot-special-168"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000a9",
@@ -4108,7 +4445,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 169,
+    "slug": "2-set-out-20-shot-169"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000aa",
@@ -4131,7 +4470,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 170,
+    "slug": "2-set-out-30-shot-170"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000ab",
@@ -4154,7 +4495,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 171,
+    "slug": "peacock-30-shot-171"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000ac",
@@ -4177,7 +4520,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 172,
+    "slug": "flash-30-shot-172"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000ad",
@@ -4200,7 +4545,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 173,
+    "slug": "hand-shooter-288-shots-173"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000ae",
@@ -4223,7 +4570,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 174,
+    "slug": "10x5-holy-celebration-174"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000af",
@@ -4246,7 +4595,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 175,
+    "slug": "10x5-dragon-mines-175"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b0",
@@ -4269,7 +4620,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/skyshots.jpg"
+    "imageUrl": "/images/products/skyshots.jpg",
+    "sno": 176,
+    "slug": "10x10-multi-shot-176"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b1",
@@ -4292,7 +4645,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 177,
+    "slug": "jumpo-dlx-mismash-177"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b2",
@@ -4315,7 +4670,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 178,
+    "slug": "royal-super-dlx-duke-178"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b3",
@@ -4338,7 +4695,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 179,
+    "slug": "jumpo-dlx-fantasy-179"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b4",
@@ -4361,7 +4720,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 180,
+    "slug": "roll-cap-180"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b5",
@@ -4384,7 +4745,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 181,
+    "slug": "7-cm-electric-sparklers-181"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b6",
@@ -4407,7 +4770,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 182,
+    "slug": "7-cm-colour-sparklers-182"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b7",
@@ -4430,7 +4795,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 183,
+    "slug": "7-cm-green-sparklers-183"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b8",
@@ -4453,7 +4820,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 184,
+    "slug": "7-cm-red-sparklers-184"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000b9",
@@ -4476,7 +4845,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 185,
+    "slug": "10-cm-electric-sparklers-185"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000ba",
@@ -4499,7 +4870,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 186,
+    "slug": "10-cm-colour-sparklers-186"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000bb",
@@ -4522,7 +4895,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 187,
+    "slug": "10-cm-green-sparklers-187"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000bc",
@@ -4545,7 +4920,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 188,
+    "slug": "10-cm-red-sparklers-188"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000bd",
@@ -4568,7 +4945,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 189,
+    "slug": "15-cm-electric-sparklers-189"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000be",
@@ -4591,7 +4970,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 190,
+    "slug": "15-cm-colour-sparklers-190"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000bf",
@@ -4614,7 +4995,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 191,
+    "slug": "15-cm-green-sparklers-191"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c0",
@@ -4637,7 +5020,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 192,
+    "slug": "15-cm-red-sparklers-192"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c1",
@@ -4660,7 +5045,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 193,
+    "slug": "30-cm-electric-sparklers-193"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c2",
@@ -4683,7 +5070,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 194,
+    "slug": "30-cm-colour-sparklers-194"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c3",
@@ -4706,7 +5095,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 195,
+    "slug": "30-cm-green-sparklers-195"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c4",
@@ -4729,7 +5120,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 196,
+    "slug": "30-cm-red-sparklers-196"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c5",
@@ -4752,7 +5145,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 197,
+    "slug": "50-cm-electric-sparklers-197"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c6",
@@ -4775,7 +5170,9 @@ export const AGANA_PRODUCTS: Product[] = [
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/sparklers.jpg"
+    "imageUrl": "/images/products/sparklers.jpg",
+    "sno": 198,
+    "slug": "50-cm-colour-sparklers-198"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c7",
@@ -4792,13 +5189,15 @@ export const AGANA_PRODUCTS: Product[] = [
     "mrp": 350,
     "sellingPrice": 350,
     "discountAllowed": false,
-    "maxDiscountPct": 80,
+    "maxDiscountPct": 0,
     "currentStock": 100,
     "minStockAlert": 10,
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/giftbox.jpg"
+    "imageUrl": "/images/products/giftbox.jpg",
+    "sno": 199,
+    "slug": "21-item-gift-box-199"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c8",
@@ -4815,13 +5214,15 @@ export const AGANA_PRODUCTS: Product[] = [
     "mrp": 450,
     "sellingPrice": 450,
     "discountAllowed": false,
-    "maxDiscountPct": 80,
+    "maxDiscountPct": 0,
     "currentStock": 100,
     "minStockAlert": 10,
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/giftbox.jpg"
+    "imageUrl": "/images/products/giftbox.jpg",
+    "sno": 200,
+    "slug": "25-item-gift-box-200"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000c9",
@@ -4838,13 +5239,15 @@ export const AGANA_PRODUCTS: Product[] = [
     "mrp": 600,
     "sellingPrice": 600,
     "discountAllowed": false,
-    "maxDiscountPct": 80,
+    "maxDiscountPct": 0,
     "currentStock": 100,
     "minStockAlert": 10,
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/giftbox.jpg"
+    "imageUrl": "/images/products/giftbox.jpg",
+    "sno": 201,
+    "slug": "30-item-gift-box-201"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000ca",
@@ -4861,13 +5264,15 @@ export const AGANA_PRODUCTS: Product[] = [
     "mrp": 700,
     "sellingPrice": 700,
     "discountAllowed": false,
-    "maxDiscountPct": 80,
+    "maxDiscountPct": 0,
     "currentStock": 100,
     "minStockAlert": 10,
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/giftbox.jpg"
+    "imageUrl": "/images/products/giftbox.jpg",
+    "sno": 202,
+    "slug": "35-item-gift-box-202"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000cb",
@@ -4884,13 +5289,15 @@ export const AGANA_PRODUCTS: Product[] = [
     "mrp": 800,
     "sellingPrice": 800,
     "discountAllowed": false,
-    "maxDiscountPct": 80,
+    "maxDiscountPct": 0,
     "currentStock": 100,
     "minStockAlert": 10,
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/giftbox.jpg"
+    "imageUrl": "/images/products/giftbox.jpg",
+    "sno": 203,
+    "slug": "40-item-gift-box-203"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000cc",
@@ -4907,13 +5314,15 @@ export const AGANA_PRODUCTS: Product[] = [
     "mrp": 950,
     "sellingPrice": 950,
     "discountAllowed": false,
-    "maxDiscountPct": 80,
+    "maxDiscountPct": 0,
     "currentStock": 100,
     "minStockAlert": 10,
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/giftbox.jpg"
+    "imageUrl": "/images/products/giftbox.jpg",
+    "sno": 204,
+    "slug": "45-item-gift-box-204"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000cd",
@@ -4930,13 +5339,15 @@ export const AGANA_PRODUCTS: Product[] = [
     "mrp": 1100,
     "sellingPrice": 1100,
     "discountAllowed": false,
-    "maxDiscountPct": 80,
+    "maxDiscountPct": 0,
     "currentStock": 100,
     "minStockAlert": 10,
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/giftbox.jpg"
+    "imageUrl": "/images/products/giftbox.jpg",
+    "sno": 205,
+    "slug": "50-item-gift-box-205"
   },
   {
     "id": "22222222-ba01-0000-0000-0000000000ce",
@@ -4953,12 +5364,14 @@ export const AGANA_PRODUCTS: Product[] = [
     "mrp": 1400,
     "sellingPrice": 1400,
     "discountAllowed": false,
-    "maxDiscountPct": 80,
+    "maxDiscountPct": 0,
     "currentStock": 100,
     "minStockAlert": 10,
     "isGreenCracker": true,
     "pesoCertified": true,
     "isActive": true,
-    "imageUrl": "/images/products/giftbox.jpg"
+    "imageUrl": "/images/products/giftbox.jpg",
+    "sno": 206,
+    "slug": "60-item-gift-box-206"
   }
 ];

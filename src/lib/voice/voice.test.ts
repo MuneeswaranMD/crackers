@@ -10,11 +10,18 @@ import {
 import {
   matchProductForVoiceCommand,
   matchMultiVoiceCommands,
+  interpretVoiceBillingTranscript,
   normalizeText,
   levenshteinDistance,
   stringSimilarity,
   stemWord,
 } from './productMatcher';
+import {
+  parseSpokenNumberWord,
+  parseSnoQuantityTranscript,
+  extractNumbersWithContext,
+  normalizeTamilSpeechText,
+} from './tamilNumberParser';
 import { Product, ProductAlias, CartItem } from '@/types';
 import { calculateCartItem, calculateInvoiceTotals } from '@/lib/calculations';
 
@@ -22,11 +29,12 @@ import { calculateCartItem, calculateInvoiceTotals } from '@/lib/calculations';
 const MOCK_PRODUCTS: Product[] = [
   {
     id: 'prod-001',
+    sno: 1,
     shopId: 'shop-01',
     categoryId: 'cat-bijili',
     categoryName: 'Bijili Crackers',
     sku: 'AF-014',
-    barcode: '14',
+    barcode: '1',
     name: 'Red Bijili',
     tamilName: 'சிவப்பு பிஜிலி',
     brand: 'Agana Fireworks',
@@ -45,11 +53,12 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 'prod-002',
+    sno: 2,
     shopId: 'shop-01',
     categoryId: 'cat-flower',
     categoryName: 'Flower Pot',
     sku: 'AF-045',
-    barcode: '45',
+    barcode: '2',
     name: 'Flower Pot Small',
     tamilName: 'சிறிய புஸ்வாணம்',
     brand: 'Agana Fireworks',
@@ -68,11 +77,12 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 'prod-003',
+    sno: 3,
     shopId: 'shop-01',
     categoryId: 'cat-flower',
     categoryName: 'Flower Pot',
     sku: 'AF-046',
-    barcode: '46',
+    barcode: '3',
     name: 'Flower Pot Big',
     tamilName: 'பெரிய புஸ்வாணம்',
     brand: 'Agana Fireworks',
@@ -91,11 +101,12 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 'prod-004',
+    sno: 4,
     shopId: 'shop-01',
     categoryId: 'cat-sparklers',
     categoryName: 'Sparklers',
     sku: 'AF-189',
-    barcode: '189',
+    barcode: '4',
     name: '15 cm Electric Sparklers',
     tamilName: '15 செமீ எலக்ட்ரிக் மத்தாப்பு',
     brand: 'Agana Fireworks',
@@ -114,11 +125,12 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 'prod-005',
+    sno: 5,
     shopId: 'shop-01',
     categoryId: 'cat-rocket',
     categoryName: 'Rocket',
     sku: 'AF-041',
-    barcode: '41',
+    barcode: '5',
     name: '2 Sound Rocket',
     tamilName: '2 சவுண்ட் ராக்கெட்',
     brand: 'Agana Fireworks',
@@ -137,11 +149,12 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 'prod-006',
+    sno: 6,
     shopId: 'shop-01',
     categoryId: 'cat-garland',
     categoryName: 'Classic Garlands Crackers',
     sku: 'AF-026',
-    barcode: '26',
+    barcode: '6',
     name: '1000 Wala Festive Garland',
     tamilName: '1000 வாலா சரவெடி',
     brand: 'Agana Fireworks',
@@ -157,6 +170,54 @@ const MOCK_PRODUCTS: Product[] = [
     isGreenCracker: true,
     pesoCertified: true,
     isActive: true,
+  },
+  {
+    id: 'prod-007',
+    sno: 7,
+    shopId: 'shop-01',
+    categoryId: 'cat-bombs',
+    categoryName: 'Sound Bombs',
+    sku: 'AF-007',
+    barcode: '7',
+    name: 'Hydro Bomb (Out of Stock)',
+    tamilName: 'ஹைட்ரோ பாம்',
+    brand: 'Agana Fireworks',
+    packSize: '1 BOX',
+    uom: 'BOX',
+    purchasePrice: 80,
+    mrp: 400,
+    sellingPrice: 90,
+    discountAllowed: true,
+    maxDiscountPct: 80,
+    currentStock: 0,
+    minStockAlert: 5,
+    isGreenCracker: true,
+    pesoCertified: true,
+    isActive: true,
+  },
+  {
+    id: 'prod-008',
+    sno: 8,
+    shopId: 'shop-01',
+    categoryId: 'cat-bombs',
+    categoryName: 'Sound Bombs',
+    sku: 'AF-008',
+    barcode: '8',
+    name: 'Classic Cracker (Inactive)',
+    tamilName: 'பழைய வெடி',
+    brand: 'Agana Fireworks',
+    packSize: '1 BOX',
+    uom: 'BOX',
+    purchasePrice: 50,
+    mrp: 200,
+    sellingPrice: 50,
+    discountAllowed: true,
+    maxDiscountPct: 80,
+    currentStock: 50,
+    minStockAlert: 5,
+    isGreenCracker: true,
+    pesoCertified: true,
+    isActive: false,
   },
 ];
 
@@ -470,5 +531,261 @@ describe('Multi-Product Continuous Voice Billing', () => {
     // Sum of line totals: (10 * 35 * 1.18 = 413) + (2 * 42 * 1.18 = 99.12) = 512.12
     const total = results.reduce((sum, r) => sum + (r.calculatedLineTotal || 0), 0);
     expect(total).toBeCloseTo(512.12, 1);
+  });
+});
+
+describe('Tamil SNO & Quantity Voice Billing (ஒன்னு பத்து)', () => {
+  describe('Tamil Number Word Parser', () => {
+    it('parses basic Tamil number words', () => {
+      expect(parseSpokenNumberWord('ஒன்று')).toBe(1);
+      expect(parseSpokenNumberWord('ஒன்னு')).toBe(1);
+      expect(parseSpokenNumberWord('ஒரு')).toBe(1);
+      expect(parseSpokenNumberWord('இரண்டு')).toBe(2);
+      expect(parseSpokenNumberWord('ரெண்டு')).toBe(2);
+      expect(parseSpokenNumberWord('மூன்று')).toBe(3);
+      expect(parseSpokenNumberWord('மூணு')).toBe(3);
+      expect(parseSpokenNumberWord('நான்கு')).toBe(4);
+      expect(parseSpokenNumberWord('நாலு')).toBe(4);
+      expect(parseSpokenNumberWord('ஐந்து')).toBe(5);
+      expect(parseSpokenNumberWord('அஞ்சு')).toBe(5);
+      expect(parseSpokenNumberWord('ஆறு')).toBe(6);
+      expect(parseSpokenNumberWord('ஏழு')).toBe(7);
+      expect(parseSpokenNumberWord('எட்டு')).toBe(8);
+      expect(parseSpokenNumberWord('ஒன்பது')).toBe(9);
+      expect(parseSpokenNumberWord('ஒம்பது')).toBe(9);
+      expect(parseSpokenNumberWord('பத்து')).toBe(10);
+    });
+
+    it('parses teen numbers and tens in Tamil', () => {
+      expect(parseSpokenNumberWord('பதினொன்று')).toBe(11);
+      expect(parseSpokenNumberWord('பதினொன்னு')).toBe(11);
+      expect(parseSpokenNumberWord('பன்னிரண்டு')).toBe(12);
+      expect(parseSpokenNumberWord('பன்னிரெண்டு')).toBe(12);
+      expect(parseSpokenNumberWord('பதினைந்து')).toBe(15);
+      expect(parseSpokenNumberWord('பதினஞ்சு')).toBe(15);
+      expect(parseSpokenNumberWord('இருபது')).toBe(20);
+      expect(parseSpokenNumberWord('இருவது')).toBe(20);
+      expect(parseSpokenNumberWord('முப்பது')).toBe(30);
+      expect(parseSpokenNumberWord('நாற்பது')).toBe(40);
+      expect(parseSpokenNumberWord('நாப்பது')).toBe(40);
+      expect(parseSpokenNumberWord('ஐம்பது')).toBe(50);
+      expect(parseSpokenNumberWord('அம்பது')).toBe(50);
+      expect(parseSpokenNumberWord('அறுபது')).toBe(60);
+      expect(parseSpokenNumberWord('எழுபது')).toBe(70);
+      expect(parseSpokenNumberWord('எண்பது')).toBe(80);
+      expect(parseSpokenNumberWord('தொண்ணூறு')).toBe(90);
+      expect(parseSpokenNumberWord('நூறு')).toBe(100);
+      expect(parseSpokenNumberWord('இருநூறு')).toBe(200);
+    });
+
+    it('parses compound Tamil spoken numbers', () => {
+      expect(parseSpokenNumberWord('இருபத்தைந்து')).toBe(25);
+      expect(parseSpokenNumberWord('இருபத்தஞ்சு')).toBe(25);
+      expect(parseSpokenNumberWord('முப்பத்தைந்து')).toBe(35);
+      expect(parseSpokenNumberWord('முப்பத்தஞ்சு')).toBe(35);
+      expect(parseSpokenNumberWord('நாற்பத்தைந்து')).toBe(45);
+      expect(parseSpokenNumberWord('நாப்பத்தஞ்சு')).toBe(45);
+      expect(parseSpokenNumberWord('நூற்றிஒன்று')).toBe(101);
+      expect(parseSpokenNumberWord('இருநூற்றிஆறு')).toBe(206);
+    });
+
+    it('parses Tanglish, English and digits', () => {
+      expect(parseSpokenNumberWord('onnu')).toBe(1);
+      expect(parseSpokenNumberWord('rendu')).toBe(2);
+      expect(parseSpokenNumberWord('moonu')).toBe(3);
+      expect(parseSpokenNumberWord('naalu')).toBe(4);
+      expect(parseSpokenNumberWord('anju')).toBe(5);
+      expect(parseSpokenNumberWord('pathu')).toBe(10);
+      expect(parseSpokenNumberWord('irubadhu')).toBe(20);
+      expect(parseSpokenNumberWord('twenty')).toBe(20);
+      expect(parseSpokenNumberWord('five')).toBe(5);
+      expect(parseSpokenNumberWord('1')).toBe(1);
+      expect(parseSpokenNumberWord('10')).toBe(10);
+      expect(parseSpokenNumberWord('206')).toBe(206);
+    });
+
+    it('extracts two-word compound numbers from token list', () => {
+      const tokens = ['இருபத்தி', 'ஐந்து'];
+      const extracted = extractNumbersWithContext(tokens);
+      expect(extracted.length).toBe(1);
+      expect(extracted[0].value).toBe(25);
+    });
+  });
+
+  describe('SNO & Quantity Pair Extraction', () => {
+    it('parses "ஒன்னு பத்து" -> SNO 1, quantity 10', () => {
+      const res = parseSnoQuantityTranscript('ஒன்னு பத்து');
+      expect(res.pairs.length).toBe(1);
+      expect(res.pairs[0].sno).toBe(1);
+      expect(res.pairs[0].quantity).toBe(10);
+      expect(res.isIncomplete).toBe(false);
+      expect(res.isAmbiguous).toBe(false);
+    });
+
+    it('parses "ரெண்டு அஞ்சு" -> SNO 2, quantity 5', () => {
+      const res = parseSnoQuantityTranscript('ரெண்டு அஞ்சு');
+      expect(res.pairs.length).toBe(1);
+      expect(res.pairs[0].sno).toBe(2);
+      expect(res.pairs[0].quantity).toBe(5);
+      expect(res.isIncomplete).toBe(false);
+    });
+
+    it('parses "மூணு இருபது" -> SNO 3, quantity 20', () => {
+      const res = parseSnoQuantityTranscript('மூணு இருபது');
+      expect(res.pairs.length).toBe(1);
+      expect(res.pairs[0].sno).toBe(3);
+      expect(res.pairs[0].quantity).toBe(20);
+    });
+
+    it('parses multiple pairs in one utterance: "ஒன்னு பத்து ரெண்டு அஞ்சு"', () => {
+      const res = parseSnoQuantityTranscript('ஒன்னு பத்து ரெண்டு அஞ்சு');
+      expect(res.pairs.length).toBe(2);
+      expect(res.pairs[0].sno).toBe(1);
+      expect(res.pairs[0].quantity).toBe(10);
+      expect(res.pairs[1].sno).toBe(2);
+      expect(res.pairs[1].quantity).toBe(5);
+      expect(res.isIncomplete).toBe(false);
+    });
+
+    it('parses three consecutive pairs: "ஒன்னு பத்து ரெண்டு அஞ்சு மூணு இருபது"', () => {
+      const res = parseSnoQuantityTranscript('ஒன்னு பத்து ரெண்டு அஞ்சு மூணு இருபது');
+      expect(res.pairs.length).toBe(3);
+      expect(res.pairs[0]).toMatchObject({ sno: 1, quantity: 10 });
+      expect(res.pairs[1]).toMatchObject({ sno: 2, quantity: 5 });
+      expect(res.pairs[2]).toMatchObject({ sno: 3, quantity: 20 });
+    });
+
+    it('parses Arabic numerals: "1 10 2 5"', () => {
+      const res = parseSnoQuantityTranscript('1 10 2 5');
+      expect(res.pairs.length).toBe(2);
+      expect(res.pairs[0].sno).toBe(1);
+      expect(res.pairs[0].quantity).toBe(10);
+      expect(res.pairs[1].sno).toBe(2);
+      expect(res.pairs[1].quantity).toBe(5);
+    });
+
+    it('parses explicit keywords: "SNO 1 quantity 10" and "நம்பர் 2 அஞ்சு பாக்கெட்"', () => {
+      const res1 = parseSnoQuantityTranscript('SNO 1 quantity 10');
+      expect(res1.pairs.length).toBe(1);
+      expect(res1.pairs[0].sno).toBe(1);
+      expect(res1.pairs[0].quantity).toBe(10);
+
+      const res2 = parseSnoQuantityTranscript('நம்பர் 2 அஞ்சு பாக்கெட்');
+      expect(res2.pairs.length).toBe(1);
+      expect(res2.pairs[0].sno).toBe(2);
+      expect(res2.pairs[0].quantity).toBe(5);
+      expect(res2.pairs[0].unit).toBe('PKT');
+    });
+
+    it('flags incomplete commands with an odd number of tokens', () => {
+      // Just "ஒன்னு" (1) without quantity
+      const res1 = parseSnoQuantityTranscript('ஒன்னு');
+      expect(res1.pairs.length).toBe(0);
+      expect(res1.isIncomplete).toBe(true);
+      expect(res1.errorMessage).toContain('missing a quantity');
+
+      // "ஒன்னு பத்து இருபது" (Pair 1 valid, 20 is missing quantity)
+      const res2 = parseSnoQuantityTranscript('ஒன்னு பத்து இருபது');
+      expect(res2.pairs.length).toBe(1);
+      expect(res2.pairs[0].sno).toBe(1);
+      expect(res2.pairs[0].quantity).toBe(10);
+      expect(res2.isIncomplete).toBe(true);
+      expect(res2.unpairedNumbers).toEqual([20]);
+    });
+
+    it('flags invalid SNO exceeding catalog max as ambiguous', () => {
+      const res = parseSnoQuantityTranscript('999 10', 206);
+      expect(res.isAmbiguous).toBe(true);
+      expect(res.errorMessage).toContain('Invalid S.No. #999');
+    });
+
+    it('handles speech with filler words and conjunctions', () => {
+      const raw = 'சார் ஒன்னு பத்து போடுங்க அப்புறம் ரெண்டு அஞ்சு';
+      const res = parseSnoQuantityTranscript(raw);
+      expect(res.pairs.length).toBe(2);
+      expect(res.pairs[0].sno).toBe(1);
+      expect(res.pairs[0].quantity).toBe(10);
+      expect(res.pairs[1].sno).toBe(2);
+      expect(res.pairs[1].quantity).toBe(5);
+    });
+
+    it('detects action keywords like remove, update, and undo', () => {
+      const resRemove = parseSnoQuantityTranscript('ஒன்னு பத்து நீக்கு');
+      expect(resRemove.action).toBe('REMOVE');
+      expect(resRemove.pairs[0]).toMatchObject({ sno: 1, quantity: 10 });
+
+      const resUpdate = parseSnoQuantityTranscript('ரெண்டு இருபது மாத்து');
+      expect(resUpdate.action).toBe('UPDATE');
+      expect(resUpdate.pairs[0]).toMatchObject({ sno: 2, quantity: 20 });
+
+      const resUndo = parseSnoQuantityTranscript('ரத்து செய்');
+      expect(resUndo.action).toBe('UNDO');
+    });
+  });
+
+  describe('Cart Processing & Product Matching via interpretVoiceBillingTranscript', () => {
+    it('resolves product by SNO and calculates correct line amounts', () => {
+      const results = interpretVoiceBillingTranscript('ஒன்னு பத்து', MOCK_PRODUCTS, MOCK_ALIASES);
+      expect(results.length).toBe(1);
+      expect(results[0].status).toBe('EXACT_MATCH');
+      expect(results[0].matchedProduct?.name).toBe('Red Bijili');
+      expect(results[0].matchedProduct?.sno).toBe(1);
+      expect(results[0].command.quantity).toBe(10);
+      // Unit price 35 * 10 = 350 taxable, with 18% GST = 413
+      expect(results[0].calculatedLineTotal).toBeCloseTo(413, 1);
+    });
+
+    it('resolves multiple SNO pairs into cart items', () => {
+      const results = interpretVoiceBillingTranscript(
+        'ஒன்னு பத்து ரெண்டு அஞ்சு',
+        MOCK_PRODUCTS,
+        MOCK_ALIASES
+      );
+      expect(results.length).toBe(2);
+      expect(results[0].matchedProduct?.sno).toBe(1);
+      expect(results[0].command.quantity).toBe(10);
+
+      expect(results[1].matchedProduct?.sno).toBe(2);
+      expect(results[1].command.quantity).toBe(5);
+    });
+
+    it('flags out of stock items and prevents auto-selection', () => {
+      // SNO 7 is out of stock (currentStock: 0)
+      const results = interpretVoiceBillingTranscript('ஏழு பத்து', MOCK_PRODUCTS, MOCK_ALIASES);
+      expect(results.length).toBe(1);
+      expect(results[0].status).toBe('NO_MATCH');
+      expect(results[0].errorMessage).toContain('out of stock');
+      expect(results[0].selected).toBe(false);
+    });
+
+    it('flags quantities exceeding available stock with warning', () => {
+      // SNO 4 has stock 15, request 30
+      const results = interpretVoiceBillingTranscript('நாலு முப்பது', MOCK_PRODUCTS, MOCK_ALIASES);
+      expect(results.length).toBe(1);
+      expect(results[0].status).toBe('EXACT_MATCH');
+      expect(results[0].errorMessage).toContain('only 15 currently in stock');
+    });
+
+    it('rejects disabled/inactive products', () => {
+      // SNO 8 is inactive
+      const results = interpretVoiceBillingTranscript('எட்டு பத்து', MOCK_PRODUCTS, MOCK_ALIASES);
+      expect(results.length).toBe(1);
+      expect(results[0].status).toBe('NO_MATCH');
+      expect(results[0].errorMessage).toContain('disabled/inactive');
+    });
+
+    it('flags incomplete commands for cashier confirmation instead of guessing', () => {
+      const results = interpretVoiceBillingTranscript('ஒன்னு', MOCK_PRODUCTS, MOCK_ALIASES);
+      expect(results.length).toBe(1);
+      expect(results[0].status).toBe('AMBIGUOUS');
+      expect(results[0].errorMessage).toContain('missing a quantity');
+    });
+
+    it('gracefully handles non-numeric product name queries (fallback)', () => {
+      const results = interpretVoiceBillingTranscript('10 red bijili', MOCK_PRODUCTS, MOCK_ALIASES);
+      expect(results.length).toBe(1);
+      expect(results[0].status).toBe('EXACT_MATCH');
+      expect(results[0].matchedProduct?.name).toBe('Red Bijili');
+    });
   });
 });

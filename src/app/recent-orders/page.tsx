@@ -285,20 +285,22 @@ export default function RecentOrdersPage() {
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handlePrintThermal(ord.rawSale)}
-                        className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 shadow-sm transition active:scale-95"
-                        title="Reprint 80mm Receipt"
-                      >
-                        <Printer className="w-3.5 h-3.5" />
-                        <span>80mm</span>
-                      </button>
-                      <button
                         onClick={() => handlePrintA4(ord.rawSale)}
-                        className="p-2 rounded-lg bg-slate-100 hover:bg-blue-50 text-blue-600 transition"
-                        title="Reprint A4 PDF"
+                        className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 shadow-sm transition active:scale-95"
+                        title="Print A4 Tax Invoice (Default)"
                       >
-                        <FileText className="w-4 h-4" />
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>A4 PDF</span>
                       </button>
+                      {db.getSettings().enableThermal80mmReceipt && (
+                        <button
+                          onClick={() => handlePrintThermal(ord.rawSale)}
+                          className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                          title="Reprint 80mm Receipt"
+                        >
+                          <Printer className="w-4 h-4" />
+                        </button>
+                      )}
                     </>
                   )}
                   {ord.type === 'ONLINE' && (
@@ -403,19 +405,21 @@ export default function RecentOrdersPage() {
                         {ord.type === 'POS' && (
                           <>
                             <button
-                              onClick={() => handlePrintThermal(ord.rawSale)}
-                              className="p-1.5 text-slate-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition"
-                              title="Print 80mm Thermal Receipt"
-                            >
-                              <Printer className="w-4 h-4 text-amber-600" />
-                            </button>
-                            <button
                               onClick={() => handlePrintA4(ord.rawSale)}
-                              className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
-                              title="Print A4 GST Tax Invoice"
+                              className="p-1.5 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition"
+                              title="Print A4 GST Tax Invoice (Default)"
                             >
                               <FileText className="w-4 h-4" />
                             </button>
+                            {db.getSettings().enableThermal80mmReceipt && (
+                              <button
+                                onClick={() => handlePrintThermal(ord.rawSale)}
+                                className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
+                                title="Print 80mm Thermal Receipt"
+                              >
+                                <Printer className="w-4 h-4" />
+                              </button>
+                            )}
                             <button
                               onClick={() => setSelectedSale(ord.rawSale)}
                               className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
@@ -520,21 +524,23 @@ export default function RecentOrdersPage() {
                 Close
               </button>
               <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => handlePrintThermal(selectedSale)}
-                  className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-lg flex items-center gap-1"
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                  <span>80mm Thermal</span>
-                </button>
+                {db.getSettings().enableThermal80mmReceipt && (
+                  <button
+                    type="button"
+                    onClick={() => handlePrintThermal(selectedSale)}
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg flex items-center gap-1"
+                  >
+                    <Printer className="w-3.5 h-3.5 text-slate-600" />
+                    <span>80mm Thermal</span>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => handlePrintA4(selectedSale)}
-                  className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg flex items-center gap-1"
+                  className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-lg flex items-center gap-1 shadow"
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  <span>A4 Invoice</span>
+                  <span>Print A4 Invoice (Default)</span>
                 </button>
               </div>
             </div>
