@@ -961,3 +961,47 @@ export async function deleteProductAliasFromSupabase(aliasId: string): Promise<{
   }
 }
 
+/**
+ * Clear all sales, sale items, payments, and stock movements from Supabase
+ */
+export async function clearAllSalesFromSupabase(): Promise<{ success: boolean; error?: string }> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query('DELETE FROM payments WHERE shop_id = $1', [SHOP_UUID]);
+    await client.query('DELETE FROM sale_items WHERE sale_id IN (SELECT id FROM sales WHERE shop_id = $1)', [SHOP_UUID]);
+    await client.query('DELETE FROM sales WHERE shop_id = $1', [SHOP_UUID]);
+    await client.query('DELETE FROM stock_movements WHERE shop_id = $1', [SHOP_UUID]);
+    await client.query('COMMIT');
+    return { success: true };
+  } catch (err: any) {
+    await client.query('ROLLBACK');
+    console.error('Error clearing sales from Supabase:', err);
+    return { success: false, error: err.message };
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Clear all external orders and order items from Supabase
+ */
+export async function clearAllExternalOrdersFromSupabase(): Promise<{ success: boolean; error?: string }> {
+  const pool = getDbPool();
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query('DELETE FROM external_order_items WHERE external_order_id IN (SELECT id FROM external_orders WHERE shop_id = $1)', [SHOP_UUID]);
+    await client.query('DELETE FROM external_orders WHERE shop_id = $1', [SHOP_UUID]);
+    await client.query('COMMIT');
+    return { success: true };
+  } catch (err: any) {
+    await client.query('ROLLBACK');
+    console.error('Error clearing external orders from Supabase:', err);
+    return { success: false, error: err.message };
+  } finally {
+    client.release();
+  }
+}
+

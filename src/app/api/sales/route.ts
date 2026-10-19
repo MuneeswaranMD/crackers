@@ -38,3 +38,17 @@ export async function GET() {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }
+
+export async function DELETE() {
+  try {
+    const { clearAllSalesFromSupabase } = await import('@/lib/serverDb');
+    const result = await clearAllSalesFromSupabase();
+    if (!result.success) {
+      return NextResponse.json({ success: false, error: result.error }, { status: 500 });
+    }
+    return NextResponse.json({ success: true, message: 'All sales data cleared from Supabase' });
+  } catch (err: any) {
+    console.error('API /api/sales DELETE Error:', err);
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  }
+}

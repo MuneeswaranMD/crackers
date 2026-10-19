@@ -23,3 +23,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }
+
+export async function DELETE() {
+  try {
+    const { clearAllExternalOrdersFromSupabase } = await import('@/lib/serverDb');
+    const result = await clearAllExternalOrdersFromSupabase();
+    if (!result.success) {
+      return NextResponse.json({ success: false, error: result.error }, { status: 500 });
+    }
+    return NextResponse.json({ success: true, message: 'All external orders cleared from Supabase' });
+  } catch (err: any) {
+    console.error('Error in /api/orders DELETE:', err);
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  }
+}

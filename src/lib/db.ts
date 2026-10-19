@@ -313,6 +313,17 @@ export const db = {
     if (!storage.get<Supplier[] | null>(STORAGE_KEYS.SUPPLIERS, null)) {
       storage.set(STORAGE_KEYS.SUPPLIERS, INITIAL_SUPPLIERS);
     }
+    const hasFreshClean = storage.get<boolean | null>('crackers_fresh_clean_2026_v1', null);
+    if (!hasFreshClean) {
+      storage.set(STORAGE_KEYS.SALES, []);
+      storage.set(STORAGE_KEYS.EXTERNAL_ORDERS, []);
+      storage.set(STORAGE_KEYS.WEBHOOK_EVENTS, []);
+      storage.set(STORAGE_KEYS.SYNC_LOGS, []);
+      storage.set(STORAGE_KEYS.STOCK_MOVEMENTS, []);
+      storage.set(STORAGE_KEYS.HELD_BILLS, []);
+      storage.set(STORAGE_KEYS.SEQ_INVOICE, 1001);
+      storage.set('crackers_fresh_clean_2026_v1', true);
+    }
     if (!storage.get<Sale[] | null>(STORAGE_KEYS.SALES, null)) {
       storage.set(STORAGE_KEYS.SALES, []);
     }
@@ -328,16 +339,8 @@ export const db = {
     if (!storage.get<Integration[] | null>(STORAGE_KEYS.INTEGRATIONS, null)) {
       storage.set(STORAGE_KEYS.INTEGRATIONS, [INITIAL_INTEGRATION]);
     }
-    const existingOrders = storage.get<ExternalOrder[] | null>(STORAGE_KEYS.EXTERNAL_ORDERS, null);
-    if (!existingOrders) {
+    if (!storage.get<ExternalOrder[] | null>(STORAGE_KEYS.EXTERNAL_ORDERS, null)) {
       storage.set(STORAGE_KEYS.EXTERNAL_ORDERS, []);
-    } else {
-      const cleaned = existingOrders.filter(
-        (o) => o.id !== 'ext-ord-8402' && o.id !== 'ext-ord-8405'
-      );
-      if (cleaned.length !== existingOrders.length) {
-        storage.set(STORAGE_KEYS.EXTERNAL_ORDERS, cleaned);
-      }
     }
     if (!storage.get<ExternalProductMapping[] | null>(STORAGE_KEYS.PRODUCT_MAPPINGS, null)) {
       storage.set(STORAGE_KEYS.PRODUCT_MAPPINGS, []);
