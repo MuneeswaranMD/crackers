@@ -302,7 +302,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <div className="h-16 flex items-center justify-between px-3.5 border-b border-[#E5E7EB] bg-white">
           <Link href="/" className="flex items-center gap-3 overflow-hidden">
             <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-sm flex-shrink-0">
-              <img src="/logo.png" alt="Averqon Logo" className="w-full h-full object-contain rounded-lg" />
+              <img src="/logo.png" alt="Crackers POS Logo" className="w-full h-full object-contain rounded-lg" />
             </div>
             {sidebarOpen && (
               <div className="leading-tight overflow-hidden">
@@ -386,7 +386,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <div className="h-16 flex items-center justify-between px-4 border-b border-[#E5E7EB] bg-white">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 p-0.5 flex items-center justify-center shadow-sm flex-shrink-0">
-                  <img src="/logo.png" alt="Averqon Logo" className="w-full h-full object-contain rounded-md" />
+                  <img src="/logo.png" alt="Crackers POS Logo" className="w-full h-full object-contain rounded-md" />
                 </div>
                 <div>
                   <div className="text-xs font-black uppercase text-slate-900">Sree Kalieswari Traders</div>

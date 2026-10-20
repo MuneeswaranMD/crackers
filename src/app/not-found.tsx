@@ -6,7 +6,7 @@ export default function NotFound() {
     <main className="min-h-screen bg-[#F5F6F8] flex items-center justify-center p-6">
       <div className="w-full max-w-md rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center shadow-sm">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white border border-slate-200 p-2 shadow-sm">
-          <img src="/logo.png" alt="Averqon Logo" className="h-full w-full object-contain rounded-xl" />
+          <img src="/logo.png" alt="Crackers POS Logo" className="h-full w-full object-contain rounded-xl" />
         </div>
         <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-600">Averqon POS</p>
         <h1 className="mt-2 text-2xl font-black text-[#1F2937]">Page not found</h1>

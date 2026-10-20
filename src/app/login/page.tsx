@@ -129,7 +129,7 @@ export default function LoginPage() {
         {/* Brand Header */}
         <div className="pt-7 pb-5 px-6 text-center border-b border-slate-100 bg-gradient-to-b from-amber-50/40 to-white">
           <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 p-1.5 flex items-center justify-center shadow-lg shadow-teal-500/10 mx-auto mb-3">
-            <img src="/logo.png" alt="Averqon Logo" className="w-full h-full object-contain rounded-xl" />
+            <img src="/logo.png" alt="Crackers POS Logo" className="w-full h-full object-contain rounded-xl" />
           </div>
           <div className="text-xl font-black text-slate-900 tracking-tight">
             {shop.name || 'Sree Kalieswari Traders'}
